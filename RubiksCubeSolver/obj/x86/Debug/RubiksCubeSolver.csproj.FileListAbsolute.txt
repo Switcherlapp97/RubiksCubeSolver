@@ -1,0 +1,9 @@
+C:\Users\Anwender\Documents\GitHub\RubiksCubeSolver\RubiksCubeSolver\bin\Debug\VirtualRubik.exe.config
+C:\Users\Anwender\Documents\GitHub\RubiksCubeSolver\RubiksCubeSolver\bin\Debug\VirtualRubik.exe
+C:\Users\Anwender\Documents\GitHub\RubiksCubeSolver\RubiksCubeSolver\bin\Debug\VirtualRubik.pdb
+C:\Users\Anwender\Documents\GitHub\RubiksCubeSolver\RubiksCubeSolver\obj\x86\Debug\RubiksCubeSolver.csprojResolveAssemblyReference.cache
+C:\Users\Anwender\Documents\GitHub\RubiksCubeSolver\RubiksCubeSolver\obj\x86\Debug\VirtualRubik.Form1.resources
+C:\Users\Anwender\Documents\GitHub\RubiksCubeSolver\RubiksCubeSolver\obj\x86\Debug\VirtualRubik.Properties.Resources.resources
+C:\Users\Anwender\Documents\GitHub\RubiksCubeSolver\RubiksCubeSolver\obj\x86\Debug\RubiksCubeSolver.csproj.GenerateResource.Cache
+C:\Users\Anwender\Documents\GitHub\RubiksCubeSolver\RubiksCubeSolver\obj\x86\Debug\VirtualRubik.exe
+C:\Users\Anwender\Documents\GitHub\RubiksCubeSolver\RubiksCubeSolver\obj\x86\Debug\VirtualRubik.pdb
