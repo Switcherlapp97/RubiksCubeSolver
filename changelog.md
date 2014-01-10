@@ -8,6 +8,10 @@ from the VB-Paradise Community
 
 Changelog:
 
+Version 0.2 (2014.01.09)
+- Bugfixes
+- solution for the bottom layer
+
 Version 0.1.1 (2014.01.09)
 - Bugfixes
 - update mouse control
