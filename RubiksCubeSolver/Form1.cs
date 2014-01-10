@@ -380,6 +380,7 @@ namespace VirtualRubik
         {
           CubeSolver cs = new CubeSolver(rubikManager);
           cs.SolveFirstCross();
+          cs.CompleteFirstLayer();
         }
 
     }

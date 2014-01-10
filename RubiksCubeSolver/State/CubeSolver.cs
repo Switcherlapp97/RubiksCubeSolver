@@ -128,11 +128,63 @@ namespace VirtualRubik
       //Step 3: Complete the first layer
       foreach (Cube3D c in bottomCorners)
       {
+        //3.1 Get the target position
+        Cube3D.RubikPosition targetPosition = standardCube.RubikCube.cubes.First(cu => ScrambledEquals(cu.Colors, c.Colors)).Position;
 
+        //3.2 Rotate to target position
+        if (c.Position != targetPosition)
+        {
+          //Rotate to top layer
+          if (c.Position.HasFlag(Cube3D.RubikPosition.BottomLayer))
+          {
+            Face3D leftFace = RefreshCube(c).Faces.First(f => f.Position != Face3D.FacePosition.Bottom && f.Color != Color.Black);
+            Cube3D.RubikPosition leftSlice = FacePosToCubePos(leftFace.Position);
+            Manager.Rotate90Sync(leftSlice, false);
+            if (RefreshCube(c).Position.HasFlag(Cube3D.RubikPosition.BottomLayer))
+            {
+              Manager.Rotate90Sync(leftSlice, true);
+              leftFace = RefreshCube(c).Faces.First(f => f.Position != Face3D.FacePosition.Bottom && f.Color != leftFace.Color && f.Color != Color.Black);
+              leftSlice = FacePosToCubePos(leftFace.Position);
+              Manager.Rotate90Sync(leftSlice, false);
+            }
+            Manager.Rotate90Sync(Cube3D.RubikPosition.TopLayer, false);
+            Manager.Rotate90Sync(leftSlice, true);
+            Manager.Rotate90Sync(Cube3D.RubikPosition.TopLayer, true);
+          }
+
+          //Rotate over target position
+          Cube3D.RubikPosition targetPos = Cube3D.RubikPosition.None;
+          foreach (Cube3D.RubikPosition p in GetFlags(targetPosition))
+          {
+            if (p != Cube3D.RubikPosition.BottomLayer)
+              targetPos |= p;
+          }
+
+          while (!RefreshCube(c).Position.HasFlag(targetPos)) Manager.Rotate90Sync(Cube3D.RubikPosition.TopLayer, true);
+        }
+
+        //Rotate to target position and correct align with the algorithm: Li Ui L U
+        Face3D leftFac = RefreshCube(c).Faces.First(f => f.Position != Face3D.FacePosition.Top && f.Position != Face3D.FacePosition.Bottom && f.Color != Color.Black);
+        Cube3D.RubikPosition leftSlic = FacePosToCubePos(leftFac.Position);
+        Manager.Rotate90Sync(leftSlic, false);
+        if (!RefreshCube(c).Position.HasFlag(Cube3D.RubikPosition.TopLayer))
+        {
+          Manager.Rotate90Sync(leftSlic, true);
+          leftFac = RefreshCube(c).Faces.First(f => f.Position != Face3D.FacePosition.Top && f.Position != Face3D.FacePosition.Bottom && f.Color != leftFac.Color && f.Color != Color.Black);
+          leftSlic = FacePosToCubePos(leftFac.Position);
+        }
+        else Manager.Rotate90Sync(leftSlic, true);
+
+        while (RefreshCube(c).Faces.First(f => f.Color == bottomColor).Position != Face3D.FacePosition.Bottom)
+        {
+          Manager.Rotate90Sync(leftSlic, false);
+          Manager.Rotate90Sync(Cube3D.RubikPosition.TopLayer, false);
+          Manager.Rotate90Sync(leftSlic, true);
+          Manager.Rotate90Sync(Cube3D.RubikPosition.TopLayer, true);
+        }
       }
       return new Stack<LayerMove>(Moves);
     }
-
     private Cube3D.RubikPosition FacePosToCubePos(Face3D.FacePosition position)
     {
       switch (position)
@@ -186,5 +238,13 @@ namespace VirtualRubik
       }
       return cnt.Values.All(c => c == 0);
     }
+
+    static IEnumerable<Enum> GetFlags(Enum input)
+    {
+      foreach (Enum value in Enum.GetValues(input.GetType()))
+        if (input.HasFlag(value))
+          yield return value;
+    }
+
   }
 }
