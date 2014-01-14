@@ -379,8 +379,7 @@ namespace VirtualRubik
         private void button6_Click(object sender, EventArgs e)
         {
           CubeSolver cs = new CubeSolver(rubikManager);
-          cs.SolveFirstCross();
-          cs.CompleteFirstLayer();
+          cs.Solve();
         }
 
     }

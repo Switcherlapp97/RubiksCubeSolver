@@ -12,6 +12,14 @@ namespace VirtualRubik
     RubikManager Manager;
     private RubikManager standardCube = new RubikManager();
 
+    public void Solve()
+    {
+      SolveFirstCross();
+      CompleteFirstLayer();
+      CompleteMiddleLayer();
+      SolveCrossTopLayer();
+    }
+
     public CubeSolver(RubikManager rubik)
     {
       Manager = rubik;
@@ -37,9 +45,8 @@ namespace VirtualRubik
     }
 
     //Solve the first cross on the bottom layer
-    public Stack<LayerMove> SolveFirstCross()
+    private void SolveFirstCross()
     {
-      List<LayerMove> Moves = new List<LayerMove>();
 
       //Step 1: Get the color of the bottom layer to start with the first cross
       Color bottomColor = Manager.getFaceColor(Cube3D.RubikPosition.BottomLayer | Cube3D.RubikPosition.MiddleSlice_Sides | Cube3D.RubikPosition.MiddleSlice, Face3D.FacePosition.Bottom);
@@ -66,20 +73,14 @@ namespace VirtualRubik
             Manager.Rotate90Sync(layer, true);
             if (RefreshCube(c).Position.HasFlag(Cube3D.RubikPosition.TopLayer))
             {
-              Moves.Add(new LayerMove(layer, true));
               Manager.Rotate90Sync(Cube3D.RubikPosition.TopLayer, true);
-              Moves.Add(new LayerMove(Cube3D.RubikPosition.TopLayer, true));
               Manager.Rotate90Sync(layer, false);
-              Moves.Add(new LayerMove(layer, false));
             }
             else
             {
               for (int i = 0; i < 2; i++) Manager.Rotate90Sync(layer, true);
-              Moves.Add(new LayerMove(layer, false));
               Manager.Rotate90Sync(Cube3D.RubikPosition.TopLayer, true);
-              Moves.Add(new LayerMove(Cube3D.RubikPosition.TopLayer, true));
               Manager.Rotate90Sync(layer, true);
-              Moves.Add(new LayerMove(layer, true));
             }
           }
           if (c.Position.HasFlag(Cube3D.RubikPosition.BottomLayer)) for (int i = 0; i < 2; i++) Manager.Rotate90Sync(layer, true);
@@ -87,10 +88,10 @@ namespace VirtualRubik
           //Rotate over target position
           Cube3D.RubikPosition targetLayer = FacePosToCubePos(standardCube.RubikCube.cubes.First(cu => ScrambledEquals(cu.Colors, c.Colors))
             .Faces.First(f => f.Color == secondColor).Position);
-          while (!RefreshCube(c).Position.HasFlag(targetLayer)) { Manager.Rotate90Sync(Cube3D.RubikPosition.TopLayer, true); Moves.Add(new LayerMove(Cube3D.RubikPosition.TopLayer, true)); }
+          while (!RefreshCube(c).Position.HasFlag(targetLayer)) Manager.Rotate90Sync(Cube3D.RubikPosition.TopLayer, true);
 
           //Rotate to target position
-          for (int i = 0; i < 2; i++) { Manager.Rotate90Sync(targetLayer, true); Moves.Add(new LayerMove(targetLayer, true)); }
+          for (int i = 0; i < 2; i++) Manager.Rotate90Sync(targetLayer, true);
         }
 
         //Step 4.3: Flip the incorrect orientated edges with the algorithm: Fi D Ri Di
@@ -98,27 +99,18 @@ namespace VirtualRubik
         {
           Cube3D.RubikPosition frontLayer = FacePosToCubePos(RefreshCube(c).Faces.First(f => f.Color == bottomColor).Position);
           Manager.Rotate90Sync(frontLayer, false);
-          Moves.Add(new LayerMove(frontLayer, false));
           Manager.Rotate90Sync(Cube3D.RubikPosition.BottomLayer, true);
-          Moves.Add(new LayerMove(Cube3D.RubikPosition.BottomLayer, true));
 
           Cube3D.RubikPosition rightSlice = FacePosToCubePos(RefreshCube(c).Faces.First(f => f.Color == secondColor).Position);
 
           Manager.Rotate90Sync(rightSlice, false);
-          Moves.Add(new LayerMove(rightSlice, false));
           Manager.Rotate90Sync(Cube3D.RubikPosition.BottomLayer, false);
-          Moves.Add(new LayerMove(Cube3D.RubikPosition.BottomLayer, false));
         }
       }
-      Moves.Reverse();
-
-      return new Stack<LayerMove>(Moves);
     }
 
-    public Stack<LayerMove> CompleteFirstLayer()
+    private void CompleteFirstLayer()
     {
-      List<LayerMove> Moves = new List<LayerMove>();
-
       //Step 1: Get the color of the bottom layer
       Color bottomColor = Manager.getFaceColor(Cube3D.RubikPosition.BottomLayer | Cube3D.RubikPosition.MiddleSlice_Sides | Cube3D.RubikPosition.MiddleSlice, Face3D.FacePosition.Bottom);
 
@@ -183,8 +175,157 @@ namespace VirtualRubik
           Manager.Rotate90Sync(Cube3D.RubikPosition.TopLayer, true);
         }
       }
-      return new Stack<LayerMove>(Moves);
     }
+
+    private void CompleteMiddleLayer()
+    {
+      //Step 1: Get the color of the bottom and top layer
+      Color bottomColor = Manager.getFaceColor(Cube3D.RubikPosition.BottomLayer | Cube3D.RubikPosition.MiddleSlice_Sides | Cube3D.RubikPosition.MiddleSlice, Face3D.FacePosition.Bottom);
+      Color topColor = Manager.getFaceColor(Cube3D.RubikPosition.TopLayer | Cube3D.RubikPosition.MiddleSlice_Sides | Cube3D.RubikPosition.MiddleSlice, Face3D.FacePosition.Top);
+
+      //Step 2: Get the egdes of the middle layer
+      IEnumerable<Cube3D> middleEdges = Manager.RubikCube.cubes.Where(c => Cube3D.isEdge(c.Position)).Where(c => c.Colors.Count(co => co == bottomColor || co == topColor) == 0);
+
+      //Step 3: Complete the middle layer
+      foreach (Cube3D c in middleEdges)
+      {
+        //3.1 Get the target position
+        Cube3D.RubikPosition targetPosition = standardCube.RubikCube.cubes.First(cu => ScrambledEquals(cu.Colors, c.Colors)).Position;
+
+        //BUG:
+        //Wenn ein Stein bereits richtig positioniert und ausgerichtet ist, aber falsch orientiert, passiert aktuell noch nichts
+
+        //Check correct orientation
+        List<Face3D> coloredFaces = new List<Face3D>();
+        Manager.RubikCube.cubes.Where(cu => Cube3D.isCenter(cu.Position)).ToList().ForEach(cu => coloredFaces.Add(cu.Faces.First(f => f.Color != Color.Black)));
+        bool correctOrientation = c.Faces.Count(f => coloredFaces.Count(cf => cf.Color == f.Color && cf.Position == f.Position) == 1) == 2;
+
+        //3.2 Rotate to target position
+        if (c.Position != targetPosition || (c.Position == targetPosition && !correctOrientation))
+        {
+          //Rotate to top layer
+          if (!c.Position.HasFlag(Cube3D.RubikPosition.TopLayer))
+          {
+            Face3D frontFace = c.Faces.First(f => f.Color != Color.Black);
+            Cube3D.RubikPosition frontSlice = FacePosToCubePos(frontFace.Position);
+            Face3D face = c.Faces.First(f => f.Color != Color.Black && f.Color != frontFace.Color);
+            Cube3D.RubikPosition slice = FacePosToCubePos(face.Position);
+
+            Manager.Rotate90Sync(slice, true);
+            if (RefreshCube(c).Position.HasFlag(Cube3D.RubikPosition.TopLayer))
+            {
+              Manager.Rotate90Sync(slice, false);
+              //Algorithm to the right: U R Ui Ri Ui Fi U F
+              Manager.Rotate90Sync(Cube3D.RubikPosition.TopLayer, true);
+              Manager.Rotate90Sync(slice, true);
+              Manager.Rotate90Sync(Cube3D.RubikPosition.TopLayer, false);
+              Manager.Rotate90Sync(slice, false);
+              Manager.Rotate90Sync(Cube3D.RubikPosition.TopLayer, false);
+              Manager.Rotate90Sync(frontSlice, false);
+              Manager.Rotate90Sync(Cube3D.RubikPosition.TopLayer, true);
+              Manager.Rotate90Sync(frontSlice, true);
+            }
+            else
+            {
+              Manager.Rotate90Sync(slice, false);
+              //Algorithm to the left: Ui Li U L U F Ui Fi
+              Manager.Rotate90Sync(Cube3D.RubikPosition.TopLayer, false);
+              Manager.Rotate90Sync(slice, false);
+              Manager.Rotate90Sync(Cube3D.RubikPosition.TopLayer, true);
+              Manager.Rotate90Sync(slice, true);
+              Manager.Rotate90Sync(Cube3D.RubikPosition.TopLayer, true);
+              Manager.Rotate90Sync(frontSlice, true);
+              Manager.Rotate90Sync(Cube3D.RubikPosition.TopLayer, false);
+              Manager.Rotate90Sync(frontSlice, false);
+            }
+          }
+
+          //Rotate to start position for the algorithm
+          IEnumerable<Cube3D> middles = Manager.RubikCube.cubes.Where(cu => Cube3D.isCenter(cu.Position)).Where(m => m.Colors.First(co => co != Color.Black)
+              == RefreshCube(c).Faces.First(f => f.Color != Color.Black && f.Position != Face3D.FacePosition.Top).Color &&
+              RemoveFlag(m.Position,Cube3D.RubikPosition.MiddleLayer) == RemoveFlag(RefreshCube(c).Position, Cube3D.RubikPosition.TopLayer));
+
+          while (middles.Count() < 1)
+          {
+            Manager.Rotate90Sync(Cube3D.RubikPosition.TopLayer, true);
+            middles = Manager.RubikCube.cubes.Where(cu => Cube3D.isCenter(cu.Position)).Where(m => m.Colors.First(co => co != Color.Black)
+              == RefreshCube(c).Faces.First(f => f.Color != Color.Black && f.Position != Face3D.FacePosition.Top).Color &&
+              RemoveFlag(m.Position, Cube3D.RubikPosition.MiddleLayer) == RemoveFlag(RefreshCube(c).Position, Cube3D.RubikPosition.TopLayer));
+          }
+
+          //Rotate to target position
+          Face3D frontFac = RefreshCube(c).Faces.First(f => f.Color != Color.Black && f.Position != Face3D.FacePosition.Top);
+          Cube3D.RubikPosition frontSlic = FacePosToCubePos(frontFac.Position);
+          Cube3D.RubikPosition slic = Cube3D.RubikPosition.None;
+          foreach (Cube3D.RubikPosition p in GetFlags(targetPosition))
+          {
+            if (p != Cube3D.RubikPosition.MiddleLayer && p!= frontSlic)
+              slic |= p;
+          }
+
+          Manager.Rotate90Sync(Cube3D.RubikPosition.TopLayer, true);
+          if (!RefreshCube(c).Position.HasFlag(slic))
+          {
+            Manager.Rotate90Sync(Cube3D.RubikPosition.TopLayer, false);
+            //Algorithm to the right: U R Ui Ri Ui Fi U F
+            Manager.Rotate90Sync(Cube3D.RubikPosition.TopLayer, true);
+            Manager.Rotate90Sync(slic, true);
+            Manager.Rotate90Sync(Cube3D.RubikPosition.TopLayer, false);
+            Manager.Rotate90Sync(slic, false);
+            Manager.Rotate90Sync(Cube3D.RubikPosition.TopLayer, false);
+            Manager.Rotate90Sync(frontSlic, false);
+            Manager.Rotate90Sync(Cube3D.RubikPosition.TopLayer, true);
+            Manager.Rotate90Sync(frontSlic, true);
+          }
+          else
+          {
+            Manager.Rotate90Sync(Cube3D.RubikPosition.TopLayer, false);
+            //Algorithm to the left: Ui Li U L U F Ui Fi
+            Manager.Rotate90Sync(Cube3D.RubikPosition.TopLayer, false);
+            Manager.Rotate90Sync(slic, false);
+            Manager.Rotate90Sync(Cube3D.RubikPosition.TopLayer, true);
+            Manager.Rotate90Sync(slic, true);
+            Manager.Rotate90Sync(Cube3D.RubikPosition.TopLayer, true);
+            Manager.Rotate90Sync(frontSlic, true);
+            Manager.Rotate90Sync(Cube3D.RubikPosition.TopLayer, false);
+            Manager.Rotate90Sync(frontSlic, false);
+          }
+        }
+      }
+    }
+
+    private void SolveCrossTopLayer()
+    {
+      //Step 1: Get the color of the top layer to start with cross on the last layer
+      Color topColor = Manager.getFaceColor(Cube3D.RubikPosition.TopLayer | Cube3D.RubikPosition.MiddleSlice_Sides | Cube3D.RubikPosition.MiddleSlice, Face3D.FacePosition.Top);
+
+      //Step 2: Get edges with the color of the top face
+      IEnumerable<Cube3D> topEdges = Manager.RubikCube.cubes.Where(c => Cube3D.isEdge(c.Position)).Where(c => c.Colors.Count(co => co == topColor) == 1);
+
+      //Step 3: Solve the cross on the top layer
+      while (topEdges.Where(c => c.Faces.First(f => f.Position == Face3D.FacePosition.Top).Color == topColor).Count() < 4)
+      {
+        if (topEdges.Where(c => c.Faces.First(f => f.Position == Face3D.FacePosition.Top).Color == topColor).Count() != 0)
+        {
+          while ((Manager.getFaceColor(Cube3D.RubikPosition.TopLayer | Cube3D.RubikPosition.LeftSlice | Cube3D.RubikPosition.MiddleSlice, Face3D.FacePosition.Top) != topColor))
+          {
+            Manager.Rotate90Sync(Cube3D.RubikPosition.TopLayer, true);
+          }
+        }
+        if (Manager.getFaceColor(Cube3D.RubikPosition.TopLayer | Cube3D.RubikPosition.FrontSlice | Cube3D.RubikPosition.MiddleSlice_Sides, Face3D.FacePosition.Top) == topColor)
+          Manager.Rotate90Sync(Cube3D.RubikPosition.TopLayer, true);
+        
+        Manager.Rotate90Sync(Cube3D.RubikPosition.FrontSlice, true);
+        Manager.Rotate90Sync(Cube3D.RubikPosition.RightSlice, true);
+        Manager.Rotate90Sync(Cube3D.RubikPosition.TopLayer, true);
+        Manager.Rotate90Sync(Cube3D.RubikPosition.RightSlice, false);
+        Manager.Rotate90Sync(Cube3D.RubikPosition.TopLayer, false);
+        Manager.Rotate90Sync(Cube3D.RubikPosition.FrontSlice, false);
+
+        topEdges = Manager.RubikCube.cubes.Where(c => Cube3D.isEdge(c.Position)).Where(c => c.Colors.Count(co => co == topColor) == 1);
+      }
+    }
+
     private Cube3D.RubikPosition FacePosToCubePos(Face3D.FacePosition position)
     {
       switch (position)
@@ -204,6 +345,11 @@ namespace VirtualRubik
         default:
           return Cube3D.RubikPosition.None;
       }
+    }
+
+    private Cube3D.RubikPosition RemoveFlag(Cube3D.RubikPosition oldPosition, Cube3D.RubikPosition item)
+    {
+      return oldPosition &= ~item;
     }
 
     private Cube3D RefreshCube(Cube3D cube)
