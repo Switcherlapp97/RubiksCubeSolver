@@ -1,21 +1,29 @@
 RubiksCubeSolver
 ================
 RubiksCubeSolver is a program that solves scrambled Rubik's Cubes and calculates the solution moves. The program is currently in a pre beta version.
-
-Developers:
+___
+Developers
+--
 Switcherlapp97 and StarGate01
 from the VB-Paradise Community
+___
+Changelog
+--
+Version 0.3 (2014.01.14)
+- Bugfixes
+- solution for the first two layers and the cross on the top face
 
-Changelog:
-
-Version 0.2 (2014.01.09)
+___
+Version 0.2 (2014.01.10)
 - Bugfixes
 - solution for the bottom layer
 
+___
 Version 0.1.1 (2014.01.09)
 - Bugfixes
 - update mouse control
 
+___
 Version 0.1 (2014.01.09)
 - 3D view of the Rubik's Cube
 - animated rotations of the cube layers
