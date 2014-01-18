@@ -51,6 +51,7 @@
       this.aboutToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
       this.toolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
       this.button6 = new System.Windows.Forms.Button();
+      this.button7 = new System.Windows.Forms.Button();
       this.statusStrip1.SuspendLayout();
       this.groupBox1.SuspendLayout();
       this.panel2.SuspendLayout();
@@ -337,6 +338,16 @@
       this.button6.UseVisualStyleBackColor = true;
       this.button6.Click += new System.EventHandler(this.button6_Click);
       // 
+      // button7
+      // 
+      this.button7.Location = new System.Drawing.Point(286, 361);
+      this.button7.Name = "button7";
+      this.button7.Size = new System.Drawing.Size(75, 23);
+      this.button7.TabIndex = 10;
+      this.button7.Text = "1000 solves";
+      this.button7.UseVisualStyleBackColor = true;
+      this.button7.Click += new System.EventHandler(this.button7_Click);
+      // 
       // Form1
       // 
       this.AcceptButton = this.button2;
@@ -344,6 +355,7 @@
       this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
       this.BackColor = System.Drawing.SystemColors.Control;
       this.ClientSize = new System.Drawing.Size(668, 435);
+      this.Controls.Add(this.button7);
       this.Controls.Add(this.button6);
       this.Controls.Add(this.groupBox1);
       this.Controls.Add(this.statusStrip2);
@@ -412,6 +424,7 @@
         private System.Windows.Forms.ToolStripMenuItem toolStripMenuItem1;
         private System.Windows.Forms.Button button5;
         private System.Windows.Forms.Button button6;
+        private System.Windows.Forms.Button button7;
 
 
 

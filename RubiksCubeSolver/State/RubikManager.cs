@@ -10,7 +10,7 @@ namespace VirtualRubik
 {
   class RubikManager
   {
-
+    public int moves = 0;
     public Rubik RubikCube;
     private Boolean Rotating;
     private double rotationStep;
@@ -64,6 +64,7 @@ namespace VirtualRubik
         RubikCube.LayerRotation[layer] += rotationStep;
         resetFlags(false);
       }
+      moves++;
     }
 
     public void setFaceColor(Cube3D.RubikPosition affected, Face3D.FacePosition face, Color color)

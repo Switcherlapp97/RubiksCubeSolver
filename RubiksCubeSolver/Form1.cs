@@ -382,6 +382,31 @@ namespace VirtualRubik
           cs.Solve();
         }
 
+        private void button7_Click(object sender, EventArgs e)
+        {
+          File.Delete("C:\\Users\\Anwender\\Desktop\\solver.csv");
+          StreamWriter sw = new StreamWriter("C:\\Users\\Anwender\\Desktop\\solver.csv");
+          sw.WriteLine("Number;Time;Moves");
+          for (int i = 0; i < 1000; i++)
+          {
+            rubikManager = new RubikManager();
+            //scramble
+            Random rnd = new Random();
+            for (int j = 0; j < 50; j++) rubikManager.Rotate90Sync((Cube3D.RubikPosition)Math.Pow(2, rnd.Next(0, 9)), Convert.ToBoolean(rnd.Next(0, 2)));
+
+            //solve
+            CubeSolver cs = new CubeSolver(rubikManager);
+            DateTime startTime = DateTime.Now;
+            cs.Solve();
+            TimeSpan time = DateTime.Now - startTime;
+
+            //write results to csv
+            sw.WriteLine("{0};{1:f2};{2}",i,time.Milliseconds, rubikManager.moves);
+          }
+          sw.Close();
+          MessageBox.Show("Finished");
+        }
+
     }
 
 }
