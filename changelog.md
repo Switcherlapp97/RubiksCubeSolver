@@ -12,6 +12,8 @@ Changelog
 Version 0.4 (2014.01.18)
 - complete solution of the Rubik's Cube
 
+___
+
 Version 0.3 (2014.01.14)
 - Bugfixes
 - solution for the first two layers and the cross on the top face
