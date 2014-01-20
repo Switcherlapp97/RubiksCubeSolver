@@ -1,6 +1,6 @@
 RubiksCubeSolver
 ================
-RubiksCubeSolver is a program that solves scrambled Rubik's Cubes and calculates the solution moves. The program is currently in a pre beta version.
+RubiksCubeSolver is a program that solves scrambled Rubik's Cubes and calculates the solution moves. The program is written in C# and currently in a pre beta version.
 
 Developers:
 Switcherlapp97 and StarGate01
@@ -14,5 +14,5 @@ Current Funcitons (Version 0.4 Update 2014.18.01):
 - calculate solution of Rubik's Cube
 
 To Do:
-- enter scrambled cubes to solve them
+- mouse click input
 - Webcam input
