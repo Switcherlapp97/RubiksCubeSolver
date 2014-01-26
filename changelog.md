@@ -9,6 +9,11 @@ from the VB-Paradise Community
 ___
 Changelog
 --
+Version 0.5 (2014.01.26)
+- get solution steps
+- perform solution steps
+
+___
 Version 0.4 (2014.01.18)
 - complete solution of the Rubik's Cube
 
