@@ -2,17 +2,22 @@
 
 namespace VirtualRubik
 {
-    class LayerMove
+  class LayerMove
+  {
+
+    public Cube3D.RubikPosition Layer;
+    public Boolean Direction;
+
+    public LayerMove(Cube3D.RubikPosition layer, Boolean direction)
     {
-
-        public Cube3D.RubikPosition Layer;
-        public Boolean Direction;
-
-        public LayerMove(Cube3D.RubikPosition layer, Boolean direction)
-        {
-            Layer = layer;
-            Direction = direction;
-        }
-
+      Layer = layer;
+      Direction = direction;
     }
+
+    public LayerMove Clone()
+    {
+      return new LayerMove(Layer, Direction);
+    }
+
+  }
 }

@@ -10,7 +10,6 @@ namespace VirtualRubik
 {
   class RubikManager
   {
-    public int moves = 0;
     public Rubik RubikCube;
     private Boolean Rotating;
     private double rotationStep;
@@ -43,6 +42,18 @@ namespace VirtualRubik
     }
     public RubikManager() : this(Color.ForestGreen, Color.RoyalBlue, Color.White, Color.Yellow, Color.Red, Color.Orange) { }
 
+    public RubikManager Clone()
+    {
+      RubikManager newRubikManager = new RubikManager();
+      newRubikManager.Rotating = Rotating;
+      newRubikManager.rotationLayer = rotationLayer;
+      newRubikManager.rotationStep = rotationStep;
+      newRubikManager.rotationTarget = rotationTarget;
+      newRubikManager.RubikCube = RubikCube.Clone();
+      newRubikManager.Moves = new List<LayerMove>(Moves.Select(m => m.Clone()));
+      return newRubikManager;
+    }
+
     public void Rotate90(Cube3D.RubikPosition layer, bool direction, int steps)
     {
       if (!Rotating)
@@ -64,7 +75,15 @@ namespace VirtualRubik
         RubikCube.LayerRotation[layer] += rotationStep;
         resetFlags(false);
       }
-      moves++;
+    }
+
+    public List<LayerMove> Moves = new List<LayerMove>();
+
+    public void SolutionMove(Cube3D.RubikPosition layer, bool direction)
+    {
+      Rotate90Sync(layer, direction);
+      if (layer == Cube3D.RubikPosition.TopLayer || layer == Cube3D.RubikPosition.LeftSlice || layer == Cube3D.RubikPosition.FrontSlice) direction = !direction;
+      Moves.Add(new LayerMove(layer, direction));
     }
 
     public void setFaceColor(Cube3D.RubikPosition affected, Face3D.FacePosition face, Color color)

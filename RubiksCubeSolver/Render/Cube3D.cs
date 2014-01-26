@@ -49,6 +49,13 @@ namespace VirtualRubik
       Position = position;
     }
 
+    public Cube3D Clone()
+    {
+      Cube3D newCube = new Cube3D(new List<Face3D>(Faces.Select(f => f.Clone())), Position);
+      newCube.Colors = new List<Color>(Colors);
+      return newCube;
+    }
+
     public Cube3D Rotate(Point3D.RotationType type, double angle, Point3D center)
     {
       //Deep Clone
