@@ -26,3 +26,22 @@ C:\Users\Anwender\Downloads\RubiksCubeSolver-master (2)\RubiksCubeSolver-master\
 C:\Users\Anwender\Downloads\RubiksCubeSolver-master (2)\RubiksCubeSolver-master\RubiksCubeSolver\obj\x86\Debug\VirtualRubik.Form1.resources
 C:\Users\Anwender\Downloads\RubiksCubeSolver-master (2)\RubiksCubeSolver-master\RubiksCubeSolver\obj\x86\Debug\VirtualRubik.Properties.Resources.resources
 C:\Users\Anwender\Downloads\RubiksCubeSolver-master (2)\RubiksCubeSolver-master\RubiksCubeSolver\obj\x86\Debug\RubiksCubeSolver.csproj.GenerateResource.Cache
+C:\Users\Christoph\Desktop\RubiksCubeSolver\RubiksCubeSolver\bin\Debug\VirtualRubik.exe.config
+C:\Users\Christoph\Desktop\RubiksCubeSolver\RubiksCubeSolver\obj\x86\Debug\VirtualRubik.exe
+C:\Users\Christoph\Desktop\RubiksCubeSolver\RubiksCubeSolver\obj\x86\Debug\VirtualRubik.pdb
+C:\Users\Christoph\Desktop\RubiksCubeSolver\RubiksCubeSolver\bin\Debug\VirtualRubik.exe
+C:\Users\Christoph\Desktop\RubiksCubeSolver\RubiksCubeSolver\bin\Debug\VirtualRubik.pdb
+C:\Users\Christoph\Desktop\RubiksCubeSolver\RubiksCubeSolver\obj\x86\Debug\ResolveAssemblyReference.cache
+C:\Users\Christoph\Desktop\RubiksCubeSolver\RubiksCubeSolver\obj\x86\Debug\VirtualRubik.Form1.resources
+C:\Users\Christoph\Desktop\RubiksCubeSolver\RubiksCubeSolver\obj\x86\Debug\VirtualRubik.Properties.Resources.resources
+C:\Users\Christoph\Desktop\RubiksCubeSolver\RubiksCubeSolver\obj\x86\Debug\GenerateResource.read.1.tlog
+C:\Users\Christoph\Desktop\RubiksCubeSolver\RubiksCubeSolver\obj\x86\Debug\GenerateResource.write.1.tlog
+C:\Users\Anwender\Downloads\RubiksCubeSolver-edit_stargate01_28-01-14\RubiksCubeSolver\RubiksCubeSolver\bin\Debug\VirtualRubik.exe.config
+C:\Users\Anwender\Downloads\RubiksCubeSolver-edit_stargate01_28-01-14\RubiksCubeSolver\RubiksCubeSolver\obj\x86\Debug\VirtualRubik.exe
+C:\Users\Anwender\Downloads\RubiksCubeSolver-edit_stargate01_28-01-14\RubiksCubeSolver\RubiksCubeSolver\obj\x86\Debug\VirtualRubik.pdb
+C:\Users\Anwender\Downloads\RubiksCubeSolver-edit_stargate01_28-01-14\RubiksCubeSolver\RubiksCubeSolver\bin\Debug\VirtualRubik.exe
+C:\Users\Anwender\Downloads\RubiksCubeSolver-edit_stargate01_28-01-14\RubiksCubeSolver\RubiksCubeSolver\bin\Debug\VirtualRubik.pdb
+C:\Users\Anwender\Downloads\RubiksCubeSolver-edit_stargate01_28-01-14\RubiksCubeSolver\RubiksCubeSolver\obj\x86\Debug\RubiksCubeSolver.csprojResolveAssemblyReference.cache
+C:\Users\Anwender\Downloads\RubiksCubeSolver-edit_stargate01_28-01-14\RubiksCubeSolver\RubiksCubeSolver\obj\x86\Debug\VirtualRubik.Form1.resources
+C:\Users\Anwender\Downloads\RubiksCubeSolver-edit_stargate01_28-01-14\RubiksCubeSolver\RubiksCubeSolver\obj\x86\Debug\VirtualRubik.Properties.Resources.resources
+C:\Users\Anwender\Downloads\RubiksCubeSolver-edit_stargate01_28-01-14\RubiksCubeSolver\RubiksCubeSolver\obj\x86\Debug\RubiksCubeSolver.csproj.GenerateResource.Cache
