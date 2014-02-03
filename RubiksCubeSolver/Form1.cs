@@ -124,7 +124,6 @@ namespace VirtualRubik
                 moveStack = new Stack<LayerMove>(lms);
                 LayerMove nextMove = moveStack.Pop();
                 bool direction = nextMove.Direction;
-                if (nextMove.Layer == Cube3D.RubikPosition.TopLayer || nextMove.Layer == Cube3D.RubikPosition.LeftSlice || nextMove.Layer == Cube3D.RubikPosition.FrontSlice) direction = !direction;
                 rubikManager.Rotate90(nextMove.Layer, direction, rotationTicks);
                 toolStripStatusLabel1.Text = "Rotating " + nextMove.Layer.ToString() + " " + ((nextMove.Direction) ? "Clockwise" : "Counter-Clockwise");
                 listBox1.SelectedIndex = 0;
@@ -171,7 +170,6 @@ namespace VirtualRubik
             {
                 LayerMove nextMove = moveStack.Pop();
                 bool direction = nextMove.Direction;
-                if (nextMove.Layer == Cube3D.RubikPosition.TopLayer || nextMove.Layer == Cube3D.RubikPosition.LeftSlice || nextMove.Layer == Cube3D.RubikPosition.FrontSlice) direction = !direction;
                 rubikManager.Rotate90(nextMove.Layer, direction, rotationTicks);
                 toolStripStatusLabel1.Text = "Rotating " + nextMove.Layer.ToString() + " " + ((nextMove.Direction) ? "Clockwise" : "Counter-Clockwise");
                 listBox1.SelectedIndex++;
@@ -180,7 +178,8 @@ namespace VirtualRubik
             else
             {
                 groupBox1.Enabled = true;
-                listBox1.SelectedIndex = -1;
+                if (listBox1.SelectedIndex != listBox1.Items.Count - 1) listBox1.SelectedIndex++;
+                else listBox1.SelectedIndex = -1;
                 toolStripStatusLabel1.Text = "Ready";
             }
         }
@@ -432,7 +431,13 @@ namespace VirtualRubik
             {
                 RubikManager ma = cs.ReturnRubik();
                 ma.OnRotatingFinished += RotatingFinished;
-                ma.Moves.ForEach(m => listBox1.Items.Add(m.Layer.ToString() + " " + ((m.Direction) ? "Clockwise" : "Counter-Clockwise")));
+                ma.Moves.ForEach(m =>
+                {
+                    if (m.Layer == Cube3D.RubikPosition.TopLayer || m.Layer == Cube3D.RubikPosition.LeftSlice || m.Layer == Cube3D.RubikPosition.FrontSlice) m.Direction = !m.Direction;
+                    listBox1.Items.Add(m.Layer.ToString() + " " + ((m.Direction) ? "Clockwise" : "Counter-Clockwise"));
+                });
+                listBox1.SelectedIndex = 0;
+                listBox1.Focus();
             }
             else MessageBox.Show("Insoluble cube");
         }
@@ -452,6 +457,25 @@ namespace VirtualRubik
         private void toolStripMenu1_Item_Click(object sender, EventArgs e)
         {
             rubikManager.setFaceColor(currentSelection.cubePos, currentSelection.facePos, Color.FromName(((ToolStripMenuItem)sender).Text));
+        }
+
+        private void listBox1_KeyDown(object sender, KeyEventArgs e)
+        {
+            if (e.KeyCode == Keys.Space)
+            {
+                rotationTicks = 25;
+                if (listBox1.SelectedIndex == -1 & listBox1.Items.Count > 0) listBox1.SelectedIndex = 0;
+                if (listBox1.Items.Count > 0)
+                {
+                    string layerString = listBox1.SelectedItem.ToString().Split(new Char[] { Convert.ToChar(" ") })[0];
+                    Cube3D.RubikPosition layer = (Cube3D.RubikPosition)Enum.Parse(typeof(Cube3D.RubikPosition), layerString);
+
+                    string directionString = listBox1.SelectedItem.ToString().Split(new Char[] { Convert.ToChar(" ") })[1];
+                    bool direction = (directionString == "Clockwise") ? true : false;
+
+                    rubikManager.Rotate90(layer, direction, rotationTicks);
+                }
+            }
         }
 
     }
