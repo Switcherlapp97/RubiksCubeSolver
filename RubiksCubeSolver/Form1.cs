@@ -18,7 +18,6 @@ namespace VirtualRubik
         private Color[] colors = new Color[] { Color.ForestGreen, Color.RoyalBlue, Color.White, Color.Yellow, Color.Red, Color.Orange };
         private Stack<LayerMove> moveStack = new Stack<LayerMove>();
         private int rotationTicks;
-        private Timer timer;
         //private Point3D rotationAccum;
 
         private RubikManager.PositionSpec oldSelection = new RubikManager.PositionSpec() { cubePos = Cube3D.RubikPosition.None, facePos = Face3D.FacePosition.None };
@@ -48,21 +47,15 @@ namespace VirtualRubik
                 contextMenuStrip1.Items.Add(col.Name, bmp, toolStripMenu1_Item_Click);
             }
             ResetCube();
-            timer = new Timer();
-            timer.Interval = 10;
-            timer.Tick += timer_Tick;
-            timer.Start();
         }
+
+
         private void Form1_Resize(object sender, EventArgs e)
         {
             groupBox1.Width = Math.Max(Math.Min((int)((double)this.ClientRectangle.Width * 0.3), 300), 220);
             this.Invalidate();
         }
 
-        void timer_Tick(object sender, EventArgs e)
-        {
-            this.Invalidate();
-        }
         private void Form1_Paint(object sender, PaintEventArgs e)
         {
             Rectangle r = new Rectangle(0, 0, this.ClientRectangle.Width - ((groupBox1.Visible) ? groupBox1.Width : 0), this.ClientRectangle.Height - ((statusStrip1.Visible) ? statusStrip1.Height : 0) - ((statusStrip1.Visible) ? statusStrip2.Height : 0) + menuStrip1.Height);
@@ -134,8 +127,14 @@ namespace VirtualRubik
         {
             rubikManager = new RubikManager();
             rubikManager.OnRotatingFinished += new RubikManager.RotatingFinishedHandler(RotatingFinished);
+            rubikManager.OnRotating += rubikManager_OnRotating;
             //rotationAccum = new Point3D(Math.Sqrt(0.5), Math.Sqrt(0.5), Math.Sqrt(0.5));
             toolStripStatusLabel1.Text = "Ready";
+        }
+
+        void rubikManager_OnRotating(object sender)
+        {
+            this.Invalidate();
         }
         private void Form1_KeyDown(object sender, KeyEventArgs e)
         {
@@ -198,7 +197,6 @@ namespace VirtualRubik
                     int dY = e.Y - oldMousePos.Y;
                     rubikManager.RubikCube.Rotation[1] -= dX / 3;
                     rubikManager.RubikCube.Rotation[0] += (dY / 3);
-
                     //rotationAccum.Rotate(Point3D.RotationType.X, (dY));
                     //rotationAccum.Rotate(Point3D.RotationType.Y, -(dX));
                     //double rotY = Math.Atan2(rotationAccum.X, rotationAccum.Z);
@@ -214,6 +212,7 @@ namespace VirtualRubik
                     this.Cursor = Cursors.Arrow;
                 }
             }
+            this.Invalidate();
             oldMousePos = e.Location;
 
         }
@@ -436,7 +435,7 @@ namespace VirtualRubik
                     if (m.Layer == Cube3D.RubikPosition.TopLayer || m.Layer == Cube3D.RubikPosition.LeftSlice || m.Layer == Cube3D.RubikPosition.FrontSlice) m.Direction = !m.Direction;
                     listBox1.Items.Add(m.Layer.ToString() + " " + ((m.Direction) ? "Clockwise" : "Counter-Clockwise"));
                 });
-                listBox1.SelectedIndex = 0;
+                if (listBox1.Items.Count > 0) listBox1.SelectedIndex = 0;
                 listBox1.Focus();
             }
             else MessageBox.Show("Insoluble cube");
