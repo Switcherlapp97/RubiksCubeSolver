@@ -5,6 +5,7 @@ using System.Text;
 using System.Drawing;
 using System.Drawing.Drawing2D;
 using System.Diagnostics;
+using System.Windows.Forms;
 
 namespace VirtualRubik
 {
@@ -20,8 +21,6 @@ namespace VirtualRubik
 
         public delegate void RotatingHandler(object sender);
         public event RotatingHandler OnRotating;
-        private System.Threading.Timer rotatingTimer;
-        private object thisLock = new object();
 
         private void BroadcastRotatingFinished()
         {
@@ -52,6 +51,7 @@ namespace VirtualRubik
             setFaceColor(Cube3D.RubikPosition.LeftSlice, Face3D.FacePosition.Left, cleft);
             Rotating = false;
         }
+
         public RubikManager() : this(Color.ForestGreen, Color.RoyalBlue, Color.White, Color.Yellow, Color.Red, Color.Orange) { }
 
         public RubikManager Clone()
@@ -77,15 +77,6 @@ namespace VirtualRubik
                 if (direction) rotationStep *= (-1);
                 rotationTarget = 90;
                 if (direction) rotationTarget = -90;
-                rotatingTimer = new System.Threading.Timer(UpdateUI, null, 100, 1);
-            }
-        }
-
-        private void UpdateUI(object sender)
-        {
-            lock (this)
-            {
-                BroadcastRotating();
             }
         }
 
@@ -167,8 +158,10 @@ namespace VirtualRubik
                     resetFlags(true);
                 }
             }
+            BroadcastRotating();
             return result;
         }
+
         public void resetFlags(bool fireFinished)
         {
             RubikCube.LayerRotation[rotationLayer] = rotationTarget;
@@ -223,9 +216,8 @@ namespace VirtualRubik
             foreach (Cube3D.RubikPosition rp in (Cube3D.RubikPosition[])Enum.GetValues(typeof(Cube3D.RubikPosition))) RubikCube.LayerRotation[rp] = 0;
             Rotating = false;
             if (fireFinished)
-            {                
+            {
                 BroadcastRotatingFinished();
-                rotatingTimer.Dispose();
             }
         }
 

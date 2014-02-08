@@ -9,6 +9,8 @@ using System.Text;
 using System.Windows.Forms;
 using System.Diagnostics;
 using System.IO;
+using System.Reflection;
+using System.Linq.Expressions;
 
 namespace VirtualRubik
 {
@@ -73,6 +75,7 @@ namespace VirtualRubik
                 toolStripStatusLabel2.Text = "[" + selectedPos.cubePos.ToString() + "] | " + selectedPos.facePos.ToString();
             }
         }
+
         //private void dpp(Point3D p, Graphics g, Brush c)
         //{
         //    Point3D proj = p.Project(400, 400, 100, 4, 3);
@@ -127,12 +130,12 @@ namespace VirtualRubik
         {
             rubikManager = new RubikManager();
             rubikManager.OnRotatingFinished += new RubikManager.RotatingFinishedHandler(RotatingFinished);
-            rubikManager.OnRotating += rubikManager_OnRotating;
+            rubikManager.OnRotating += new RubikManager.RotatingHandler(OnRotating);
             //rotationAccum = new Point3D(Math.Sqrt(0.5), Math.Sqrt(0.5), Math.Sqrt(0.5));
             toolStripStatusLabel1.Text = "Ready";
         }
 
-        void rubikManager_OnRotating(object sender)
+        void OnRotating(object sender)
         {
             this.Invalidate();
         }
