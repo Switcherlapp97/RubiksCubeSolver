@@ -59,7 +59,7 @@ namespace VirtualRubik
             bool correctColors = standardCube.RubikCube.cubes.Count(sc => Manager.RubikCube.cubes
                 .Where(c => ScrambledEquals(c.Colors, sc.Colors)).Count() == 1) == Manager.RubikCube.cubes.Count();
 
-            //return false, if there invalid cube colors
+            //return false, if there are invalid cube colors
             if (!correctColors) return false;
 
             Solve();

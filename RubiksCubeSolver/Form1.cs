@@ -7,10 +7,7 @@ using System.Drawing.Drawing2D;
 using System.Linq;
 using System.Text;
 using System.Windows.Forms;
-using System.Diagnostics;
 using System.IO;
-using System.Reflection;
-using System.Linq.Expressions;
 
 namespace VirtualRubik
 {
@@ -21,6 +18,8 @@ namespace VirtualRubik
         private Stack<LayerMove> moveStack = new Stack<LayerMove>();
         private int rotationTicks;
         //private Point3D rotationAccum;
+
+        Timer timer;
 
         private RubikManager.PositionSpec oldSelection = new RubikManager.PositionSpec() { cubePos = Cube3D.RubikPosition.None, facePos = Face3D.FacePosition.None };
         private RubikManager.PositionSpec currentSelection = new RubikManager.PositionSpec() { cubePos = Cube3D.RubikPosition.None, facePos = Face3D.FacePosition.None };
@@ -48,7 +47,16 @@ namespace VirtualRubik
                 g.DrawRectangle(Pens.Black, 0, 0, 15, 15);
                 contextMenuStrip1.Items.Add(col.Name, bmp, toolStripMenu1_Item_Click);
             }
+            timer = new Timer();
+            timer.Interval = 10;
+            timer.Tick += Tick;
+            timer.Start();
             ResetCube();
+        }
+
+        void Tick(object sender, EventArgs e)
+        {
+            this.Invalidate();
         }
 
 
@@ -130,15 +138,10 @@ namespace VirtualRubik
         {
             rubikManager = new RubikManager();
             rubikManager.OnRotatingFinished += new RubikManager.RotatingFinishedHandler(RotatingFinished);
-            rubikManager.OnRotating += new RubikManager.RotatingHandler(OnRotating);
             //rotationAccum = new Point3D(Math.Sqrt(0.5), Math.Sqrt(0.5), Math.Sqrt(0.5));
             toolStripStatusLabel1.Text = "Ready";
         }
 
-        void OnRotating(object sender)
-        {
-            this.Invalidate();
-        }
         private void Form1_KeyDown(object sender, KeyEventArgs e)
         {
             if (e.KeyCode == Keys.Escape || e.KeyCode == Keys.Delete)

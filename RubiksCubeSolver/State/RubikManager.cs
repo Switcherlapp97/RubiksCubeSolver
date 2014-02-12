@@ -19,19 +19,10 @@ namespace VirtualRubik
         public delegate void RotatingFinishedHandler(object sender);
         public event RotatingFinishedHandler OnRotatingFinished;
 
-        public delegate void RotatingHandler(object sender);
-        public event RotatingHandler OnRotating;
-
         private void BroadcastRotatingFinished()
         {
             if (OnRotatingFinished == null) return;
             OnRotatingFinished(this);
-        }
-
-        private void BroadcastRotating()
-        {
-            if (OnRotating == null) return;
-            OnRotating(this);
         }
 
         public struct PositionSpec
@@ -158,7 +149,6 @@ namespace VirtualRubik
                     resetFlags(true);
                 }
             }
-            BroadcastRotating();
             return result;
         }
 
@@ -215,10 +205,7 @@ namespace VirtualRubik
             }
             foreach (Cube3D.RubikPosition rp in (Cube3D.RubikPosition[])Enum.GetValues(typeof(Cube3D.RubikPosition))) RubikCube.LayerRotation[rp] = 0;
             Rotating = false;
-            if (fireFinished)
-            {
-                BroadcastRotatingFinished();
-            }
+            if (fireFinished) BroadcastRotatingFinished();
         }
 
     }
