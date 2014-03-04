@@ -235,9 +235,6 @@ namespace VirtualRubik
                 //3.1 Get the target position
                 Cube3D.RubikPosition targetPosition = standardCube.RubikCube.cubes.First(cu => ScrambledEquals(cu.Colors, c.Colors)).Position;
 
-                //BUG:
-                //Wenn ein Stein bereits richtig positioniert und ausgerichtet ist, aber falsch orientiert, passiert aktuell noch nichts
-
                 //Check correct orientation
                 List<Face3D> coloredFaces = new List<Face3D>();
                 Manager.RubikCube.cubes.Where(cu => Cube3D.isCenter(cu.Position)).ToList().ForEach(cu => coloredFaces.Add(cu.Faces.First(f => f.Color != Color.Black)));

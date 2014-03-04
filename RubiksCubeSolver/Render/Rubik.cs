@@ -97,6 +97,33 @@ namespace VirtualRubik
       return tempCubes;
     }
 
+		public IEnumerable<Face3D> ProjectFaces(Rectangle screen, double scale)
+		{
+			cubesRender.Clear();
+			cubesRender = genCubesRotated(false);
+			IEnumerable<Face3D> facesProjected = cubesRender.Select(c => c.Project(screen.Width, screen.Height, 100, 4, scale).Faces).Aggregate((a, b) => a.Concat(b));
+			facesProjected = facesProjected.OrderBy(p => p.Edges.ElementAt(0).Z).ToArray();
+			return facesProjected.Reverse();
+		}
+
+		public RubikManager.PositionSpec Render(Rectangle screen, double scale, Point mousePos)
+		{
+			RubikManager.PositionSpec result = new RubikManager.PositionSpec() { cubePos = Cube3D.RubikPosition.None, facePos = Face3D.FacePosition.None };
+			cubesRender.Clear();
+			cubesRender = genCubesRotated(false);
+			IEnumerable<Face3D> facesProjected = cubesRender.Select(c => c.Project(screen.Width, screen.Height, 100, 4, scale).Faces).Aggregate((a, b) => a.Concat(b));
+			facesProjected = facesProjected.OrderBy(p => p.Edges.ElementAt(0).Z).ToArray();
+			foreach (Face3D face in facesProjected.Reverse())
+			{
+				PointF[] parr = face.Edges.Select(p => new PointF((float)p.X, (float)p.Y)).ToArray();
+				GraphicsPath gp = new GraphicsPath();
+				gp.AddPolygon(parr);
+				double fak = ((Math.Sin((double)Environment.TickCount / (double)200) + 1) / 4) + 0.75;
+				if (gp.IsVisible(mousePos)) result = new RubikManager.PositionSpec() { cubePos = face.MasterPosition, facePos = face.Position };
+			}
+			return result;
+		}
+
     public RubikManager.PositionSpec Render(Graphics g, Rectangle screen, double scale, Point mousePos)
     {
       RubikManager.PositionSpec result = new RubikManager.PositionSpec() { cubePos = Cube3D.RubikPosition.None, facePos = Face3D.FacePosition.None };
