@@ -20,6 +20,7 @@ namespace VirtualRubik
 		private Color[] colors = new Color[] { Color.ForestGreen, Color.RoyalBlue, Color.White, Color.Yellow, Color.Red, Color.Orange };
 		private Stack<LayerMove> moveStack = new Stack<LayerMove>();
 		private int rotationTime; // in ms
+		Stopwatch sw = new Stopwatch();
 		RenderInfo command = new RenderInfo();
 
 		//private Point3D rotationAccum;
@@ -52,6 +53,7 @@ namespace VirtualRubik
 			}
 			this.FormClosing += (sender, e) => rubikRenderer.Abort();
 			ResetCube();
+			sw.Start();
 			rubikRenderer.RubikManager.Rotate90(Cube3D.RubikPosition.TopLayer, false, 1000);
 		}
 
@@ -159,7 +161,7 @@ namespace VirtualRubik
 			else if (r.Height > r.Width) r.Y = (r.Height - r.Width) / 2;
 
 			//Create render object, event handling
-			rubikRenderer = new RubikRenderer(r, factor);
+			rubikRenderer = new RubikRenderer(r,factor);
 			rubikRenderer.OnRender += new RubikRenderer.RenderHandler(Render);
 			rubikRenderer.RubikManager.OnRotatingFinished += new RubikManager.RotatingFinishedHandler(RotatingFinished);
 			//Start update and render processs
@@ -220,6 +222,9 @@ namespace VirtualRubik
 			//	else listBox1.SelectedIndex = -1;
 			//	toolStripStatusLabel1.Text = "Ready";
 			//}
+			sw.Stop();
+			Debug.WriteLine(sw.ElapsedMilliseconds);
+			sw.Restart();
 			rubikRenderer.RubikManager.Rotate90(Cube3D.RubikPosition.TopLayer, false, 1000);
 		}
 

@@ -4,30 +4,36 @@ using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Threading;
+using System.Threading.Tasks;
 using System.Drawing;
 
 namespace VirtualRubik
 {
 	class RubikRenderer
 	{
-		List<double> frameTimes;
-		List<RenderInfo> buffers;
-		Thread updateThread, renderThread;
-		Rectangle screen;
+		private List<double> frameTimes;
+		private RenderInfo[] buffer;
+		private Thread updateThread, renderThread;
+		private Rectangle screen;
 		double scale;
 		double rotationTime;
 		public RubikManager RubikManager;
+		private AutoResetEvent[] updateHandle;
+		private AutoResetEvent[] renderHandle;
+		private AutoResetEvent resourceUpdateHandle;
+		private int currentBufferIndex;
 
 		public delegate void RenderHandler(object sender, RenderEventArgs e);
 		public event RenderHandler OnRender;
 
 		public double Fps { get; private set; }
+		public double MaxFps { get; private set; }
 		public bool IsRunning { get; private set; }
 
-		private void BroadcastRender()
+		private void BroadcastRender(int currentBufferIndex)
 		{
 			if (OnRender == null) return;
-			if (buffers.Count != 0) OnRender(this, new RenderEventArgs(buffers[buffers.Count - 1]));
+			OnRender(this, new RenderEventArgs(buffer[currentBufferIndex]));
 		}
 
 		public RubikRenderer(Rectangle screen, double scale)
@@ -36,9 +42,22 @@ namespace VirtualRubik
 			this.scale = scale;
 			this.screen = screen;
 			frameTimes = new List<double>();
-			buffers = new List<RenderInfo>();
 			IsRunning = false;
-			rotationTime = 2000; //in ms
+			rotationTime = 200; //in ms
+
+			updateHandle = new AutoResetEvent[2];
+			for (int i = 0; i < updateHandle.Length; i++)
+				updateHandle[i] = new AutoResetEvent(false);
+
+			renderHandle = new AutoResetEvent[2];
+			for (int i = 0; i < renderHandle.Length; i++)
+				renderHandle[i] = new AutoResetEvent(true);
+
+			resourceUpdateHandle = new AutoResetEvent(true);
+
+			buffer = new RenderInfo[2];
+			for (int i = 0; i < buffer.Length; i++)
+				buffer[i] = new RenderInfo();
 		}
 
 		public void Start()
@@ -49,6 +68,7 @@ namespace VirtualRubik
 				updateThread = new Thread(UpdateLoop);
 				updateThread.Start();
 				renderThread = new Thread(RenderLoop);
+				renderThread.Start();
 			}
 		}
 
@@ -77,21 +97,32 @@ namespace VirtualRubik
 		}
 		public void UpdateLoop()
 		{
-			Update();
-			renderThread.Start();
+			Stopwatch sw = new Stopwatch();
+			TimeSpan elapsed = default(TimeSpan);
+			int bufferIndex = 0x0;
+			currentBufferIndex = 0x1;
+
 			while (IsRunning)
 			{
-				Update();
+				sw.Start();
+				Update(bufferIndex, elapsed);
+				currentBufferIndex = bufferIndex;
+				bufferIndex ^= 0x1;
+				elapsed = sw.Elapsed;
+				sw.Reset();
 			}
 		}
 
-		private void Update()
+		private void Update(int bufferIndex, TimeSpan elapsed)
 		{
+			renderHandle[bufferIndex].WaitOne();
+			resourceUpdateHandle.WaitOne();
+
+			//Update
 			RotationInfo rotationInfo = RubikManager.GetRotationInfo();
 			if (rotationInfo.Rotating)
 			{
-				double rotationStep = (double)90 / (double)((double)(rotationTime / 1000) * (double)(Fps / 1000));
-				if (rotationInfo.Direction) rotationStep *= -1;
+				double rotationStep = (double)rotationInfo.Target / (double)((double)(rotationInfo.Milliseconds / 1000) * (double)(Fps));
 
 				RubikManager.RubikCube.LayerRotation[RubikManager.rotationLayer] += rotationStep;
 				if ((rotationInfo.Target > 0 && RubikManager.RubikCube.LayerRotation[rotationInfo.Layer] >= rotationInfo.Target) || (rotationInfo.Target < 0 && RubikManager.RubikCube.LayerRotation[rotationInfo.Layer] <= rotationInfo.Target))
@@ -99,18 +130,22 @@ namespace VirtualRubik
 					RubikManager.resetFlags(true);
 				}
 			}
-
 			RenderInfo newRenderInfo = RubikManager.RubikCube.NewRender(screen, scale);
-			buffers.Add(newRenderInfo);
+			buffer[bufferIndex] = newRenderInfo;
+
+			updateHandle[bufferIndex].Set();
 		}
 
 		public void RenderLoop()
 		{
 			Stopwatch sw = new Stopwatch();
+			int bufferIndex = 0x0;
+
 			while (IsRunning)
 			{
 				sw.Restart();
-				Render();
+				Render(bufferIndex);
+				bufferIndex ^= 0x1;
 				sw.Stop();
 
 				frameTimes.Add(sw.Elapsed.TotalMilliseconds);
@@ -128,9 +163,12 @@ namespace VirtualRubik
 			}
 		}
 
-		private void Render()
+		private void Render(int bufferIndex)
 		{
-			BroadcastRender();
+			updateHandle[bufferIndex].WaitOne();
+			resourceUpdateHandle.Set();
+			BroadcastRender(bufferIndex);
+			renderHandle[bufferIndex].Set();
 		}
 	}
 }

@@ -71,32 +71,33 @@ namespace VirtualRubik
       }
       return rp;
     }
-    public List<Cube3D> genCubesRotated(bool subsOnly)
-    {
-      List<Cube3D> tempCubes = new List<Cube3D>();
-      foreach (Cube3D c in cubes)
-      {
-        Cube3D cr = c.Rotate(0, 0, new Point3D(0, 0, 0));
-        double ed = ((double)2 / (double)3);
-        if (cr.Position.HasFlag(Cube3D.RubikPosition.TopLayer)) cr = cr.Rotate(Point3D.RotationType.Y, LayerRotation[Cube3D.RubikPosition.TopLayer], new Point3D(0, ed, 0));
-        if (cr.Position.HasFlag(Cube3D.RubikPosition.MiddleLayer)) cr = cr.Rotate(Point3D.RotationType.Y, LayerRotation[Cube3D.RubikPosition.MiddleLayer], new Point3D(0, 0, 0));
-        if (cr.Position.HasFlag(Cube3D.RubikPosition.BottomLayer)) cr = cr.Rotate(Point3D.RotationType.Y, LayerRotation[Cube3D.RubikPosition.BottomLayer], new Point3D(0, -ed, 0));
-        if (cr.Position.HasFlag(Cube3D.RubikPosition.FrontSlice)) cr = cr.Rotate(Point3D.RotationType.Z, LayerRotation[Cube3D.RubikPosition.FrontSlice], new Point3D(0, 0, ed));
-        if (cr.Position.HasFlag(Cube3D.RubikPosition.MiddleSlice)) cr = cr.Rotate(Point3D.RotationType.Z, LayerRotation[Cube3D.RubikPosition.MiddleSlice], new Point3D(0, 0, 0));
-        if (cr.Position.HasFlag(Cube3D.RubikPosition.BackSlice)) cr = cr.Rotate(Point3D.RotationType.Z, LayerRotation[Cube3D.RubikPosition.BackSlice], new Point3D(0, 0, -ed));
-        if (cr.Position.HasFlag(Cube3D.RubikPosition.LeftSlice)) cr = cr.Rotate(Point3D.RotationType.X, LayerRotation[Cube3D.RubikPosition.LeftSlice], new Point3D(-ed, 0, 0));
-        if (cr.Position.HasFlag(Cube3D.RubikPosition.MiddleSlice_Sides)) cr = cr.Rotate(Point3D.RotationType.X, LayerRotation[Cube3D.RubikPosition.MiddleSlice_Sides], new Point3D(0, 0, 0));
-        if (cr.Position.HasFlag(Cube3D.RubikPosition.RightSlice)) cr = cr.Rotate(Point3D.RotationType.X, LayerRotation[Cube3D.RubikPosition.RightSlice], new Point3D(ed, 0, 0));
-        if (!subsOnly)
-        {
-          cr = cr.Rotate(Point3D.RotationType.Y, Rotation[1], new Point3D(0, 0, 0));
-          cr = cr.Rotate(Point3D.RotationType.X, Rotation[0], new Point3D(0, 0, 0));
-          cr = cr.Rotate(Point3D.RotationType.Z, Rotation[2], new Point3D(0, 0, 0));
-        }
-        tempCubes.Add(cr);
-      }
-      return tempCubes;
-    }
+		public List<Cube3D> genCubesRotated(bool subsOnly)
+		{
+			List<Cube3D> tempCubes = new List<Cube3D>();
+			foreach (Cube3D c in cubes)
+			{
+				Cube3D cr = c.Rotate(0, 0, new Point3D(0, 0, 0));
+				double ed = ((double)2 / (double)3);
+				if (cr.Position.HasFlag(Cube3D.RubikPosition.TopLayer)) cr = cr.Rotate(Point3D.RotationType.Y, LayerRotation[Cube3D.RubikPosition.TopLayer], new Point3D(0, ed, 0));
+				if (cr.Position.HasFlag(Cube3D.RubikPosition.MiddleLayer)) cr = cr.Rotate(Point3D.RotationType.Y, LayerRotation[Cube3D.RubikPosition.MiddleLayer], new Point3D(0, 0, 0));
+				if (cr.Position.HasFlag(Cube3D.RubikPosition.BottomLayer)) cr = cr.Rotate(Point3D.RotationType.Y, LayerRotation[Cube3D.RubikPosition.BottomLayer], new Point3D(0, -ed, 0));
+				if (cr.Position.HasFlag(Cube3D.RubikPosition.FrontSlice)) cr = cr.Rotate(Point3D.RotationType.Z, LayerRotation[Cube3D.RubikPosition.FrontSlice], new Point3D(0, 0, ed));
+				if (cr.Position.HasFlag(Cube3D.RubikPosition.MiddleSlice)) cr = cr.Rotate(Point3D.RotationType.Z, LayerRotation[Cube3D.RubikPosition.MiddleSlice], new Point3D(0, 0, 0));
+				if (cr.Position.HasFlag(Cube3D.RubikPosition.BackSlice)) cr = cr.Rotate(Point3D.RotationType.Z, LayerRotation[Cube3D.RubikPosition.BackSlice], new Point3D(0, 0, -ed));
+				if (cr.Position.HasFlag(Cube3D.RubikPosition.LeftSlice)) cr = cr.Rotate(Point3D.RotationType.X, LayerRotation[Cube3D.RubikPosition.LeftSlice], new Point3D(-ed, 0, 0));
+				if (cr.Position.HasFlag(Cube3D.RubikPosition.MiddleSlice_Sides)) cr = cr.Rotate(Point3D.RotationType.X, LayerRotation[Cube3D.RubikPosition.MiddleSlice_Sides], new Point3D(0, 0, 0));
+				if (cr.Position.HasFlag(Cube3D.RubikPosition.RightSlice)) cr = cr.Rotate(Point3D.RotationType.X, LayerRotation[Cube3D.RubikPosition.RightSlice], new Point3D(ed, 0, 0));
+				if (!subsOnly)
+				{
+					cr = cr.Rotate(Point3D.RotationType.Y, Rotation[1], new Point3D(0, 0, 0));
+					cr = cr.Rotate(Point3D.RotationType.X, Rotation[0], new Point3D(0, 0, 0));
+					cr = cr.Rotate(Point3D.RotationType.Z, Rotation[2], new Point3D(0, 0, 0));
+				}
+				tempCubes.Add(cr);
+			}
+			return tempCubes;
+		}
+
 
 		public RenderInfo NewRender(Rectangle screen, double scale)
 		{

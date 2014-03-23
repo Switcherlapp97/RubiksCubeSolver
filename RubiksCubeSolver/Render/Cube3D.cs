@@ -58,7 +58,7 @@ namespace VirtualRubik
 
     public Cube3D Rotate(Point3D.RotationType type, double angle, Point3D center)
     {
-      //Deep Clone
+			//Deep Clone
       List<Face3D> faces = new List<Face3D>();
       foreach (Face3D f in Faces)
       {
@@ -69,8 +69,8 @@ namespace VirtualRubik
         f2.Rotate(type, angle);
         f2.Edges.ToList().ForEach(e => { e.X += center.X; e.Y += center.Y; e.Z += center.Z; });
         faces.Add(f2);
-      }
-      return new Cube3D(faces, Position);
+			}
+			return new Cube3D(faces, Position);
     }
 
     public Cube3D Project(int viewWidth, int viewHeight, int fov, int viewDistance, double scale)
