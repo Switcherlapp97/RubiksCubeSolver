@@ -10,7 +10,7 @@ namespace VirtualRubik
   {
 
     public IEnumerable<Point3D> Edges { get; set; }
-    public Color Color;
+    public Color Color { get; set; }
     public enum FacePosition
     {
       None = 0,
@@ -21,8 +21,8 @@ namespace VirtualRubik
       Back = 16,
       Front = 32
     }
-    public FacePosition Position;
-    public Cube3D.RubikPosition MasterPosition;
+    public FacePosition Position { get; set; }
+		public Cube3D.RubikPosition MasterPosition { get; set; }
     public enum SelectionMode
     {
       None = 0,
@@ -31,7 +31,7 @@ namespace VirtualRubik
       Possible = 4,
       NotPossible = 8
     }
-    public SelectionMode Selection;
+		public SelectionMode Selection { get; set; }
 
     public Face3D(IEnumerable<Point3D> edges, Color color, FacePosition position, Cube3D.RubikPosition masterPosition, SelectionMode selection)
     {

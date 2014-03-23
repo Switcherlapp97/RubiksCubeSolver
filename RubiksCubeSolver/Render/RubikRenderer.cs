@@ -15,8 +15,7 @@ namespace VirtualRubik
 		private RenderInfo[] buffer;
 		private Thread updateThread, renderThread;
 		private Rectangle screen;
-		double scale;
-		double rotationTime;
+		private double scale;
 		public RubikManager RubikManager;
 		private AutoResetEvent[] updateHandle;
 		private AutoResetEvent[] renderHandle;
@@ -43,7 +42,6 @@ namespace VirtualRubik
 			this.screen = screen;
 			frameTimes = new List<double>();
 			IsRunning = false;
-			rotationTime = 200; //in ms
 
 			updateHandle = new AutoResetEvent[2];
 			for (int i = 0; i < updateHandle.Length; i++)
@@ -58,6 +56,12 @@ namespace VirtualRubik
 			buffer = new RenderInfo[2];
 			for (int i = 0; i < buffer.Length; i++)
 				buffer[i] = new RenderInfo();
+		}
+
+		public void SetDrawingArea(Rectangle area, double factor)
+		{
+			screen = area;
+			scale = factor;
 		}
 
 		public void Start()
@@ -122,7 +126,7 @@ namespace VirtualRubik
 			RotationInfo rotationInfo = RubikManager.GetRotationInfo();
 			if (rotationInfo.Rotating)
 			{
-				double rotationStep = (double)rotationInfo.Target / (double)((double)(rotationInfo.Milliseconds / 1000) * (double)(Fps));
+				double rotationStep = (double)rotationInfo.Target / (double)((double)(rotationInfo.Milliseconds / 1000.0) * (double)(Fps));
 
 				RubikManager.RubikCube.LayerRotation[RubikManager.rotationLayer] += rotationStep;
 				if ((rotationInfo.Target > 0 && RubikManager.RubikCube.LayerRotation[rotationInfo.Layer] >= rotationInfo.Target) || (rotationInfo.Target < 0 && RubikManager.RubikCube.LayerRotation[rotationInfo.Layer] <= rotationInfo.Target))

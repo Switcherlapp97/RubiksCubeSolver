@@ -28,12 +28,6 @@ namespace VirtualRubik
 			OnRotatingFinished(this);
 		}
 
-		public struct PositionSpec
-		{
-			public Cube3D.RubikPosition cubePos;
-			public Face3D.FacePosition facePos;
-		}
-
 		public RubikManager(Color cfront, Color cback, Color ctop, Color cbottom, Color cright, Color cleft)
 		{
 			RubikCube = new Rubik();

@@ -15,7 +15,6 @@ namespace VirtualRubik
 {
 	public partial class Form1 : Form
 	{
-		//private RubikManager rubikManager;
 		private RubikRenderer rubikRenderer;
 		private Color[] colors = new Color[] { Color.ForestGreen, Color.RoyalBlue, Color.White, Color.Yellow, Color.Red, Color.Orange };
 		private Stack<LayerMove> moveStack = new Stack<LayerMove>();
@@ -23,10 +22,9 @@ namespace VirtualRubik
 		Stopwatch sw = new Stopwatch();
 		RenderInfo command = new RenderInfo();
 
-		//private Point3D rotationAccum;
 
-		private RubikManager.PositionSpec oldSelection = new RubikManager.PositionSpec() { cubePos = Cube3D.RubikPosition.None, facePos = Face3D.FacePosition.None };
-		private RubikManager.PositionSpec currentSelection = new RubikManager.PositionSpec() { cubePos = Cube3D.RubikPosition.None, facePos = Face3D.FacePosition.None };
+		private PositionSpec oldSelection = new PositionSpec() { CubePosition = Cube3D.RubikPosition.None, FacePosition = Face3D.FacePosition.None };
+		private PositionSpec currentSelection = new PositionSpec() { CubePosition = Cube3D.RubikPosition.None, FacePosition = Face3D.FacePosition.None };
 
 		public Form1()
 		{
@@ -54,7 +52,7 @@ namespace VirtualRubik
 			this.FormClosing += (sender, e) => rubikRenderer.Abort();
 			ResetCube();
 			sw.Start();
-			rubikRenderer.RubikManager.Rotate90(Cube3D.RubikPosition.TopLayer, false, 1000);
+			rubikRenderer.RubikManager.Rotate90(Cube3D.RubikPosition.TopLayer, true, 1000);
 		}
 
 
@@ -81,12 +79,26 @@ namespace VirtualRubik
 
 		private void Form1_Resize(object sender, EventArgs e)
 		{
+			Rectangle r = new Rectangle(0, 0, this.ClientRectangle.Width - ((groupBox1.Visible) ? groupBox1.Width : 0), this.ClientRectangle.Height - ((statusStrip1.Visible) ? statusStrip1.Height : 0) - ((statusStrip1.Visible) ? statusStrip2.Height : 0) + menuStrip1.Height);
+			int min = Math.Min(r.Height, r.Width);
+			double factor = 3 * ((double)min / (double)400);
+			if (r.Width > r.Height) r.X = (r.Width - r.Height) / 2;
+			else if (r.Height > r.Width) r.Y = (r.Height - r.Width) / 2;
+
 			groupBox1.Width = Math.Max(Math.Min((int)((double)this.ClientRectangle.Width * 0.3), 300), 220);
-			this.Invalidate();
+			rubikRenderer.SetDrawingArea(r, factor);
 		}
 
 		private void Form1_Paint(object sender, PaintEventArgs e)
 		{
+			Rectangle r = new Rectangle(0, 0, this.ClientRectangle.Width - ((groupBox1.Visible) ? groupBox1.Width : 0), this.ClientRectangle.Height - ((statusStrip1.Visible) ? statusStrip1.Height : 0) - ((statusStrip1.Visible) ? statusStrip2.Height : 0) + menuStrip1.Height);
+			int min = Math.Min(r.Height, r.Width);
+			double factor = 3 * ((double)min / (double)400);
+			if (r.Width > r.Height) r.X = (r.Width - r.Height) / 2;
+			else if (r.Height > r.Width) r.Y = (r.Height - r.Width) / 2;
+
+			rubikRenderer.SetDrawingArea(r, factor);
+
 			RenderInfo currentCommand = command;
 			e.Graphics.SmoothingMode = SmoothingMode.AntiAlias;
 			if (currentCommand.FacesProjected != null)
@@ -156,7 +168,7 @@ namespace VirtualRubik
 		{
 			Rectangle r = new Rectangle(0, 0, this.ClientRectangle.Width - ((groupBox1.Visible) ? groupBox1.Width : 0), this.ClientRectangle.Height - ((statusStrip1.Visible) ? statusStrip1.Height : 0) - ((statusStrip1.Visible) ? statusStrip2.Height : 0) + menuStrip1.Height);
 			int min = Math.Min(r.Height, r.Width);
-			double factor = 2 * ((double)min / (double)400);
+			double factor = 3 * ((double)min / (double)400);
 			if (r.Width > r.Height) r.X = (r.Width - r.Height) / 2;
 			else if (r.Height > r.Width) r.Y = (r.Height - r.Width) / 2;
 
@@ -166,7 +178,7 @@ namespace VirtualRubik
 			rubikRenderer.RubikManager.OnRotatingFinished += new RubikManager.RotatingFinishedHandler(RotatingFinished);
 			//Start update and render processs
 			rubikRenderer.Start();
-			
+
 			toolStripStatusLabel1.Text = "Ready";
 		}
 
@@ -181,8 +193,8 @@ namespace VirtualRubik
 			if (e.KeyCode == Keys.Escape || e.KeyCode == Keys.Delete)
 			{
 				rubikRenderer.RubikManager.RubikCube.cubes.ForEach(c => c.Faces.ToList().ForEach(f => f.Selection = Face3D.SelectionMode.None));
-				oldSelection = new RubikManager.PositionSpec() { cubePos = Cube3D.RubikPosition.None, facePos = Face3D.FacePosition.None };
-				currentSelection = new RubikManager.PositionSpec() { cubePos = Cube3D.RubikPosition.None, facePos = Face3D.FacePosition.None };
+				oldSelection = new PositionSpec() { CubePosition = Cube3D.RubikPosition.None, FacePosition = Face3D.FacePosition.None };
+				currentSelection = new PositionSpec() { CubePosition = Cube3D.RubikPosition.None, FacePosition = Face3D.FacePosition.None };
 			}
 		}
 
@@ -225,7 +237,7 @@ namespace VirtualRubik
 			sw.Stop();
 			Debug.WriteLine(sw.ElapsedMilliseconds);
 			sw.Restart();
-			rubikRenderer.RubikManager.Rotate90(Cube3D.RubikPosition.TopLayer, false, 1000);
+			rubikRenderer.RubikManager.Rotate90(Cube3D.RubikPosition.TopLayer, true, 500);
 		}
 
 		#region Mouse Handling
@@ -266,9 +278,9 @@ namespace VirtualRubik
 			{
 				if ((Control.ModifierKeys & Keys.Shift) != 0)
 				{
-					if (currentSelection.cubePos != Cube3D.RubikPosition.None && currentSelection.facePos != Face3D.FacePosition.None)
+					if (currentSelection.CubePosition != Cube3D.RubikPosition.None && currentSelection.FacePosition != Face3D.FacePosition.None)
 					{
-						Color clr = rubikRenderer.RubikManager.getFaceColor(currentSelection.cubePos, currentSelection.facePos);
+						Color clr = rubikRenderer.RubikManager.getFaceColor(currentSelection.CubePosition, currentSelection.FacePosition);
 						int ind = 0;
 						for (int i = 0; i < contextMenuStrip1.Items.Count; i++)
 						{
@@ -276,32 +288,32 @@ namespace VirtualRubik
 						}
 						ind++;
 						if (ind >= colors.Length) ind = 0;
-						rubikRenderer.RubikManager.setFaceColor(currentSelection.cubePos, currentSelection.facePos, colors[ind]);
+						rubikRenderer.RubikManager.setFaceColor(currentSelection.CubePosition, currentSelection.FacePosition, colors[ind]);
 					}
 				}
 				else
 				{
 					if (!contextMenuStrip1.Visible)
 					{
-						if (oldSelection.cubePos == Cube3D.RubikPosition.None || oldSelection.facePos == Face3D.FacePosition.None)
+						if (oldSelection.CubePosition == Cube3D.RubikPosition.None || oldSelection.FacePosition == Face3D.FacePosition.None)
 						{
-							if (currentSelection.cubePos == Cube3D.RubikPosition.None || currentSelection.facePos == Face3D.FacePosition.None)
+							if (currentSelection.CubePosition == Cube3D.RubikPosition.None || currentSelection.FacePosition == Face3D.FacePosition.None)
 							{
 								rubikRenderer.RubikManager.RubikCube.cubes.ForEach(c => c.Faces.ToList().ForEach(f => f.Selection = Face3D.SelectionMode.None));
-								oldSelection = new RubikManager.PositionSpec() { cubePos = Cube3D.RubikPosition.None, facePos = Face3D.FacePosition.None };
-								currentSelection = new RubikManager.PositionSpec() { cubePos = Cube3D.RubikPosition.None, facePos = Face3D.FacePosition.None };
+								oldSelection = new PositionSpec() { CubePosition = Cube3D.RubikPosition.None, FacePosition = Face3D.FacePosition.None };
+								currentSelection = new PositionSpec() { CubePosition = Cube3D.RubikPosition.None, FacePosition = Face3D.FacePosition.None };
 							}
 							else
 							{
-								if (!Cube3D.isCorner(currentSelection.cubePos))
+								if (!Cube3D.isCorner(currentSelection.CubePosition))
 								{
 									oldSelection = currentSelection;
 									rubikRenderer.RubikManager.RubikCube.cubes.ForEach(c => c.Faces.ToList().ForEach(f =>
 									{
-										if (currentSelection.cubePos != c.Position && !Cube3D.isCenter(c.Position) && currentSelection.facePos == f.Position)
+										if (currentSelection.CubePosition != c.Position && !Cube3D.isCenter(c.Position) && currentSelection.FacePosition == f.Position)
 										{
-											Cube3D.RubikPosition assocLayer = Face3D.layerAssocToFace(currentSelection.facePos);
-											Cube3D.RubikPosition commonLayer = Cube3D.getCommonLayer(currentSelection.cubePos, c.Position, assocLayer);
+											Cube3D.RubikPosition assocLayer = Face3D.layerAssocToFace(currentSelection.FacePosition);
+											Cube3D.RubikPosition commonLayer = Cube3D.getCommonLayer(currentSelection.CubePosition, c.Position, assocLayer);
 											if (commonLayer != Cube3D.RubikPosition.None && c.Position.HasFlag(commonLayer))
 											{
 												f.Selection |= Face3D.SelectionMode.Possible;
@@ -316,7 +328,7 @@ namespace VirtualRubik
 											f.Selection |= Face3D.SelectionMode.NotPossible;
 										}
 									}));
-									toolStripStatusLabel1.Text = "First selection: [" + currentSelection.cubePos.ToString() + "] | " + currentSelection.facePos.ToString(); ;
+									toolStripStatusLabel1.Text = "First selection: [" + currentSelection.CubePosition.ToString() + "] | " + currentSelection.FacePosition.ToString(); ;
 								}
 								else
 								{
@@ -327,41 +339,41 @@ namespace VirtualRubik
 						}
 						else
 						{
-							if (currentSelection.cubePos == Cube3D.RubikPosition.None || currentSelection.facePos == Face3D.FacePosition.None)
+							if (currentSelection.CubePosition == Cube3D.RubikPosition.None || currentSelection.FacePosition == Face3D.FacePosition.None)
 							{
 								toolStripStatusLabel1.Text = "Ready";
 							}
 							else
 							{
-								if (currentSelection.cubePos != oldSelection.cubePos)
+								if (currentSelection.CubePosition != oldSelection.CubePosition)
 								{
-									if (!Cube3D.isCenter(currentSelection.cubePos))
+									if (!Cube3D.isCenter(currentSelection.CubePosition))
 									{
-										if (oldSelection.facePos == currentSelection.facePos)
+										if (oldSelection.FacePosition == currentSelection.FacePosition)
 										{
-											Cube3D.RubikPosition assocLayer = Face3D.layerAssocToFace(oldSelection.facePos);
-											Cube3D.RubikPosition commonLayer = Cube3D.getCommonLayer(oldSelection.cubePos, currentSelection.cubePos, assocLayer);
+											Cube3D.RubikPosition assocLayer = Face3D.layerAssocToFace(oldSelection.FacePosition);
+											Cube3D.RubikPosition commonLayer = Cube3D.getCommonLayer(oldSelection.CubePosition, currentSelection.CubePosition, assocLayer);
 											Boolean direction = true;
 											if (commonLayer == Cube3D.RubikPosition.TopLayer || commonLayer == Cube3D.RubikPosition.MiddleLayer || commonLayer == Cube3D.RubikPosition.BottomLayer)
 											{
-												if (((oldSelection.facePos == Face3D.FacePosition.Back) && currentSelection.cubePos.HasFlag(Cube3D.RubikPosition.RightSlice))
-												|| ((oldSelection.facePos == Face3D.FacePosition.Left) && currentSelection.cubePos.HasFlag(Cube3D.RubikPosition.BackSlice))
-												|| ((oldSelection.facePos == Face3D.FacePosition.Front) && currentSelection.cubePos.HasFlag(Cube3D.RubikPosition.LeftSlice))
-												|| ((oldSelection.facePos == Face3D.FacePosition.Right) && currentSelection.cubePos.HasFlag(Cube3D.RubikPosition.FrontSlice))) direction = false;
+												if (((oldSelection.FacePosition == Face3D.FacePosition.Back) && currentSelection.CubePosition.HasFlag(Cube3D.RubikPosition.RightSlice))
+												|| ((oldSelection.FacePosition == Face3D.FacePosition.Left) && currentSelection.CubePosition.HasFlag(Cube3D.RubikPosition.BackSlice))
+												|| ((oldSelection.FacePosition == Face3D.FacePosition.Front) && currentSelection.CubePosition.HasFlag(Cube3D.RubikPosition.LeftSlice))
+												|| ((oldSelection.FacePosition == Face3D.FacePosition.Right) && currentSelection.CubePosition.HasFlag(Cube3D.RubikPosition.FrontSlice))) direction = false;
 											}
 											if (commonLayer == Cube3D.RubikPosition.LeftSlice || commonLayer == Cube3D.RubikPosition.MiddleSlice_Sides || commonLayer == Cube3D.RubikPosition.RightSlice)
 											{
-												if (((oldSelection.facePos == Face3D.FacePosition.Bottom) && currentSelection.cubePos.HasFlag(Cube3D.RubikPosition.BackSlice))
-												|| ((oldSelection.facePos == Face3D.FacePosition.Back) && currentSelection.cubePos.HasFlag(Cube3D.RubikPosition.TopLayer))
-												|| ((oldSelection.facePos == Face3D.FacePosition.Top) && currentSelection.cubePos.HasFlag(Cube3D.RubikPosition.FrontSlice))
-												|| ((oldSelection.facePos == Face3D.FacePosition.Front) && currentSelection.cubePos.HasFlag(Cube3D.RubikPosition.BottomLayer))) direction = false;
+												if (((oldSelection.FacePosition == Face3D.FacePosition.Bottom) && currentSelection.CubePosition.HasFlag(Cube3D.RubikPosition.BackSlice))
+												|| ((oldSelection.FacePosition == Face3D.FacePosition.Back) && currentSelection.CubePosition.HasFlag(Cube3D.RubikPosition.TopLayer))
+												|| ((oldSelection.FacePosition == Face3D.FacePosition.Top) && currentSelection.CubePosition.HasFlag(Cube3D.RubikPosition.FrontSlice))
+												|| ((oldSelection.FacePosition == Face3D.FacePosition.Front) && currentSelection.CubePosition.HasFlag(Cube3D.RubikPosition.BottomLayer))) direction = false;
 											}
 											if (commonLayer == Cube3D.RubikPosition.BackSlice || commonLayer == Cube3D.RubikPosition.MiddleSlice || commonLayer == Cube3D.RubikPosition.FrontSlice)
 											{
-												if (((oldSelection.facePos == Face3D.FacePosition.Top) && currentSelection.cubePos.HasFlag(Cube3D.RubikPosition.RightSlice))
-												|| ((oldSelection.facePos == Face3D.FacePosition.Right) && currentSelection.cubePos.HasFlag(Cube3D.RubikPosition.BottomLayer))
-												|| ((oldSelection.facePos == Face3D.FacePosition.Bottom) && currentSelection.cubePos.HasFlag(Cube3D.RubikPosition.LeftSlice))
-												|| ((oldSelection.facePos == Face3D.FacePosition.Left) && currentSelection.cubePos.HasFlag(Cube3D.RubikPosition.TopLayer))) direction = false;
+												if (((oldSelection.FacePosition == Face3D.FacePosition.Top) && currentSelection.CubePosition.HasFlag(Cube3D.RubikPosition.RightSlice))
+												|| ((oldSelection.FacePosition == Face3D.FacePosition.Right) && currentSelection.CubePosition.HasFlag(Cube3D.RubikPosition.BottomLayer))
+												|| ((oldSelection.FacePosition == Face3D.FacePosition.Bottom) && currentSelection.CubePosition.HasFlag(Cube3D.RubikPosition.LeftSlice))
+												|| ((oldSelection.FacePosition == Face3D.FacePosition.Left) && currentSelection.CubePosition.HasFlag(Cube3D.RubikPosition.TopLayer))) direction = false;
 											}
 											if (commonLayer != Cube3D.RubikPosition.None)
 											{
@@ -396,8 +408,8 @@ namespace VirtualRubik
 								}
 							}
 							rubikRenderer.RubikManager.RubikCube.cubes.ForEach(c => c.Faces.ToList().ForEach(f => f.Selection = Face3D.SelectionMode.None));
-							oldSelection = new RubikManager.PositionSpec() { cubePos = Cube3D.RubikPosition.None, facePos = Face3D.FacePosition.None };
-							currentSelection = new RubikManager.PositionSpec() { cubePos = Cube3D.RubikPosition.None, facePos = Face3D.FacePosition.None };
+							oldSelection = new PositionSpec() { CubePosition = Cube3D.RubikPosition.None, FacePosition = Face3D.FacePosition.None };
+							currentSelection = new PositionSpec() { CubePosition = Cube3D.RubikPosition.None, FacePosition = Face3D.FacePosition.None };
 						}
 					}
 				}
@@ -406,9 +418,9 @@ namespace VirtualRubik
 			{
 				if ((Control.ModifierKeys & Keys.Shift) != 0)
 				{
-					if (currentSelection.cubePos != Cube3D.RubikPosition.None && currentSelection.facePos != Face3D.FacePosition.None)
+					if (currentSelection.CubePosition != Cube3D.RubikPosition.None && currentSelection.FacePosition != Face3D.FacePosition.None)
 					{
-						Color clr = rubikRenderer.RubikManager.getFaceColor(currentSelection.cubePos, currentSelection.facePos);
+						Color clr = rubikRenderer.RubikManager.getFaceColor(currentSelection.CubePosition, currentSelection.FacePosition);
 						for (int i = 0; i < contextMenuStrip1.Items.Count; i++)
 						{
 							((ToolStripMenuItem)contextMenuStrip1.Items[i]).Checked = (contextMenuStrip1.Items[i].Text == clr.Name);
@@ -424,8 +436,8 @@ namespace VirtualRubik
 			if (!groupBox1.Enabled)
 			{
 				rubikRenderer.RubikManager.RubikCube.cubes.ForEach(c => c.Faces.ToList().ForEach(f => f.Selection = Face3D.SelectionMode.None));
-				oldSelection = new RubikManager.PositionSpec() { cubePos = Cube3D.RubikPosition.None, facePos = Face3D.FacePosition.None };
-				currentSelection = new RubikManager.PositionSpec() { cubePos = Cube3D.RubikPosition.None, facePos = Face3D.FacePosition.None };
+				oldSelection = new PositionSpec() { CubePosition = Cube3D.RubikPosition.None, FacePosition = Face3D.FacePosition.None };
+				currentSelection = new PositionSpec() { CubePosition = Cube3D.RubikPosition.None, FacePosition = Face3D.FacePosition.None };
 			}
 		}
 
@@ -501,7 +513,7 @@ namespace VirtualRubik
 
 		private void toolStripMenu1_Item_Click(object sender, EventArgs e)
 		{
-			rubikRenderer.RubikManager.setFaceColor(currentSelection.cubePos, currentSelection.facePos, Color.FromName(((ToolStripMenuItem)sender).Text));
+			rubikRenderer.RubikManager.setFaceColor(currentSelection.CubePosition, currentSelection.FacePosition, Color.FromName(((ToolStripMenuItem)sender).Text));
 		}
 
 		private void listBox1_KeyDown(object sender, KeyEventArgs e)

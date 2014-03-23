@@ -42,10 +42,6 @@
     </ApplicationIcon>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="ColorComboBox, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>bin\Debug\ColorComboBox.dll</HintPath>
-    </Reference>
     <Reference Include="Microsoft.CSharp" />
     <Reference Include="System" />
     <Reference Include="System.Core" />
@@ -66,10 +62,12 @@
     <Compile Include="Form1.Designer.cs">
       <DependentUpon>Form1.cs</DependentUpon>
     </Compile>
+    <Compile Include="Render\PositionSpec.cs" />
     <Compile Include="Render\RenderInfo.cs" />
     <Compile Include="Render\RenderEventArgs.cs" />
     <Compile Include="Render\RotationInfo.cs" />
     <Compile Include="Render\RubikRenderer.cs" />
+    <Compile Include="Render\UniCube.cs" />
     <Compile Include="State\CubeSolver.cs" />
     <Compile Include="State\LayerMove.cs" />
     <Compile Include="Render\Point3D.cs" />
@@ -91,6 +89,7 @@
       <DesignTime>True</DesignTime>
     </Compile>
     <None Include="app.config" />
+    <None Include="RubiksCubeSolver.cd" />
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>

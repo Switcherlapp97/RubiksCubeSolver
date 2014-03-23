@@ -108,9 +108,9 @@ namespace VirtualRubik
 			return new RenderInfo() { FacesProjected = facesProjected };
 		}
 
-    public RubikManager.PositionSpec Render(Graphics g, Rectangle screen, double scale, Point mousePos)
+    public PositionSpec Render(Graphics g, Rectangle screen, double scale, Point mousePos)
     {
-      RubikManager.PositionSpec result = new RubikManager.PositionSpec() { cubePos = Cube3D.RubikPosition.None, facePos = Face3D.FacePosition.None };
+      PositionSpec result = new PositionSpec() { CubePosition = Cube3D.RubikPosition.None, FacePosition = Face3D.FacePosition.None };
       cubesRender.Clear();
       cubesRender = genCubesRotated(false);
       g.SmoothingMode = SmoothingMode.AntiAlias;
@@ -122,7 +122,7 @@ namespace VirtualRubik
         GraphicsPath gp = new GraphicsPath();
         gp.AddPolygon(parr);
         double fak = ((Math.Sin((double)Environment.TickCount / (double)200) + 1) / 4) + 0.75;
-        if (gp.IsVisible(mousePos)) result = new RubikManager.PositionSpec() { cubePos = face.MasterPosition, facePos = face.Position };
+        if (gp.IsVisible(mousePos)) result = new PositionSpec() { CubePosition = face.MasterPosition, FacePosition = face.Position };
         if (face.Selection.HasFlag(Face3D.SelectionMode.Second)) g.FillPolygon(new HatchBrush(HatchStyle.Percent75, Color.Black, face.Color), parr);
         else if (face.Selection.HasFlag(Face3D.SelectionMode.NotPossible)) g.FillPolygon(new SolidBrush(Color.FromArgb(face.Color.A, (int)(face.Color.R * 0.15), (int)(face.Color.G * 0.15), (int)(face.Color.B * 0.15))), parr);
         else if (face.Selection.HasFlag(Face3D.SelectionMode.First)) g.FillPolygon(new HatchBrush(HatchStyle.Percent30, Color.Black, face.Color), parr);

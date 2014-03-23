@@ -1,0 +1,150 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<ClassDiagram MajorVersion="1" MinorVersion="1">
+  <Class Name="VirtualRubik.Cube3D">
+    <Position X="4" Y="0.5" Width="1.5" />
+    <Compartments>
+      <Compartment Name="Nested Types" Collapsed="false" />
+    </Compartments>
+    <NestedTypes>
+      <Enum Name="VirtualRubik.Cube3D.RubikPosition">
+        <TypeIdentifier>
+          <NewMemberFileName>Render\Cube3D.cs</NewMemberFileName>
+        </TypeIdentifier>
+      </Enum>
+    </NestedTypes>
+    <TypeIdentifier>
+      <HashCode>AAAAAIAAACAAAAAgBBAACAAAEAAAAAAAAAAAgBAAABA=</HashCode>
+      <FileName>Render\Cube3D.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="VirtualRubik.Face3D">
+    <Position X="2.25" Y="0.5" Width="1.5" />
+    <Compartments>
+      <Compartment Name="Nested Types" Collapsed="false" />
+    </Compartments>
+    <NestedTypes>
+      <Enum Name="VirtualRubik.Face3D.FacePosition">
+        <TypeIdentifier>
+          <NewMemberFileName>Render\Face3D.cs</NewMemberFileName>
+        </TypeIdentifier>
+      </Enum>
+      <Enum Name="VirtualRubik.Face3D.SelectionMode">
+        <TypeIdentifier>
+          <NewMemberFileName>Render\Face3D.cs</NewMemberFileName>
+        </TypeIdentifier>
+      </Enum>
+    </NestedTypes>
+    <TypeIdentifier>
+      <HashCode>AIAAgAAAAAAAAABgAAAACAAAEAAAAAAAAAAEgAAAQBA=</HashCode>
+      <FileName>Render\Face3D.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="VirtualRubik.Point3D">
+    <Position X="0.5" Y="0.5" Width="1.5" />
+    <Compartments>
+      <Compartment Name="Nested Types" Collapsed="false" />
+    </Compartments>
+    <NestedTypes>
+      <Enum Name="VirtualRubik.Point3D.RotationType">
+        <TypeIdentifier>
+          <NewMemberFileName>Render\Point3D.cs</NewMemberFileName>
+        </TypeIdentifier>
+      </Enum>
+    </NestedTypes>
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAACAAAEAAAAAAAAAAAAAAAYBE=</HashCode>
+      <FileName>Render\Point3D.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="VirtualRubik.RenderEventArgs">
+    <Position X="11" Y="2.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Render\RenderEventArgs.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="VirtualRubik.Rubik">
+    <Position X="5.75" Y="0.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAABAAAAIAAAAAAAABAAUAAAAAAABAAAAgAADA=</HashCode>
+      <FileName>Render\Rubik.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="VirtualRubik.RubikRenderer">
+    <Position X="9.25" Y="0.5" Width="1.5" />
+    <Compartments>
+      <Compartment Name="Nested Types" Collapsed="false" />
+    </Compartments>
+    <NestedTypes>
+      <Delegate Name="VirtualRubik.RubikRenderer.RenderHandler" Collapsed="true">
+        <TypeIdentifier>
+          <NewMemberFileName>Render\RubikRenderer.cs</NewMemberFileName>
+        </TypeIdentifier>
+      </Delegate>
+    </NestedTypes>
+    <TypeIdentifier>
+      <HashCode>AAQAAAAABCAAICKCAAAQQAQCAAEAAAIAoBFAIAIQAEA=</HashCode>
+      <FileName>Render\RubikRenderer.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="VirtualRubik.UniCube">
+    <Position X="4" Y="7" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAACAAAAAA=</HashCode>
+      <FileName>Render\UniCube.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="VirtualRubik.CubeSolver">
+    <Position X="12.75" Y="0.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>hCAACAAAAUAQAAAAAAAACAAIIAAABAACAAMAQgAAAEA=</HashCode>
+      <FileName>State\CubeSolver.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="VirtualRubik.LayerMove">
+    <Position X="5.75" Y="3.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAACAAAAAAAAAAAAAEAAAAAAAAABA=</HashCode>
+      <FileName>State\LayerMove.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="VirtualRubik.RubikManager">
+    <Position X="7.5" Y="0.5" Width="1.5" />
+    <Compartments>
+      <Compartment Name="Nested Types" Collapsed="false" />
+    </Compartments>
+    <NestedTypes>
+      <Delegate Name="VirtualRubik.RubikManager.RotatingFinishedHandler" Collapsed="true">
+        <TypeIdentifier>
+          <NewMemberFileName>State\RubikManager.cs</NewMemberFileName>
+        </TypeIdentifier>
+      </Delegate>
+    </NestedTypes>
+    <TypeIdentifier>
+      <HashCode>AAAEAIAMIBEAEAAAQAAAgEAEAAACBEAAABIAAAAAAhA=</HashCode>
+      <FileName>State\RubikManager.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Struct Name="VirtualRubik.PositionSpec">
+    <Position X="0.5" Y="5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAEAAAAAAAAAACAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Render\PositionSpec.cs</FileName>
+    </TypeIdentifier>
+  </Struct>
+  <Struct Name="VirtualRubik.RenderInfo">
+    <Position X="11" Y="0.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAACAAACACA=</HashCode>
+      <FileName>Render\RenderInfo.cs</FileName>
+    </TypeIdentifier>
+  </Struct>
+  <Struct Name="VirtualRubik.RotationInfo">
+    <Position X="5.75" Y="6" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAIACAAAAAACAAACAAAAAAAAAEAAAAAAAAAAA=</HashCode>
+      <FileName>Render\RotationInfo.cs</FileName>
+    </TypeIdentifier>
+  </Struct>
+  <Font Name="Segoe UI" Size="9" />
+</ClassDiagram>
