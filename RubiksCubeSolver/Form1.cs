@@ -15,11 +15,12 @@ namespace VirtualRubik
 {
 	public partial class Form1 : Form
 	{
-		private RubikManager rubikManager;
+		//private RubikManager rubikManager;
+		private RubikRenderer rubikRenderer;
 		private Color[] colors = new Color[] { Color.ForestGreen, Color.RoyalBlue, Color.White, Color.Yellow, Color.Red, Color.Orange };
 		private Stack<LayerMove> moveStack = new Stack<LayerMove>();
 		private int rotationTime; // in ms
-		private double FPS, renderLimit; //FPS
+		RenderInfo command = new RenderInfo();
 
 		//private Point3D rotationAccum;
 
@@ -49,60 +50,54 @@ namespace VirtualRubik
 				g.DrawRectangle(Pens.Black, 0, 0, 15, 15);
 				contextMenuStrip1.Items.Add(col.Name, bmp, toolStripMenu1_Item_Click);
 			}
+			this.FormClosing += (sender, e) => rubikRenderer.Abort();
 			ResetCube();
-			Thread renderLoop = new Thread(RenderLoop);
-			renderLoop.Start();
+			rubikRenderer.RubikManager.Rotate90(Cube3D.RubikPosition.TopLayer, false, 1000);
 		}
 
-		void RenderLoop()
-		{
-			FPS = 60;
-			renderLimit = 60;
-			rotationTime = 1000;
 
-			Stopwatch watch = new Stopwatch();
-			//Endless loop
-			while(1 != 0)
-			{
-				//Render
-				watch.Start();
-				this.Invalidate();
-				//Get render speed
-				FPS = (watch.ElapsedMilliseconds > 1000 / renderLimit) ? 1000 / watch.ElapsedMilliseconds : renderLimit;
-				watch.Stop();
-				watch.Reset();
-			}
-		}
 
 		void RenderUI(Graphics g)
 		{
-			Rectangle r = new Rectangle(0, 0, this.ClientRectangle.Width - ((groupBox1.Visible) ? groupBox1.Width : 0), this.ClientRectangle.Height - ((statusStrip1.Visible) ? statusStrip1.Height : 0) - ((statusStrip1.Visible) ? statusStrip2.Height : 0) + menuStrip1.Height);
-			int min = Math.Min(r.Height, r.Width);
-			double factor = 3 * ((double)min / (double)400);
-			if (r.Width > r.Height) r.X = (r.Width - r.Height) / 2;
-			else if (r.Height > r.Width) r.Y = (r.Height - r.Width) / 2;
+			//Rectangle r = new Rectangle(0, 0, this.ClientRectangle.Width - ((groupBox1.Visible) ? groupBox1.Width : 0), this.ClientRectangle.Height - ((statusStrip1.Visible) ? statusStrip1.Height : 0) - ((statusStrip1.Visible) ? statusStrip2.Height : 0) + menuStrip1.Height);
+			//int min = Math.Min(r.Height, r.Width);
+			//double factor = 3 * ((double)min / (double)400);
+			//if (r.Width > r.Height) r.X = (r.Width - r.Height) / 2;
+			//else if (r.Height > r.Width) r.Y = (r.Height - r.Width) / 2;
 
-			//Draw face selection
-			RubikManager.PositionSpec selectedPos = rubikManager.Render(g,r, factor, PointToClient(Cursor.Position), FPS);
-			if (!contextMenuStrip1.Visible)
-			{
-				rubikManager.setFaceSelection(Face3D.SelectionMode.None);
-				rubikManager.setFaceSelection(oldSelection.cubePos, oldSelection.facePos, Face3D.SelectionMode.Second);
-				rubikManager.setFaceSelection(selectedPos.cubePos, selectedPos.facePos, Face3D.SelectionMode.First);
-				currentSelection = selectedPos;
-				toolStripStatusLabel2.Text = "[" + selectedPos.cubePos.ToString() + "] | " + selectedPos.facePos.ToString();
-			}
+			////Draw face selection
+			//RubikManager.PositionSpec selectedPos = rubikManager.Render(g,r, factor, PointToClient(Cursor.Position));
+			//if (!contextMenuStrip1.Visible)
+			//{
+			//	rubikManager.setFaceSelection(Face3D.SelectionMode.None);
+			//	rubikManager.setFaceSelection(oldSelection.cubePos, oldSelection.facePos, Face3D.SelectionMode.Second);
+			//	rubikManager.setFaceSelection(selectedPos.cubePos, selectedPos.facePos, Face3D.SelectionMode.First);
+			//	currentSelection = selectedPos;
+			//	toolStripStatusLabel2.Text = "[" + selectedPos.cubePos.ToString() + "] | " + selectedPos.facePos.ToString();
+			//}
 		}
 
 		private void Form1_Resize(object sender, EventArgs e)
 		{
 			groupBox1.Width = Math.Max(Math.Min((int)((double)this.ClientRectangle.Width * 0.3), 300), 220);
-			//this.Invalidate();
+			this.Invalidate();
 		}
 
 		private void Form1_Paint(object sender, PaintEventArgs e)
 		{
-			RenderUI(e.Graphics);
+			RenderInfo currentCommand = command;
+			e.Graphics.SmoothingMode = SmoothingMode.AntiAlias;
+			if (currentCommand.FacesProjected != null)
+			{
+				foreach (Face3D face in currentCommand.FacesProjected)
+				{
+					PointF[] parr = face.Edges.Select(p => new PointF((float)p.X, (float)p.Y)).ToArray();
+					GraphicsPath gp = new GraphicsPath();
+					gp.AddPolygon(parr);
+					e.Graphics.FillPolygon(new SolidBrush(face.Color), parr);
+					e.Graphics.DrawPolygon(Pens.Black, parr);
+				}
+			}
 		}
 
 		//private void dpp(Point3D p, Graphics g, Brush c)
@@ -125,7 +120,7 @@ namespace VirtualRubik
 			//rotationTicks = 100;
 			Cube3D.RubikPosition layer = (Cube3D.RubikPosition)Enum.Parse(typeof(Cube3D.RubikPosition), comboBox1.Text);
 			bool direction = (button5.Text == "CW");
-			rubikManager.Rotate90(layer, direction, rotationTime);
+			rubikRenderer.RubikManager.Rotate90(layer, direction, rotationTime);
 			toolStripStatusLabel1.Text = "Rotating " + layer.ToString() + " " + ((button5.Text == "CW") ? "Clockwise" : "Counter-Clockwise");
 		}
 		private void button3_Click(object sender, EventArgs e)
@@ -149,7 +144,7 @@ namespace VirtualRubik
 				moveStack = new Stack<LayerMove>(lms);
 				LayerMove nextMove = moveStack.Pop();
 				bool direction = nextMove.Direction;
-				rubikManager.Rotate90(nextMove.Layer, direction, rotationTime);
+				rubikRenderer.RubikManager.Rotate90(nextMove.Layer, direction, rotationTime);
 				toolStripStatusLabel1.Text = "Rotating " + nextMove.Layer.ToString() + " " + ((nextMove.Direction) ? "Clockwise" : "Counter-Clockwise");
 				listBox1.SelectedIndex = 0;
 				comboBox1.Text = listBox1.SelectedItem.ToString();
@@ -157,26 +152,43 @@ namespace VirtualRubik
 		}
 		private void ResetCube()
 		{
-			rubikManager = new RubikManager();
-			rubikManager.OnRotatingFinished += new RubikManager.RotatingFinishedHandler(RotatingFinished);
-			//rotationAccum = new Point3D(Math.Sqrt(0.5), Math.Sqrt(0.5), Math.Sqrt(0.5));
+			Rectangle r = new Rectangle(0, 0, this.ClientRectangle.Width - ((groupBox1.Visible) ? groupBox1.Width : 0), this.ClientRectangle.Height - ((statusStrip1.Visible) ? statusStrip1.Height : 0) - ((statusStrip1.Visible) ? statusStrip2.Height : 0) + menuStrip1.Height);
+			int min = Math.Min(r.Height, r.Width);
+			double factor = 2 * ((double)min / (double)400);
+			if (r.Width > r.Height) r.X = (r.Width - r.Height) / 2;
+			else if (r.Height > r.Width) r.Y = (r.Height - r.Width) / 2;
+
+			//Create render object, event handling
+			rubikRenderer = new RubikRenderer(r, factor);
+			rubikRenderer.OnRender += new RubikRenderer.RenderHandler(Render);
+			rubikRenderer.RubikManager.OnRotatingFinished += new RubikManager.RotatingFinishedHandler(RotatingFinished);
+			//Start update and render processs
+			rubikRenderer.Start();
+			
 			toolStripStatusLabel1.Text = "Ready";
+		}
+
+		void Render(object sender, RenderEventArgs e)
+		{
+			command = e.RenderInfo;
+			this.Invalidate();
 		}
 
 		private void Form1_KeyDown(object sender, KeyEventArgs e)
 		{
 			if (e.KeyCode == Keys.Escape || e.KeyCode == Keys.Delete)
 			{
-				rubikManager.RubikCube.cubes.ForEach(c => c.Faces.ToList().ForEach(f => f.Selection = Face3D.SelectionMode.None));
+				rubikRenderer.RubikManager.RubikCube.cubes.ForEach(c => c.Faces.ToList().ForEach(f => f.Selection = Face3D.SelectionMode.None));
 				oldSelection = new RubikManager.PositionSpec() { cubePos = Cube3D.RubikPosition.None, facePos = Face3D.FacePosition.None };
 				currentSelection = new RubikManager.PositionSpec() { cubePos = Cube3D.RubikPosition.None, facePos = Face3D.FacePosition.None };
 			}
 		}
+
 		private void scrambleToolStripMenuItem_Click(object sender, EventArgs e)
 		{
 			groupBox1.Enabled = false;
 			Random rnd = new Random();
-			for (int i = 0; i < 50; i++) rubikManager.Rotate90Sync((Cube3D.RubikPosition)Math.Pow(2, rnd.Next(0, 9)), Convert.ToBoolean(rnd.Next(0, 2)));
+			for (int i = 0; i < 50; i++) rubikRenderer.RubikManager.Rotate90Sync((Cube3D.RubikPosition)Math.Pow(2, rnd.Next(0, 9)), Convert.ToBoolean(rnd.Next(0, 2)));
 			groupBox1.Enabled = true;
 		}
 		private void resetToolStripMenuItem_Click(object sender, EventArgs e)
@@ -192,22 +204,23 @@ namespace VirtualRubik
 
 		private void RotatingFinished(object sender)
 		{
-			if (moveStack.Count > 0)
-			{
-				LayerMove nextMove = moveStack.Pop();
-				bool direction = nextMove.Direction;
-				rubikManager.Rotate90(nextMove.Layer, direction, rotationTime);
-				toolStripStatusLabel1.Text = "Rotating " + nextMove.Layer.ToString() + " " + ((nextMove.Direction) ? "Clockwise" : "Counter-Clockwise");
-				listBox1.SelectedIndex++;
-				comboBox1.Text = listBox1.SelectedItem.ToString();
-			}
-			else
-			{
-				groupBox1.Enabled = true;
-				if (listBox1.SelectedIndex != listBox1.Items.Count - 1) listBox1.SelectedIndex++;
-				else listBox1.SelectedIndex = -1;
-				toolStripStatusLabel1.Text = "Ready";
-			}
+			//if (moveStack.Count > 0)
+			//{
+			//	LayerMove nextMove = moveStack.Pop();
+			//	bool direction = nextMove.Direction;
+			//	rubikRenderer.RubikManager.Rotate90(nextMove.Layer, direction, rotationTime);
+			//	toolStripStatusLabel1.Text = "Rotating " + nextMove.Layer.ToString() + " " + ((nextMove.Direction) ? "Clockwise" : "Counter-Clockwise");
+			//	listBox1.SelectedIndex++;
+			//	comboBox1.Text = listBox1.SelectedItem.ToString();
+			//}
+			//else
+			//{
+			//	groupBox1.Enabled = true;
+			//	if (listBox1.SelectedIndex != listBox1.Items.Count - 1) listBox1.SelectedIndex++;
+			//	else listBox1.SelectedIndex = -1;
+			//	toolStripStatusLabel1.Text = "Ready";
+			//}
+			rubikRenderer.RubikManager.Rotate90(Cube3D.RubikPosition.TopLayer, false, 1000);
 		}
 
 		#region Mouse Handling
@@ -222,8 +235,8 @@ namespace VirtualRubik
 					this.Cursor = Cursors.SizeAll;
 					int dX = e.X - oldMousePos.X;
 					int dY = e.Y - oldMousePos.Y;
-					rubikManager.RubikCube.Rotation[1] -= dX / 3;
-					rubikManager.RubikCube.Rotation[0] += (dY / 3);
+					rubikRenderer.RubikManager.RubikCube.Rotation[1] -= dX / 3;
+					rubikRenderer.RubikManager.RubikCube.Rotation[0] += (dY / 3);
 					//rotationAccum.Rotate(Point3D.RotationType.X, (dY));
 					//rotationAccum.Rotate(Point3D.RotationType.Y, -(dX));
 					//double rotY = Math.Atan2(rotationAccum.X, rotationAccum.Z);
@@ -238,10 +251,9 @@ namespace VirtualRubik
 				{
 					this.Cursor = Cursors.Arrow;
 				}
+				this.Invalidate();
 			}
-			this.Invalidate();
 			oldMousePos = e.Location;
-
 		}
 		private void Form1_MouseClick(object sender, MouseEventArgs e)
 		{
@@ -251,7 +263,7 @@ namespace VirtualRubik
 				{
 					if (currentSelection.cubePos != Cube3D.RubikPosition.None && currentSelection.facePos != Face3D.FacePosition.None)
 					{
-						Color clr = rubikManager.getFaceColor(currentSelection.cubePos, currentSelection.facePos);
+						Color clr = rubikRenderer.RubikManager.getFaceColor(currentSelection.cubePos, currentSelection.facePos);
 						int ind = 0;
 						for (int i = 0; i < contextMenuStrip1.Items.Count; i++)
 						{
@@ -259,7 +271,7 @@ namespace VirtualRubik
 						}
 						ind++;
 						if (ind >= colors.Length) ind = 0;
-						rubikManager.setFaceColor(currentSelection.cubePos, currentSelection.facePos, colors[ind]);
+						rubikRenderer.RubikManager.setFaceColor(currentSelection.cubePos, currentSelection.facePos, colors[ind]);
 					}
 				}
 				else
@@ -270,7 +282,7 @@ namespace VirtualRubik
 						{
 							if (currentSelection.cubePos == Cube3D.RubikPosition.None || currentSelection.facePos == Face3D.FacePosition.None)
 							{
-								rubikManager.RubikCube.cubes.ForEach(c => c.Faces.ToList().ForEach(f => f.Selection = Face3D.SelectionMode.None));
+								rubikRenderer.RubikManager.RubikCube.cubes.ForEach(c => c.Faces.ToList().ForEach(f => f.Selection = Face3D.SelectionMode.None));
 								oldSelection = new RubikManager.PositionSpec() { cubePos = Cube3D.RubikPosition.None, facePos = Face3D.FacePosition.None };
 								currentSelection = new RubikManager.PositionSpec() { cubePos = Cube3D.RubikPosition.None, facePos = Face3D.FacePosition.None };
 							}
@@ -279,7 +291,7 @@ namespace VirtualRubik
 								if (!Cube3D.isCorner(currentSelection.cubePos))
 								{
 									oldSelection = currentSelection;
-									rubikManager.RubikCube.cubes.ForEach(c => c.Faces.ToList().ForEach(f =>
+									rubikRenderer.RubikManager.RubikCube.cubes.ForEach(c => c.Faces.ToList().ForEach(f =>
 									{
 										if (currentSelection.cubePos != c.Position && !Cube3D.isCenter(c.Position) && currentSelection.facePos == f.Position)
 										{
@@ -303,7 +315,7 @@ namespace VirtualRubik
 								}
 								else
 								{
-									rubikManager.RubikCube.cubes.ForEach(c => c.Faces.ToList().ForEach(f => f.Selection = Face3D.SelectionMode.None));
+									rubikRenderer.RubikManager.RubikCube.cubes.ForEach(c => c.Faces.ToList().ForEach(f => f.Selection = Face3D.SelectionMode.None));
 									toolStripStatusLabel1.Text = "Error: Invalid first selection, must not be a corner";
 								}
 							}
@@ -353,7 +365,7 @@ namespace VirtualRubik
 													groupBox1.Enabled = false;
 													//rotationTicks = 25;
 													if (commonLayer == Cube3D.RubikPosition.TopLayer || commonLayer == Cube3D.RubikPosition.LeftSlice || commonLayer == Cube3D.RubikPosition.FrontSlice) direction = !direction;
-													rubikManager.Rotate90(commonLayer, direction, rotationTime);
+													rubikRenderer.RubikManager.Rotate90(commonLayer, direction, rotationTime);
 													comboBox1.Text = commonLayer.ToString();
 													toolStripStatusLabel1.Text = "Rotating " + commonLayer.ToString() + " " + ((direction) ? "Clockwise" : "Counter-Clockwise");
 												}
@@ -378,7 +390,7 @@ namespace VirtualRubik
 									toolStripStatusLabel1.Text = "Error: Invalid second selection, must not be first selection";
 								}
 							}
-							rubikManager.RubikCube.cubes.ForEach(c => c.Faces.ToList().ForEach(f => f.Selection = Face3D.SelectionMode.None));
+							rubikRenderer.RubikManager.RubikCube.cubes.ForEach(c => c.Faces.ToList().ForEach(f => f.Selection = Face3D.SelectionMode.None));
 							oldSelection = new RubikManager.PositionSpec() { cubePos = Cube3D.RubikPosition.None, facePos = Face3D.FacePosition.None };
 							currentSelection = new RubikManager.PositionSpec() { cubePos = Cube3D.RubikPosition.None, facePos = Face3D.FacePosition.None };
 						}
@@ -391,7 +403,7 @@ namespace VirtualRubik
 				{
 					if (currentSelection.cubePos != Cube3D.RubikPosition.None && currentSelection.facePos != Face3D.FacePosition.None)
 					{
-						Color clr = rubikManager.getFaceColor(currentSelection.cubePos, currentSelection.facePos);
+						Color clr = rubikRenderer.RubikManager.getFaceColor(currentSelection.cubePos, currentSelection.facePos);
 						for (int i = 0; i < contextMenuStrip1.Items.Count; i++)
 						{
 							((ToolStripMenuItem)contextMenuStrip1.Items[i]).Checked = (contextMenuStrip1.Items[i].Text == clr.Name);
@@ -400,12 +412,13 @@ namespace VirtualRubik
 					}
 				}
 			}
+			this.Invalidate();
 		}
 		private void groupBox1_EnabledChanged(object sender, EventArgs e)
 		{
 			if (!groupBox1.Enabled)
 			{
-				rubikManager.RubikCube.cubes.ForEach(c => c.Faces.ToList().ForEach(f => f.Selection = Face3D.SelectionMode.None));
+				rubikRenderer.RubikManager.RubikCube.cubes.ForEach(c => c.Faces.ToList().ForEach(f => f.Selection = Face3D.SelectionMode.None));
 				oldSelection = new RubikManager.PositionSpec() { cubePos = Cube3D.RubikPosition.None, facePos = Face3D.FacePosition.None };
 				currentSelection = new RubikManager.PositionSpec() { cubePos = Cube3D.RubikPosition.None, facePos = Face3D.FacePosition.None };
 			}
@@ -452,7 +465,7 @@ namespace VirtualRubik
 		private void button6_Click(object sender, EventArgs e)
 		{
 			listBox1.Items.Clear();
-			CubeSolver cs = new CubeSolver(rubikManager);
+			CubeSolver cs = new CubeSolver(rubikRenderer.RubikManager);
 			if (cs.CanSolve())
 			{
 				RubikManager ma = cs.ReturnRubik();
@@ -466,23 +479,24 @@ namespace VirtualRubik
 				listBox1.Focus();
 			}
 			else MessageBox.Show("Insoluble cube");
+			this.Invalidate();
 		}
 
 		private void solveToolStripMenuItem_Click(object sender, EventArgs e)
 		{
-			CubeSolver cs = new CubeSolver(rubikManager);
+			CubeSolver cs = new CubeSolver(rubikRenderer.RubikManager);
 			if (cs.CanSolve())
 			{
-				rubikManager = cs.ReturnRubik().Clone();
-				rubikManager.OnRotatingFinished += RotatingFinished;
-				rubikManager.Moves.Clear();
+				rubikRenderer.RubikManager = cs.ReturnRubik().Clone();
+				rubikRenderer.RubikManager.OnRotatingFinished += RotatingFinished;
+				rubikRenderer.RubikManager.Moves.Clear();
 			}
 			else MessageBox.Show("Insoluble cube");
 		}
 
 		private void toolStripMenu1_Item_Click(object sender, EventArgs e)
 		{
-			rubikManager.setFaceColor(currentSelection.cubePos, currentSelection.facePos, Color.FromName(((ToolStripMenuItem)sender).Text));
+			rubikRenderer.RubikManager.setFaceColor(currentSelection.cubePos, currentSelection.facePos, Color.FromName(((ToolStripMenuItem)sender).Text));
 		}
 
 		private void listBox1_KeyDown(object sender, KeyEventArgs e)
@@ -499,11 +513,10 @@ namespace VirtualRubik
 					string directionString = listBox1.SelectedItem.ToString().Split(new Char[] { Convert.ToChar(" ") })[1];
 					bool direction = (directionString == "Clockwise") ? true : false;
 
-					rubikManager.Rotate90(layer, direction, rotationTime);
+					rubikRenderer.RubikManager.Rotate90(layer, direction, rotationTime);
 				}
 			}
 		}
-
 	}
 
 }

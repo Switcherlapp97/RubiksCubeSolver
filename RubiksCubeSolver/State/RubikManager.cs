@@ -16,12 +16,11 @@ namespace VirtualRubik
 		private double rotationStep;
 		private int rotationTime; //in ms
 		private Boolean rotationDirection;
-		private Cube3D.RubikPosition rotationLayer;
+		public Cube3D.RubikPosition rotationLayer;
 		private int rotationTarget;
 		public delegate void RotatingFinishedHandler(object sender);
 		public event RotatingFinishedHandler OnRotatingFinished;
-		public delegate void RotatingHandler(object sender);
-		public event RotatingHandler OnRotating;
+
 
 		private void BroadcastRotatingFinished()
 		{
@@ -95,6 +94,11 @@ namespace VirtualRubik
 			Moves.Add(new LayerMove(layer, direction));
 		}
 
+		public RotationInfo GetRotationInfo()
+		{
+			return new RotationInfo() { Direction = rotationDirection, Layer = rotationLayer, Milliseconds = rotationTime, Target = rotationTarget, Rotating = Rotating };
+		}
+
 		public void setFaceColor(Cube3D.RubikPosition affected, Face3D.FacePosition face, Color color)
 		{
 			RubikCube.cubes.Where(c => c.Position.HasFlag(affected)).ToList().ForEach(c => c.Faces.Where(f => f.Position == face).ToList().ForEach(f => f.Color = color));
@@ -146,9 +150,6 @@ namespace VirtualRubik
 
 		public PositionSpec Render(Graphics g, Rectangle screen, double scale, Point mousePos, double fps)
 		{
-			rotationStep = (rotationTime != 0) ?(double)90 / (double)((double)rotationTime * (double)(fps / 1000)) : 0;
-			if (rotationDirection) rotationStep *= (-1);
-
 			PositionSpec result = RubikCube.Render(g, screen, scale, mousePos);
 			if (Rotating)
 			{
@@ -160,6 +161,8 @@ namespace VirtualRubik
 			}
 			return result;
 		}
+
+
 
 		public void resetFlags(bool fireFinished)
 		{

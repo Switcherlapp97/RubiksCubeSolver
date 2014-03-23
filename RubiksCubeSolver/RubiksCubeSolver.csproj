@@ -66,6 +66,10 @@
     <Compile Include="Form1.Designer.cs">
       <DependentUpon>Form1.cs</DependentUpon>
     </Compile>
+    <Compile Include="Render\RenderInfo.cs" />
+    <Compile Include="Render\RenderEventArgs.cs" />
+    <Compile Include="Render\RotationInfo.cs" />
+    <Compile Include="Render\RubikRenderer.cs" />
     <Compile Include="State\CubeSolver.cs" />
     <Compile Include="State\LayerMove.cs" />
     <Compile Include="Render\Point3D.cs" />
