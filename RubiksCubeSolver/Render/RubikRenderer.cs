@@ -6,6 +6,7 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Drawing;
+using System.Windows.Forms;
 
 namespace VirtualRubik
 {
@@ -19,14 +20,12 @@ namespace VirtualRubik
 		public RubikManager RubikManager;
 		private AutoResetEvent[] updateHandle;
 		private AutoResetEvent[] renderHandle;
-		private AutoResetEvent resourceUpdateHandle;
 		private int currentBufferIndex;
 
 		public delegate void RenderHandler(object sender, RenderEventArgs e);
 		public event RenderHandler OnRender;
 
 		public double Fps { get; private set; }
-		public double MaxFps { get; private set; }
 		public bool IsRunning { get; private set; }
 
 		private void BroadcastRender(int currentBufferIndex)
@@ -50,8 +49,6 @@ namespace VirtualRubik
 			renderHandle = new AutoResetEvent[2];
 			for (int i = 0; i < renderHandle.Length; i++)
 				renderHandle[i] = new AutoResetEvent(true);
-
-			resourceUpdateHandle = new AutoResetEvent(true);
 
 			buffer = new RenderInfo[2];
 			for (int i = 0; i < buffer.Length; i++)
@@ -120,7 +117,6 @@ namespace VirtualRubik
 		private void Update(int bufferIndex, TimeSpan elapsed)
 		{
 			renderHandle[bufferIndex].WaitOne();
-			resourceUpdateHandle.WaitOne();
 
 			//Update
 			RotationInfo rotationInfo = RubikManager.GetRotationInfo();
@@ -134,7 +130,7 @@ namespace VirtualRubik
 					RubikManager.resetFlags(true);
 				}
 			}
-			RenderInfo newRenderInfo = RubikManager.RubikCube.NewRender(screen, scale);
+			RenderInfo newRenderInfo = RubikManager.RubikCube.GetRenderInfo(screen, scale);
 			buffer[bufferIndex] = newRenderInfo;
 
 			updateHandle[bufferIndex].Set();
@@ -150,6 +146,11 @@ namespace VirtualRubik
 				sw.Restart();
 				Render(bufferIndex);
 				bufferIndex ^= 0x1;
+
+				if (sw.ElapsedMilliseconds < 15)
+					Thread.Sleep(System.Math.Max(15 - (int)sw.ElapsedMilliseconds, 0));
+				while (sw.Elapsed.TotalMilliseconds < 1000.0 / 60) { }
+
 				sw.Stop();
 
 				frameTimes.Add(sw.Elapsed.TotalMilliseconds);
@@ -170,7 +171,6 @@ namespace VirtualRubik
 		private void Render(int bufferIndex)
 		{
 			updateHandle[bufferIndex].WaitOne();
-			resourceUpdateHandle.Set();
 			BroadcastRender(bufferIndex);
 			renderHandle[bufferIndex].Set();
 		}

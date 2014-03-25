@@ -18,8 +18,7 @@ namespace VirtualRubik
 		private RubikRenderer rubikRenderer;
 		private Color[] colors = new Color[] { Color.ForestGreen, Color.RoyalBlue, Color.White, Color.Yellow, Color.Red, Color.Orange };
 		private Stack<LayerMove> moveStack = new Stack<LayerMove>();
-		private int rotationTime; // in ms
-		Stopwatch sw = new Stopwatch();
+		private int rotationTime = 200; // in ms
 		RenderInfo command = new RenderInfo();
 
 
@@ -51,30 +50,6 @@ namespace VirtualRubik
 			}
 			this.FormClosing += (sender, e) => rubikRenderer.Abort();
 			ResetCube();
-			sw.Start();
-			rubikRenderer.RubikManager.Rotate90(Cube3D.RubikPosition.TopLayer, true, 1000);
-		}
-
-
-
-		void RenderUI(Graphics g)
-		{
-			//Rectangle r = new Rectangle(0, 0, this.ClientRectangle.Width - ((groupBox1.Visible) ? groupBox1.Width : 0), this.ClientRectangle.Height - ((statusStrip1.Visible) ? statusStrip1.Height : 0) - ((statusStrip1.Visible) ? statusStrip2.Height : 0) + menuStrip1.Height);
-			//int min = Math.Min(r.Height, r.Width);
-			//double factor = 3 * ((double)min / (double)400);
-			//if (r.Width > r.Height) r.X = (r.Width - r.Height) / 2;
-			//else if (r.Height > r.Width) r.Y = (r.Height - r.Width) / 2;
-
-			////Draw face selection
-			//RubikManager.PositionSpec selectedPos = rubikManager.Render(g,r, factor, PointToClient(Cursor.Position));
-			//if (!contextMenuStrip1.Visible)
-			//{
-			//	rubikManager.setFaceSelection(Face3D.SelectionMode.None);
-			//	rubikManager.setFaceSelection(oldSelection.cubePos, oldSelection.facePos, Face3D.SelectionMode.Second);
-			//	rubikManager.setFaceSelection(selectedPos.cubePos, selectedPos.facePos, Face3D.SelectionMode.First);
-			//	currentSelection = selectedPos;
-			//	toolStripStatusLabel2.Text = "[" + selectedPos.cubePos.ToString() + "] | " + selectedPos.facePos.ToString();
-			//}
 		}
 
 		private void Form1_Resize(object sender, EventArgs e)
@@ -100,26 +75,16 @@ namespace VirtualRubik
 			rubikRenderer.SetDrawingArea(r, factor);
 
 			RenderInfo currentCommand = command;
-			e.Graphics.SmoothingMode = SmoothingMode.AntiAlias;
 			if (currentCommand.FacesProjected != null)
 			{
-				foreach (Face3D face in currentCommand.FacesProjected)
-				{
-					PointF[] parr = face.Edges.Select(p => new PointF((float)p.X, (float)p.Y)).ToArray();
-					GraphicsPath gp = new GraphicsPath();
-					gp.AddPolygon(parr);
-					e.Graphics.FillPolygon(new SolidBrush(face.Color), parr);
-					e.Graphics.DrawPolygon(Pens.Black, parr);
-				}
+				PositionSpec selectedPos = rubikRenderer.RubikManager.RubikCube.Render(e.Graphics, currentCommand, PointToClient(Cursor.Position));
+				rubikRenderer.RubikManager.setFaceSelection(Face3D.SelectionMode.None);
+				rubikRenderer.RubikManager.setFaceSelection(oldSelection.CubePosition, oldSelection.FacePosition, Face3D.SelectionMode.Second);
+				rubikRenderer.RubikManager.setFaceSelection(selectedPos.CubePosition, selectedPos.FacePosition, Face3D.SelectionMode.First);
+				currentSelection = selectedPos;
+				toolStripStatusLabel2.Text = "[" + selectedPos.CubePosition.ToString() + "] | " + selectedPos.FacePosition.ToString();
 			}
 		}
-
-		//private void dpp(Point3D p, Graphics g, Brush c)
-		//{
-		//    Point3D proj = p.Project(400, 400, 100, 4, 3);
-		//    int size = (int)((double)3 * (3 - (proj.Z - 1.5)));
-		//    g.FillEllipse(c, new Rectangle((int)proj.X-(size/2), (int)proj.Y-(size/2), size, size));
-		//}
 
 		#region Buttons
 
@@ -171,9 +136,10 @@ namespace VirtualRubik
 			double factor = 3 * ((double)min / (double)400);
 			if (r.Width > r.Height) r.X = (r.Width - r.Height) / 2;
 			else if (r.Height > r.Width) r.Y = (r.Height - r.Width) / 2;
+			if (rubikRenderer != null) rubikRenderer.Abort();
 
 			//Create render object, event handling
-			rubikRenderer = new RubikRenderer(r,factor);
+			rubikRenderer = new RubikRenderer(r, factor);
 			rubikRenderer.OnRender += new RubikRenderer.RenderHandler(Render);
 			rubikRenderer.RubikManager.OnRotatingFinished += new RubikManager.RotatingFinishedHandler(RotatingFinished);
 			//Start update and render processs
@@ -218,26 +184,25 @@ namespace VirtualRubik
 
 		private void RotatingFinished(object sender)
 		{
-			//if (moveStack.Count > 0)
-			//{
-			//	LayerMove nextMove = moveStack.Pop();
-			//	bool direction = nextMove.Direction;
-			//	rubikRenderer.RubikManager.Rotate90(nextMove.Layer, direction, rotationTime);
-			//	toolStripStatusLabel1.Text = "Rotating " + nextMove.Layer.ToString() + " " + ((nextMove.Direction) ? "Clockwise" : "Counter-Clockwise");
-			//	listBox1.SelectedIndex++;
-			//	comboBox1.Text = listBox1.SelectedItem.ToString();
-			//}
-			//else
-			//{
-			//	groupBox1.Enabled = true;
-			//	if (listBox1.SelectedIndex != listBox1.Items.Count - 1) listBox1.SelectedIndex++;
-			//	else listBox1.SelectedIndex = -1;
-			//	toolStripStatusLabel1.Text = "Ready";
-			//}
-			sw.Stop();
-			Debug.WriteLine(sw.ElapsedMilliseconds);
-			sw.Restart();
-			rubikRenderer.RubikManager.Rotate90(Cube3D.RubikPosition.TopLayer, true, 500);
+			if (moveStack.Count > 0)
+			{
+				LayerMove nextMove = moveStack.Pop();
+				bool direction = nextMove.Direction;
+				rubikRenderer.RubikManager.Rotate90(nextMove.Layer, direction, rotationTime);
+				toolStripStatusLabel1.Text = "Rotating " + nextMove.Layer.ToString() + " " + ((nextMove.Direction) ? "Clockwise" : "Counter-Clockwise");
+				if (listBox1.InvokeRequired) listBox1.Invoke((MethodInvoker)delegate() { listBox1.SelectedIndex++; });
+				if (comboBox1.InvokeRequired) comboBox1.Invoke((MethodInvoker)delegate() { comboBox1.Text = listBox1.SelectedItem.ToString(); });
+			}
+			else
+			{
+				if (groupBox1.InvokeRequired) groupBox1.Invoke((MethodInvoker)delegate() { groupBox1.Enabled = true; });
+				if (listBox1.InvokeRequired) listBox1.Invoke((MethodInvoker)delegate()
+				{
+					if (listBox1.SelectedIndex != listBox1.Items.Count - 1) listBox1.SelectedIndex++;
+					else listBox1.SelectedIndex = -1;
+				});
+				toolStripStatusLabel1.Text = "Ready";
+			}
 		}
 
 		#region Mouse Handling
@@ -429,7 +394,6 @@ namespace VirtualRubik
 					}
 				}
 			}
-			this.Invalidate();
 		}
 		private void groupBox1_EnabledChanged(object sender, EventArgs e)
 		{

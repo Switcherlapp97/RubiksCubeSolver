@@ -98,8 +98,7 @@ namespace VirtualRubik
 			return tempCubes;
 		}
 
-
-		public RenderInfo NewRender(Rectangle screen, double scale)
+		public RenderInfo GetRenderInfo(Rectangle screen, double scale)
 		{
       cubesRender.Clear();
       cubesRender = genCubesRotated(false);
@@ -108,31 +107,25 @@ namespace VirtualRubik
 			return new RenderInfo() { FacesProjected = facesProjected };
 		}
 
-    public PositionSpec Render(Graphics g, Rectangle screen, double scale, Point mousePos)
-    {
-      PositionSpec result = new PositionSpec() { CubePosition = Cube3D.RubikPosition.None, FacePosition = Face3D.FacePosition.None };
-      cubesRender.Clear();
-      cubesRender = genCubesRotated(false);
-      g.SmoothingMode = SmoothingMode.AntiAlias;
-      IEnumerable<Face3D> facesProjected = cubesRender.Select(c => c.Project(screen.Width, screen.Height, 100, 4, scale).Faces).Aggregate((a, b) => a.Concat(b));
-      facesProjected = facesProjected.OrderBy(p => p.Edges.ElementAt(0).Z).ToArray();
-      foreach (Face3D face in facesProjected.Reverse())
-      {
-        PointF[] parr = face.Edges.Select(p => new PointF((float)p.X, (float)p.Y)).ToArray();
-        GraphicsPath gp = new GraphicsPath();
-        gp.AddPolygon(parr);
-        double fak = ((Math.Sin((double)Environment.TickCount / (double)200) + 1) / 4) + 0.75;
-        if (gp.IsVisible(mousePos)) result = new PositionSpec() { CubePosition = face.MasterPosition, FacePosition = face.Position };
-        if (face.Selection.HasFlag(Face3D.SelectionMode.Second)) g.FillPolygon(new HatchBrush(HatchStyle.Percent75, Color.Black, face.Color), parr);
-        else if (face.Selection.HasFlag(Face3D.SelectionMode.NotPossible)) g.FillPolygon(new SolidBrush(Color.FromArgb(face.Color.A, (int)(face.Color.R * 0.15), (int)(face.Color.G * 0.15), (int)(face.Color.B * 0.15))), parr);
-        else if (face.Selection.HasFlag(Face3D.SelectionMode.First)) g.FillPolygon(new HatchBrush(HatchStyle.Percent30, Color.Black, face.Color), parr);
-        else if (face.Selection.HasFlag(Face3D.SelectionMode.Possible)) g.FillPolygon(new SolidBrush(Color.FromArgb(face.Color.A, (int)(Math.Min(face.Color.R * fak, 255)), (int)(Math.Min(face.Color.G * fak, 255)), (int)(Math.Min(face.Color.B * fak, 255)))), parr);
-        else g.FillPolygon(new SolidBrush(face.Color), parr);
-        g.DrawPolygon(Pens.Black, parr);
-      }
-      return result;
-    }
-
+		public PositionSpec Render(Graphics g, RenderInfo info, Point mousePos)
+		{
+			g.SmoothingMode = SmoothingMode.AntiAlias;
+			PositionSpec mousePositionSpec = new PositionSpec() { CubePosition = Cube3D.RubikPosition.None, FacePosition = Face3D.FacePosition.None };
+			foreach (Face3D face in info.FacesProjected)
+			{
+				PointF[] parr = face.Edges.Select(p => new PointF((float)p.X, (float)p.Y)).ToArray();
+				GraphicsPath gp = new GraphicsPath();
+				gp.AddPolygon(parr);
+				double fak = ((Math.Sin((double)Environment.TickCount / (double)200) + 1) / 4) + 0.75;
+				if (gp.IsVisible(mousePos)) mousePositionSpec = new PositionSpec() { CubePosition = face.MasterPosition, FacePosition = face.Position };
+				if (face.Selection.HasFlag(Face3D.SelectionMode.Second)) g.FillPolygon(new HatchBrush(HatchStyle.Percent75, Color.Black, face.Color), parr);
+				else if (face.Selection.HasFlag(Face3D.SelectionMode.NotPossible)) g.FillPolygon(new SolidBrush(Color.FromArgb(face.Color.A, (int)(face.Color.R * 0.15), (int)(face.Color.G * 0.15), (int)(face.Color.B * 0.15))), parr);
+				else if (face.Selection.HasFlag(Face3D.SelectionMode.First)) g.FillPolygon(new HatchBrush(HatchStyle.Percent30, Color.Black, face.Color), parr);
+				else if (face.Selection.HasFlag(Face3D.SelectionMode.Possible)) g.FillPolygon(new SolidBrush(Color.FromArgb(face.Color.A, (int)(Math.Min(face.Color.R * fak, 255)), (int)(Math.Min(face.Color.G * fak, 255)), (int)(Math.Min(face.Color.B * fak, 255)))), parr);
+				else g.FillPolygon(new SolidBrush(face.Color), parr);
+				g.DrawPolygon(Pens.Black, parr);
+			}
+			return mousePositionSpec;
+		}
   }
 }
-

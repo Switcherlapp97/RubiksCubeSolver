@@ -77,7 +77,7 @@
 			// 
 			this.statusStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.toolStripStatusLabel1});
-			this.statusStrip1.Location = new System.Drawing.Point(0, 425);
+			this.statusStrip1.Location = new System.Drawing.Point(0, 413);
 			this.statusStrip1.Name = "statusStrip1";
 			this.statusStrip1.Size = new System.Drawing.Size(668, 22);
 			this.statusStrip1.SizingGrip = false;
@@ -102,7 +102,7 @@
 			this.groupBox1.ForeColor = System.Drawing.Color.Black;
 			this.groupBox1.Location = new System.Drawing.Point(448, 24);
 			this.groupBox1.Name = "groupBox1";
-			this.groupBox1.Size = new System.Drawing.Size(220, 379);
+			this.groupBox1.Size = new System.Drawing.Size(220, 367);
 			this.groupBox1.TabIndex = 8;
 			this.groupBox1.TabStop = false;
 			this.groupBox1.Text = "Controls";
@@ -114,7 +114,7 @@
 			this.panel2.Location = new System.Drawing.Point(3, 76);
 			this.panel2.Name = "panel2";
 			this.panel2.Padding = new System.Windows.Forms.Padding(1, 0, 1, 0);
-			this.panel2.Size = new System.Drawing.Size(214, 250);
+			this.panel2.Size = new System.Drawing.Size(214, 238);
 			this.panel2.TabIndex = 7;
 			// 
 			// listBox1
@@ -126,7 +126,7 @@
 			this.listBox1.IntegralHeight = false;
 			this.listBox1.Location = new System.Drawing.Point(1, 0);
 			this.listBox1.Name = "listBox1";
-			this.listBox1.Size = new System.Drawing.Size(212, 250);
+			this.listBox1.Size = new System.Drawing.Size(212, 238);
 			this.listBox1.TabIndex = 4;
 			this.listBox1.SelectedIndexChanged += new System.EventHandler(this.listBox1_SelectedIndexChanged);
 			this.listBox1.KeyDown += new System.Windows.Forms.KeyEventHandler(this.listBox1_KeyDown);
@@ -224,7 +224,7 @@
 			// 
 			this.splitContainer1.Dock = System.Windows.Forms.DockStyle.Bottom;
 			this.splitContainer1.IsSplitterFixed = true;
-			this.splitContainer1.Location = new System.Drawing.Point(3, 326);
+			this.splitContainer1.Location = new System.Drawing.Point(3, 314);
 			this.splitContainer1.Name = "splitContainer1";
 			// 
 			// splitContainer1.Panel1
@@ -269,7 +269,7 @@
 			// 
 			this.button6.Dock = System.Windows.Forms.DockStyle.Bottom;
 			this.button6.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-			this.button6.Location = new System.Drawing.Point(3, 351);
+			this.button6.Location = new System.Drawing.Point(3, 339);
 			this.button6.Name = "button6";
 			this.button6.Size = new System.Drawing.Size(214, 25);
 			this.button6.TabIndex = 9;
@@ -281,7 +281,7 @@
 			// 
 			this.statusStrip2.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.toolStripStatusLabel2});
-			this.statusStrip2.Location = new System.Drawing.Point(0, 403);
+			this.statusStrip2.Location = new System.Drawing.Point(0, 391);
 			this.statusStrip2.Name = "statusStrip2";
 			this.statusStrip2.Size = new System.Drawing.Size(668, 22);
 			this.statusStrip2.SizingGrip = false;
@@ -364,7 +364,7 @@
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
 			this.BackColor = System.Drawing.SystemColors.Control;
-			this.ClientSize = new System.Drawing.Size(668, 447);
+			this.ClientSize = new System.Drawing.Size(668, 435);
 			this.Controls.Add(this.groupBox1);
 			this.Controls.Add(this.statusStrip2);
 			this.Controls.Add(this.statusStrip1);
@@ -373,6 +373,8 @@
 			this.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
 			this.KeyPreview = true;
 			this.MainMenuStrip = this.menuStrip1;
+			this.MaximizeBox = false;
+			this.MaximumSize = new System.Drawing.Size(684, 473);
 			this.MinimumSize = new System.Drawing.Size(684, 473);
 			this.Name = "Form1";
 			this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;

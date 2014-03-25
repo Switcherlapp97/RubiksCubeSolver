@@ -73,9 +73,10 @@ namespace VirtualRubik
 		{
 			if (!Rotating)
 			{
-				Rotate90(layer, direction, 1);
-				RubikCube.LayerRotation[layer] += rotationStep;
-				resetFlags(false);
+				Rotating = true;
+				if (layer == Cube3D.RubikPosition.TopLayer || layer == Cube3D.RubikPosition.LeftSlice || layer == Cube3D.RubikPosition.FrontSlice) direction = !direction;
+				RubikCube.LayerRotation[layer] += (direction) ? -90 : 90;
+				resetFlagsSync(layer, (direction) ? -90 : 90);
 			}
 		}
 
@@ -141,22 +142,60 @@ namespace VirtualRubik
 			}));
 		}
 
-
-		public PositionSpec Render(Graphics g, Rectangle screen, double scale, Point mousePos, double fps)
+		public void resetFlagsSync(Cube3D.RubikPosition layer, int target)
 		{
-			PositionSpec result = RubikCube.Render(g, screen, scale, mousePos);
-			if (Rotating)
+			RubikCube.LayerRotation[layer] = target;
+			List<Cube3D> affected = RubikCube.cubes.Where(c => c.Position.HasFlag(layer)).ToList();
+			if (layer == Cube3D.RubikPosition.LeftSlice || layer == Cube3D.RubikPosition.MiddleSlice_Sides || layer == Cube3D.RubikPosition.RightSlice)
 			{
-				RubikCube.LayerRotation[rotationLayer] += rotationStep;
-				if ((rotationTarget > 0 && RubikCube.LayerRotation[rotationLayer] >= rotationTarget) || (rotationTarget < 0 && RubikCube.LayerRotation[rotationLayer] <= rotationTarget))
+				affected.ForEach(c => c.Faces.ToList().ForEach(f => f.Rotate(Point3D.RotationType.X, target)));
+			}
+			if (layer == Cube3D.RubikPosition.TopLayer || layer == Cube3D.RubikPosition.MiddleLayer || layer == Cube3D.RubikPosition.BottomLayer)
+			{
+				affected.ForEach(c => c.Faces.ToList().ForEach(f => f.Rotate(Point3D.RotationType.Y, target)));
+			}
+			if (layer == Cube3D.RubikPosition.BackSlice || layer == Cube3D.RubikPosition.MiddleSlice || layer == Cube3D.RubikPosition.FrontSlice)
+			{
+				affected.ForEach(c => c.Faces.ToList().ForEach(f => f.Rotate(Point3D.RotationType.Z, target)));
+			}
+			double ed = ((double)2 / (double)3);
+			for (int i = -1; i <= 1; i++)
+			{
+				for (int j = -1; j <= 1; j++)
 				{
-					resetFlags(true);
+					for (int k = -1; k <= 1; k++)
+					{
+						//Reset Flags but keep Colors
+						Cube3D.RubikPosition flags = RubikCube.genSideFlags(i, j, k); ;
+						Cube3D cube = RubikCube.cubes.First(c => (Math.Round(c.Faces.Sum(f => f.Edges.Sum(e => e.X)) / 24, 4) == Math.Round(i * ed, 4))
+								&& (Math.Round(c.Faces.Sum(f => f.Edges.Sum(e => e.Y)) / 24, 4) == Math.Round(j * ed, 4))
+								&& (Math.Round(c.Faces.Sum(f => f.Edges.Sum(e => e.Z)) / 24, 4) == Math.Round(k * ed, 4)));
+						cube.Position = flags;
+						cube.Faces.ToList().ForEach(f => f.MasterPosition = flags);
+						cube.Faces.First(f => (Math.Round(f.Edges.Sum(e => e.X) / 4, 4) == Math.Round(i * ed, 4))
+								&& (Math.Round(f.Edges.Sum(e => e.Y) / 4, 4) == Math.Round((j * ed) - (ed / 2), 4))
+								&& (Math.Round(f.Edges.Sum(e => e.Z) / 4, 4) == Math.Round(k * ed, 4))).Position = Face3D.FacePosition.Top;
+						cube.Faces.First(f => (Math.Round(f.Edges.Sum(e => e.X) / 4, 4) == Math.Round(i * ed, 4))
+							 && (Math.Round(f.Edges.Sum(e => e.Y) / 4, 4) == Math.Round((j * ed) + (ed / 2), 4))
+							 && (Math.Round(f.Edges.Sum(e => e.Z) / 4, 4) == Math.Round(k * ed, 4))).Position = Face3D.FacePosition.Bottom;
+						cube.Faces.First(f => (Math.Round(f.Edges.Sum(e => e.X) / 4, 4) == Math.Round((i * ed) - (ed / 2), 4))
+								&& (Math.Round(f.Edges.Sum(e => e.Y) / 4, 4) == Math.Round(j * ed, 4))
+								&& (Math.Round(f.Edges.Sum(e => e.Z) / 4, 4) == Math.Round(k * ed, 4))).Position = Face3D.FacePosition.Left;
+						cube.Faces.First(f => (Math.Round(f.Edges.Sum(e => e.X) / 4, 4) == Math.Round((i * ed) + (ed / 2), 4))
+							 && (Math.Round(f.Edges.Sum(e => e.Y) / 4, 4) == Math.Round(j * ed, 4))
+							 && (Math.Round(f.Edges.Sum(e => e.Z) / 4, 4) == Math.Round(k * ed, 4))).Position = Face3D.FacePosition.Right;
+						cube.Faces.First(f => (Math.Round(f.Edges.Sum(e => e.X) / 4, 4) == Math.Round(i * ed, 4))
+							 && (Math.Round(f.Edges.Sum(e => e.Y) / 4, 4) == Math.Round(j * ed, 4))
+							 && (Math.Round(f.Edges.Sum(e => e.Z) / 4, 4) == Math.Round((k * ed) - (ed / 2), 4))).Position = Face3D.FacePosition.Front;
+						cube.Faces.First(f => (Math.Round(f.Edges.Sum(e => e.X) / 4, 4) == Math.Round(i * ed, 4))
+							 && (Math.Round(f.Edges.Sum(e => e.Y) / 4, 4) == Math.Round(j * ed, 4))
+							 && (Math.Round(f.Edges.Sum(e => e.Z) / 4, 4) == Math.Round((k * ed) + (ed / 2), 4))).Position = Face3D.FacePosition.Back;
+					}
 				}
 			}
-			return result;
+			foreach (Cube3D.RubikPosition rp in (Cube3D.RubikPosition[])Enum.GetValues(typeof(Cube3D.RubikPosition))) RubikCube.LayerRotation[rp] = 0;
+			Rotating = false;
 		}
-
-
 
 		public void resetFlags(bool fireFinished)
 		{
