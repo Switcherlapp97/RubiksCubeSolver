@@ -77,7 +77,8 @@ namespace VirtualRubik
 			RenderInfo currentCommand = command;
 			if (currentCommand.FacesProjected != null)
 			{
-				PositionSpec selectedPos = rubikRenderer.RubikManager.RubikCube.Render(e.Graphics, currentCommand, PointToClient(Cursor.Position));
+				PositionSpec selectedPos = (contextMenuStrip1.Visible) ? currentSelection : rubikRenderer.RubikManager.RubikCube.Render(e.Graphics, currentCommand, PointToClient(Cursor.Position));
+				if (selectedPos.Equals(currentSelection)) rubikRenderer.RubikManager.RubikCube.Render(e.Graphics, currentCommand, PointToClient(Cursor.Position));
 				rubikRenderer.RubikManager.setFaceSelection(Face3D.SelectionMode.None);
 				rubikRenderer.RubikManager.setFaceSelection(oldSelection.CubePosition, oldSelection.FacePosition, Face3D.SelectionMode.Second);
 				rubikRenderer.RubikManager.setFaceSelection(selectedPos.CubePosition, selectedPos.FacePosition, Face3D.SelectionMode.First);
@@ -177,7 +178,7 @@ namespace VirtualRubik
 		}
 		private void aboutToolStripMenuItem_Click(object sender, EventArgs e)
 		{
-			MessageBox.Show("VirtualRubik Version " + Application.ProductVersion, "VirtualRubik - About", MessageBoxButtons.OK, MessageBoxIcon.Information);
+			MessageBox.Show("RubiksCubeSolver Beta 0.9.5 by Switcherlapp97", "About", MessageBoxButtons.OK, MessageBoxIcon.Information);
 		}
 
 		#endregion
@@ -446,7 +447,7 @@ namespace VirtualRubik
 		private void button6_Click(object sender, EventArgs e)
 		{
 			listBox1.Items.Clear();
-			CubeSolver cs = new CubeSolver(rubikRenderer.RubikManager);
+			CubeSolverBeginner cs = new CubeSolverBeginner(rubikRenderer.RubikManager);
 			if (cs.CanSolve())
 			{
 				RubikManager ma = cs.ReturnRubik();
@@ -465,11 +466,10 @@ namespace VirtualRubik
 
 		private void solveToolStripMenuItem_Click(object sender, EventArgs e)
 		{
-			CubeSolver cs = new CubeSolver(rubikRenderer.RubikManager);
+			CubeSolverBeginner cs = new CubeSolverBeginner(rubikRenderer.RubikManager);
 			if (cs.CanSolve())
 			{
 				rubikRenderer.RubikManager = cs.ReturnRubik().Clone();
-				rubikRenderer.RubikManager.OnRotatingFinished += RotatingFinished;
 				rubikRenderer.RubikManager.Moves.Clear();
 			}
 			else MessageBox.Show("Insoluble cube");
@@ -498,6 +498,7 @@ namespace VirtualRubik
 				}
 			}
 		}
+
 	}
 
 }

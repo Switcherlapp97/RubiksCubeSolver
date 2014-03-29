@@ -4,7 +4,7 @@ using System.Drawing;
 
 namespace VirtualRubik
 {
-	static class UniCube
+	public static class UniCube
 	{
 		public static IEnumerable<Face3D> genFaces(Cube3D.RubikPosition masterPosition)
 		{

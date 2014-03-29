@@ -6,7 +6,7 @@ using System.Drawing;
 
 namespace VirtualRubik
 {
-	struct RenderInfo
+	public struct RenderInfo
 	{
 		public Point MousePosition { get; set; }
 		public PositionSpec SelectedPos { get; set; }

@@ -9,7 +9,7 @@ using System.Windows.Forms;
 
 namespace VirtualRubik
 {
-	class RubikManager
+	public class RubikManager
 	{
 		public Rubik RubikCube;
 		private Boolean Rotating;

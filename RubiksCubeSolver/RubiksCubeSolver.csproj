@@ -68,13 +68,16 @@
     <Compile Include="Render\RotationInfo.cs" />
     <Compile Include="Render\RubikRenderer.cs" />
     <Compile Include="Render\UniCube.cs" />
-    <Compile Include="State\CubeSolver.cs" />
-    <Compile Include="State\LayerMove.cs" />
+    <Compile Include="LayerMoves\Algorithm.cs" />
+    <Compile Include="Solver\CubeSolverBeginner.cs" />
+    <Compile Include="Solver\CubeSolver.cs" />
+    <Compile Include="LayerMoves\LayerMove.cs" />
     <Compile Include="Render\Point3D.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Render\Rubik.cs" />
-    <Compile Include="State\RubikManager.cs" />
+    <Compile Include="Render\RubikManager.cs" />
+    <Compile Include="Solver\CubeSolverFridrich.cs" />
     <EmbeddedResource Include="Form1.resx">
       <DependentUpon>Form1.cs</DependentUpon>
     </EmbeddedResource>

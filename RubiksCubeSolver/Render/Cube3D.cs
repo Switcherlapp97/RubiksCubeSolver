@@ -6,7 +6,7 @@ using System.Drawing.Drawing2D;
 
 namespace VirtualRubik
 {
-  class Cube3D
+  public class Cube3D
   {
 
     public IEnumerable<Face3D> Faces;

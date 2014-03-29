@@ -8,7 +8,7 @@ using System.Diagnostics;
 
 namespace VirtualRubik
 {
-  class Rubik
+  public class Rubik
   {
 
     public List<Cube3D> cubes;

@@ -6,9 +6,8 @@ using System.Drawing.Drawing2D;
 
 namespace VirtualRubik
 {
-  class Face3D
+  public class Face3D
   {
-
     public IEnumerable<Point3D> Edges { get; set; }
     public Color Color { get; set; }
     public enum FacePosition

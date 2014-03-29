@@ -10,7 +10,7 @@ using System.Windows.Forms;
 
 namespace VirtualRubik
 {
-	class RubikRenderer
+	public class RubikRenderer
 	{
 		private List<double> frameTimes;
 		private RenderInfo[] buffer;
@@ -147,9 +147,8 @@ namespace VirtualRubik
 				Render(bufferIndex);
 				bufferIndex ^= 0x1;
 
-				if (sw.ElapsedMilliseconds < 15)
-					Thread.Sleep(System.Math.Max(15 - (int)sw.ElapsedMilliseconds, 0));
-				while (sw.Elapsed.TotalMilliseconds < 1000.0 / 60) { }
+				if (sw.ElapsedMilliseconds < 30) Thread.Sleep(System.Math.Max(30 - (int)sw.ElapsedMilliseconds, 0));
+				while (sw.Elapsed.TotalMilliseconds < 1000.0 / 60.0) { }
 
 				sw.Stop();
 

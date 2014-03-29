@@ -5,7 +5,7 @@ using System.Text;
 
 namespace VirtualRubik
 {
-	struct RotationInfo
+	public struct RotationInfo
 	{
 		public bool Rotating { get; set; }
 		public int Milliseconds { get; set; } //in ms

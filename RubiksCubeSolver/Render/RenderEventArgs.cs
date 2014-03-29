@@ -5,7 +5,7 @@ using System.Text;
 
 namespace VirtualRubik
 {
-	class RenderEventArgs: EventArgs
+	public class RenderEventArgs: EventArgs
 	{
 		public RenderInfo RenderInfo { get; private set; }
 		public RenderEventArgs(RenderInfo renderInfo)

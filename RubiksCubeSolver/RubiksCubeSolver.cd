@@ -57,7 +57,7 @@
     </TypeIdentifier>
   </Class>
   <Class Name="VirtualRubik.RenderEventArgs">
-    <Position X="11" Y="2.25" Width="1.5" />
+    <Position X="11" Y="4.5" Width="1.5" />
     <TypeIdentifier>
       <HashCode>AAAQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
       <FileName>Render\RenderEventArgs.cs</FileName>
@@ -66,7 +66,7 @@
   <Class Name="VirtualRubik.Rubik">
     <Position X="5.75" Y="0.5" Width="1.5" />
     <TypeIdentifier>
-      <HashCode>AAAAAAAABAAAAIAAAAAAAABAAUAAAAAAABAAAAgAADA=</HashCode>
+      <HashCode>AAAAAAABBAAAAIAAAAAAAABAAUAAAAAAABAAAAgAABA=</HashCode>
       <FileName>Render\Rubik.cs</FileName>
     </TypeIdentifier>
   </Class>
@@ -83,7 +83,7 @@
       </Delegate>
     </NestedTypes>
     <TypeIdentifier>
-      <HashCode>AAQAAAAABCAAICKCAAAQQAQCAAEAAAIAoBFAIAIQAEA=</HashCode>
+      <HashCode>AAQAAAAABCAAICKCAAAAQAQCAAEAAAIAoBFAIAIQAEA=</HashCode>
       <FileName>Render\RubikRenderer.cs</FileName>
     </TypeIdentifier>
   </Class>
@@ -94,18 +94,11 @@
       <FileName>Render\UniCube.cs</FileName>
     </TypeIdentifier>
   </Class>
-  <Class Name="VirtualRubik.CubeSolver">
-    <Position X="12.75" Y="0.5" Width="1.5" />
-    <TypeIdentifier>
-      <HashCode>hCAACAAAAUAQAAAAAAAACAAIIAAABAACAAMAQgAAAEA=</HashCode>
-      <FileName>State\CubeSolver.cs</FileName>
-    </TypeIdentifier>
-  </Class>
   <Class Name="VirtualRubik.LayerMove">
     <Position X="5.75" Y="3.75" Width="1.5" />
     <TypeIdentifier>
-      <HashCode>AAAAAAAAAAAAAAAAACAAAAAAAAAAAAAEAAAAAAAAABA=</HashCode>
-      <FileName>State\LayerMove.cs</FileName>
+      <HashCode>AAAgAAAAAAAAAAAAACAAAAAAAAAAAAAEAAAAAAAAABA=</HashCode>
+      <FileName>LayerMoves\LayerMove.cs</FileName>
     </TypeIdentifier>
   </Class>
   <Class Name="VirtualRubik.RubikManager">
@@ -116,13 +109,34 @@
     <NestedTypes>
       <Delegate Name="VirtualRubik.RubikManager.RotatingFinishedHandler" Collapsed="true">
         <TypeIdentifier>
-          <NewMemberFileName>State\RubikManager.cs</NewMemberFileName>
+          <NewMemberFileName>Render\RubikManager.cs</NewMemberFileName>
         </TypeIdentifier>
       </Delegate>
     </NestedTypes>
     <TypeIdentifier>
-      <HashCode>AAAEAIAMIBEAEAAAQAAAgEAEAAACBEAAABIAAAAAAhA=</HashCode>
-      <FileName>State\RubikManager.cs</FileName>
+      <HashCode>AAAEAIAMIBEAEAAAQAAAkEAEAAACBEAAAAIAAAAAAhA=</HashCode>
+      <FileName>Render\RubikManager.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="VirtualRubik.Algorithm">
+    <Position X="5.75" Y="6" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAEAAAAAAAAAAAAA=</HashCode>
+      <FileName>LayerMoves\Algorithm.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="VirtualRubik.CubeSolver">
+    <Position X="12.75" Y="0.5" Width="2.75" />
+    <TypeIdentifier>
+      <HashCode>RAAASAAAAQARAAAAQAAAAABIIAAAAAACAAMAQiAAEEE=</HashCode>
+      <FileName>Solver\CubeSolver.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="VirtualRubik.CubeSolverBeginner">
+    <Position X="15.75" Y="0.5" Width="2" />
+    <TypeIdentifier>
+      <HashCode>gCAAQAAAAAAAAAAAAAAACAAAAAAAAAACAAEAQAAAEAA=</HashCode>
+      <FileName>Solver\CubeSolverBeginner.cs</FileName>
     </TypeIdentifier>
   </Class>
   <Struct Name="VirtualRubik.PositionSpec">
@@ -140,7 +154,7 @@
     </TypeIdentifier>
   </Struct>
   <Struct Name="VirtualRubik.RotationInfo">
-    <Position X="5.75" Y="6" Width="1.5" />
+    <Position X="11" Y="2.25" Width="1.5" />
     <TypeIdentifier>
       <HashCode>AAAAAAAAIACAAAAAACAAACAAAAAAAAAEAAAAAAAAAAA=</HashCode>
       <FileName>Render\RotationInfo.cs</FileName>
