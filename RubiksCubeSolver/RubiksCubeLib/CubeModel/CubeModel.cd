@@ -1,0 +1,107 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<ClassDiagram MajorVersion="1" MinorVersion="1">
+  <Class Name="RubiksCubeLib.CubeModel.Cube3D">
+    <Position X="10.5" Y="0.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAIAAAAAAAAAgAAAACAAAEAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>CubeModel\Cube3D.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="RubiksCubeLib.CubeModel.CubeModel">
+    <Position X="2.25" Y="0.5" Width="1.5" />
+    <Compartments>
+      <Compartment Name="Fields" Collapsed="true" />
+    </Compartments>
+    <NestedTypes>
+      <Delegate Name="RubiksCubeLib.CubeModel.CubeModel.SelectionChangedHandler" Collapsed="true">
+        <TypeIdentifier>
+          <NewMemberFileName>CubeModel\CubeModelControl\CubeModel.cs</NewMemberFileName>
+        </TypeIdentifier>
+      </Delegate>
+    </NestedTypes>
+    <TypeIdentifier>
+      <HashCode>AACAEIAAAHEBAIAAABiAACAKJxAgAEAAAhCAIAQCAIA=</HashCode>
+      <FileName>CubeModel\CubeModelControl\CubeModel.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="RubiksCubeLib.CubeModel.CubeModelRenderer" BaseTypeListCollapsed="true">
+    <Position X="0.5" Y="0.5" Width="1.5" />
+    <Compartments>
+      <Compartment Name="Fields" Collapsed="true" />
+    </Compartments>
+    <NestedTypes>
+      <Delegate Name="RubiksCubeLib.CubeModel.CubeModelRenderer.RotatingFinishedHandler" Collapsed="true">
+        <TypeIdentifier>
+          <NewMemberFileName>CubeModel\CubeModelControl\CubeModelRenderer.cs</NewMemberFileName>
+        </TypeIdentifier>
+      </Delegate>
+      <Delegate Name="RubiksCubeLib.CubeModel.CubeModelRenderer.RenderHandler" Collapsed="true">
+        <TypeIdentifier>
+          <NewMemberFileName>CubeModel\CubeModelControl\CubeModelRenderer.cs</NewMemberFileName>
+        </TypeIdentifier>
+      </Delegate>
+    </NestedTypes>
+    <TypeIdentifier>
+      <HashCode>AAQEgAAABDAAIAaCQAAAQAQCAAEAAAMAghBAIBIYAEA=</HashCode>
+      <FileName>CubeModel\CubeModelControl\CubeModelRenderer.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Class Name="RubiksCubeLib.CubeModel.Face3D">
+    <Position X="8.75" Y="0.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAgAAAACAAAEAAAAAAAEAAEgAAAAAA=</HashCode>
+      <FileName>CubeModel\Face3D.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="RubiksCubeLib.CubeModel.Point3D">
+    <Position X="12.25" Y="0.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAACAAAEAAAAAAAAAAAAAAAYAE=</HashCode>
+      <FileName>CubeModel\Point3D.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="RubiksCubeLib.CubeModel.RotationFinishedEventArgs">
+    <Position X="5.75" Y="2.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAEAAAAA=</HashCode>
+      <FileName>CubeModel\Rotation\RotationFinishedEventArgs.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="RubiksCubeLib.CubeModel.RotationInfo">
+    <Position X="4" Y="2.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAACgAAAAAAAAAAAAAAAAAEAAAAAAAAAAAAA=</HashCode>
+      <FileName>CubeModel\Rotation\RotationInfo.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="RubiksCubeLib.CubeModel.AnimatedLayerMove">
+    <Position X="4" Y="0.5" Width="3.25" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAIAAAAAAAAAAACAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>CubeModel\Rotation\RotationInfo.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="RubiksCubeLib.CubeModel.SelectionChangedEventArgs">
+    <Position X="4" Y="6.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAgAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>CubeModel\Selection\SelectionChangedEventArgs.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="RubiksCubeLib.CubeModel.SelectionCollection">
+    <Position X="5.75" Y="4.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAYAAAAAAAAABAAACAAAAAAAAAAgAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>CubeModel\Selection\SelectionCollection.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Enum Name="RubiksCubeLib.CubeModel.Selection">
+    <Position X="4" Y="4.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAQAAAAACAAIAAAAAAAABAAAAAAEAAAA=</HashCode>
+      <FileName>CubeModel\Selection\Selection.cs</FileName>
+    </TypeIdentifier>
+  </Enum>
+  <Font Name="Segoe UI" Size="9" />
+</ClassDiagram>

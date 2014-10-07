@@ -1,0 +1,109 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="12.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{294FECAF-D3D2-4920-91B0-35AACDBE9F16}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>RubiksCubeLib</RootNamespace>
+    <AssemblyName>RubiksCubeLib</AssemblyName>
+    <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="System" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Drawing" />
+    <Reference Include="System.Windows.Forms" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="CubeModel\Cube3D.cs" />
+    <Compile Include="CubeModel\CubeModelControl\CubeModel.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="CubeModel\CubeModelControl\CubeModel.Designer.cs">
+      <DependentUpon>CubeModel.cs</DependentUpon>
+    </Compile>
+    <Compile Include="CubeModel\CubeModelControl\CubeModel.MouseHandling.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="CubeModel\CubeModelControl\CubeModelRenderer.cs" />
+    <Compile Include="General\Moves\IMove.cs" />
+    <Compile Include="General\Moves\LayerMoveCollection.cs" />
+    <Compile Include="General\Moves\LayerMove.cs" />
+    <Compile Include="General\Positions\CubeFlagService.cs" />
+    <Compile Include="General\Positions\CubePosition.cs" />
+    <Compile Include="General\Positions\PositionSpec.cs" />
+    <Compile Include="CubeModel\Face3D.cs" />
+    <Compile Include="CubeModel\Point3D.cs" />
+    <Compile Include="CubeModel\Rotation\RotationFinishedEventArgs.cs" />
+    <Compile Include="CubeModel\Rotation\RotationInfo.cs" />
+    <Compile Include="CubeModel\Selection\Selection.cs" />
+    <Compile Include="CubeModel\Selection\SelectionChangedEventArgs.cs" />
+    <Compile Include="CubeModel\Selection\SelectionCollection.cs" />
+    <Compile Include="General\Moves\Algorithm.cs" />
+    <Compile Include="General\Positions\CubeFlag.cs" />
+    <Compile Include="General\Positions\FacePosition.cs" />
+    <Compile Include="General\RotationType.cs" />
+    <Compile Include="General\UniCube.cs" />
+    <Compile Include="Plugin\IPluginable.cs" />
+    <Compile Include="Plugin\PluginCollection.cs" />
+    <Compile Include="Plugin\PluginSelectorDialog.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="RubiksCube\Cube.cs" />
+    <Compile Include="RubiksCube\Face.cs" />
+    <Compile Include="RubiksCube\Rubik.cs" />
+    <Compile Include="ScanInput\CubeScanner.cs" />
+    <Compile Include="ScanInput\ScanEventArgs.cs" />
+    <Compile Include="Solving\CubeSolver.cs" />
+    <Compile Include="Plugin\PluginConnector.cs" />
+    <Compile Include="Solving\Solution.cs" />
+    <Compile Include="Solving\Solvability.cs" />
+    <Compile Include="Solving\TestScenario.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="CubeModel\CubeModelControl\CubeModel.resx">
+      <DependentUpon>CubeModel.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Plugin\PluginSelectorDialog.resx">
+      <DependentUpon>PluginSelectorDialog.cs</DependentUpon>
+    </EmbeddedResource>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="CubeModel\CubeModel.cd" />
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>
