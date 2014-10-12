@@ -52,6 +52,7 @@
       <SubType>UserControl</SubType>
     </Compile>
     <Compile Include="CubeModel\CubeModelControl\CubeModelRenderer.cs" />
+    <Compile Include="General\CollectionMethods.cs" />
     <Compile Include="General\Moves\IMove.cs" />
     <Compile Include="General\Moves\LayerMoveCollection.cs" />
     <Compile Include="General\Moves\LayerMove.cs" />

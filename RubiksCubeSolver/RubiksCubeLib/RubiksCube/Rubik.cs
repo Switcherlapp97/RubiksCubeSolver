@@ -173,36 +173,9 @@ namespace RubiksCubeLib.RubiksCube
 
     public CubeFlag GetTargetFlags(Cube cube)
     {
-      return GenStandardCube().Cubes.First(cu => ScrambledEquals(cu.Colors, cube.Colors)).Position.Flags;
+      return GenStandardCube().Cubes.First(cu => CollectionMethods.ScrambledEquals(cu.Colors, cube.Colors)).Position.Flags;
     }
 
-    protected bool ScrambledEquals<T>(IEnumerable<T> list1, IEnumerable<T> list2)
-    {
-      var cnt = new Dictionary<T, int>();
-      foreach (T s in list1)
-      {
-        if (cnt.ContainsKey(s))
-        {
-          cnt[s]++;
-        }
-        else
-        {
-          cnt.Add(s, 1);
-        }
-      }
-      foreach (T s in list2)
-      {
-        if (cnt.ContainsKey(s))
-        {
-          cnt[s]--;
-        }
-        else
-        {
-          return false;
-        }
-      }
-      return cnt.Values.All(c => c == 0);
-    }
 
     public static Rubik Scan(CubeScanner scanner)
     {

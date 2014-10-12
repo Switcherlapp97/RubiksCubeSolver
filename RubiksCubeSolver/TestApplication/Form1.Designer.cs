@@ -36,12 +36,11 @@
       this.scrambleToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
       this.solveToolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
       this.resetToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-      this.inversionToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+      this.cornerTestToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
       this.solverToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
       this.loadToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
       this.solveToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
       this.cubeModel = new RubiksCubeLib.CubeModel.CubeModel();
-      this.cornerTestToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
       this.statusStripSelection.SuspendLayout();
       this.menuStrip1.SuspendLayout();
       this.SuspendLayout();
@@ -78,7 +77,6 @@
             this.scrambleToolStripMenuItem,
             this.solveToolStripMenuItem1,
             this.resetToolStripMenuItem,
-            this.inversionToolStripMenuItem,
             this.cornerTestToolStripMenuItem});
       this.rubikToolStripMenuItem.Name = "rubikToolStripMenuItem";
       this.rubikToolStripMenuItem.Size = new System.Drawing.Size(49, 20);
@@ -105,12 +103,12 @@
       this.resetToolStripMenuItem.Text = "Reset";
       this.resetToolStripMenuItem.Click += new System.EventHandler(this.resetToolStripMenuItem_Click);
       // 
-      // inversionToolStripMenuItem
+      // cornerTestToolStripMenuItem
       // 
-      this.inversionToolStripMenuItem.Name = "inversionToolStripMenuItem";
-      this.inversionToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
-      this.inversionToolStripMenuItem.Text = "Inversion";
-      this.inversionToolStripMenuItem.Click += new System.EventHandler(this.inversionToolStripMenuItem_Click);
+      this.cornerTestToolStripMenuItem.Name = "cornerTestToolStripMenuItem";
+      this.cornerTestToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+      this.cornerTestToolStripMenuItem.Text = "Parity Test";
+      this.cornerTestToolStripMenuItem.Click += new System.EventHandler(this.cornerTestToolStripMenuItem_Click);
       // 
       // solverToolStripMenuItem
       // 
@@ -124,14 +122,14 @@
       // loadToolStripMenuItem
       // 
       this.loadToolStripMenuItem.Name = "loadToolStripMenuItem";
-      this.loadToolStripMenuItem.Size = new System.Drawing.Size(151, 22);
+      this.loadToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
       this.loadToolStripMenuItem.Text = "Load Plugins...";
       this.loadToolStripMenuItem.Click += new System.EventHandler(this.loadToolStripMenuItem_Click);
       // 
       // solveToolStripMenuItem
       // 
       this.solveToolStripMenuItem.Name = "solveToolStripMenuItem";
-      this.solveToolStripMenuItem.Size = new System.Drawing.Size(151, 22);
+      this.solveToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
       this.solveToolStripMenuItem.Text = "Select Plugin";
       this.solveToolStripMenuItem.Click += new System.EventHandler(this.solveToolStripMenuItem_Click);
       // 
@@ -143,13 +141,6 @@
       this.cubeModel.Name = "cubeModel";
       this.cubeModel.Size = new System.Drawing.Size(380, 287);
       this.cubeModel.TabIndex = 3;
-      // 
-      // cornerTestToolStripMenuItem
-      // 
-      this.cornerTestToolStripMenuItem.Name = "cornerTestToolStripMenuItem";
-      this.cornerTestToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
-      this.cornerTestToolStripMenuItem.Text = "Corner Test";
-      this.cornerTestToolStripMenuItem.Click += new System.EventHandler(this.cornerTestToolStripMenuItem_Click);
       // 
       // Form1
       // 
@@ -184,7 +175,6 @@
     private System.Windows.Forms.ToolStripMenuItem solveToolStripMenuItem1;
     private System.Windows.Forms.ToolStripMenuItem resetToolStripMenuItem;
     private RubiksCubeLib.CubeModel.CubeModel cubeModel;
-    private System.Windows.Forms.ToolStripMenuItem inversionToolStripMenuItem;
     private System.Windows.Forms.ToolStripMenuItem cornerTestToolStripMenuItem;
 
 

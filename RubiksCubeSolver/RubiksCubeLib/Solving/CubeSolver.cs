@@ -38,9 +38,9 @@ namespace RubiksCubeLib.Solver
     public bool TrySolve(Rubik rubik, out Solution solution)
     {
       solution = this.Solution;
-
-      TestScenario solve = new TestScenario(rubik);
-      return solve.IsSolved(this.Solution);
+      bool solvable = Solvability.FullTest(rubik);
+      if (solvable) solution = Solve(rubik);
+      return solvable;
     }
 
     protected void RemoveUnnecessaryMoves()

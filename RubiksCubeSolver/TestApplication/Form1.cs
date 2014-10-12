@@ -1,7 +1,6 @@
 ﻿using RubiksCubeLib;
 using RubiksCubeLib.RubiksCube;
 using RubiksCubeLib.Solver;
-using RubiksCubeLib.Solving;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -60,18 +59,31 @@ namespace TestApplication
     private void solveToolStripMenuItem1_Click(object sender, EventArgs e)
     {
       Solution s;
-      MessageBox.Show(solverPlugins.StandardPlugin.TrySolve(cubeModel.Rubik, out s).ToString());
+      if (solverPlugins.StandardPlugin.TrySolve(cubeModel.Rubik,out s))
+      {
+        s.Algorithm.Moves.ForEach(m => cubeModel.RotateLayerAnimated(m.Layer, m.Direction));
+      }
+      else
+      {
+        MessageBox.Show("Unsolvable");
+      }
       //cubeModel.Rubik = solverPlugins.StandardPlugin.ReturnRubik(cubeModel.Rubik);
     }
 
     private void inversionToolStripMenuItem_Click(object sender, EventArgs e)
     {
-      MessageBox.Show(Solvability.PermutationParityTest(cubeModel.Rubik).ToString());
+      bool correct = true;
+      while (correct)
+      {
+        cubeModel.Scramble(50);
+        correct = Solvability.FullTest(cubeModel.Rubik);
+      }
+      MessageBox.Show("Fucked up");
     }
 
     private void cornerTestToolStripMenuItem_Click(object sender, EventArgs e)
     {
-      MessageBox.Show(Solvability.CornerParityTest(cubeModel.Rubik).ToString());
+      MessageBox.Show(Solvability.FullTest(cubeModel.Rubik) ? "Solvable" : "Unsolvable");
     }
   }
 }

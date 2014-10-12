@@ -98,7 +98,7 @@ namespace BeginnerSolver
         }
 
         // Flip the incorrect orientated edges with the algorithm: Fi D Ri Di
-        if (e.Faces.First(f => f.Position == FacePosition.Bottom).Color != Rubik.BottomColor)
+        if (Solvability.GetOrientation(Rubik,e) != 0)
         {
           CubeFlag frontSlice = CubeFlagService.FromFacePosition(e.Faces.First(f => f.Color == Rubik.BottomColor).Position);
 
@@ -108,7 +108,6 @@ namespace BeginnerSolver
           CubeFlag rightSlice = CubeFlagService.FromFacePosition(e.Faces.First(f => f.Color == secondColor).Position);
 
           SolverMove(rightSlice, false);
-
           SolverMove(CubeFlag.BottomLayer, false);
         }
         List<Face> faces = e.Faces.ToList();

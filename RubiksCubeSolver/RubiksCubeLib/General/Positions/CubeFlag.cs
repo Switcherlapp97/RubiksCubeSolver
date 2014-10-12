@@ -16,6 +16,10 @@ namespace RubiksCubeLib
     BackSlice = 32,
     LeftSlice = 64,
     MiddleSliceSides = 128,
-    RightSlice = 256
+    RightSlice = 256,
+
+    XFlags = RightSlice | LeftSlice | MiddleSliceSides,
+    YFlags = TopLayer | BottomLayer | MiddleLayer,
+    ZFlags = FrontSlice | BackSlice | MiddleSlice
   }
 }

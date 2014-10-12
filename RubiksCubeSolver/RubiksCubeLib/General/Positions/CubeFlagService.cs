@@ -7,10 +7,6 @@ namespace RubiksCubeLib
 {
   public static class CubeFlagService
   {
-    public static readonly CubeFlag XFlags = CubeFlag.RightSlice | CubeFlag.MiddleSliceSides | CubeFlag.LeftSlice;
-    public static readonly CubeFlag YFlags = CubeFlag.BottomLayer | CubeFlag.MiddleLayer | CubeFlag.TopLayer;
-    public static readonly CubeFlag ZFlags = CubeFlag.FrontSlice | CubeFlag.MiddleSlice | CubeFlag.BackSlice;
-
     public static bool IsPossibleMovement(CubeFlag flags)
     {
       return GetFlags(flags).Where(x => IsXFlag((CubeFlag)x)).Count() == CountFlags(flags) ||
@@ -20,32 +16,32 @@ namespace RubiksCubeLib
 
     public static bool IsXFlag(CubeFlag flag)
     {
-      return XFlags.HasFlag(flag) && CountFlags(flag) == 1;
+      return CubeFlag.XFlags.HasFlag(flag) && CountFlags(flag) == 1;
     }
 
     public static bool IsYFlag(CubeFlag flag)
     {
-      return YFlags.HasFlag(flag) && CountFlags(flag) == 1;
+      return CubeFlag.YFlags.HasFlag(flag) && CountFlags(flag) == 1;
     }
 
     public static bool IsZFlag(CubeFlag flag)
     {
-      return ZFlags.HasFlag(flag) && CountFlags(flag) == 1;
+      return CubeFlag.ZFlags.HasFlag(flag) && CountFlags(flag) == 1;
     }
 
     public static CubeFlag FirstXFlag(CubeFlag flags)
     {
-      return FirstNotInvalidFlag(flags, YFlags | ZFlags);
+      return FirstNotInvalidFlag(flags, CubeFlag.YFlags | CubeFlag.ZFlags);
     }
 
     public static CubeFlag FirstYFlag(CubeFlag flags)
     {
-      return FirstNotInvalidFlag(flags, XFlags | ZFlags);
+      return FirstNotInvalidFlag(flags, CubeFlag.XFlags | CubeFlag.ZFlags);
     }
 
     public static CubeFlag FirstZFlag(CubeFlag flags)
     {
-      return FirstNotInvalidFlag(flags, XFlags | YFlags);
+      return FirstNotInvalidFlag(flags, CubeFlag.XFlags | CubeFlag.YFlags);
     }
 
     /// <summary>

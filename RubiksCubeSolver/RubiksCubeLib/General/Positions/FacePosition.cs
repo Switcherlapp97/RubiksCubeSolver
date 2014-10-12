@@ -13,6 +13,10 @@ namespace RubiksCubeLib
     Left = 4,
     Right = 8,
     Back = 16,
-    Front = 32
+    Front = 32,
+
+    XPos = Right | Left,
+    YPos = Top | Bottom,
+    ZPos = Front | Back
   }
 }
