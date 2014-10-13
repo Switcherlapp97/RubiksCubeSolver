@@ -7,124 +7,164 @@ using System.Drawing;
 
 namespace RubiksCubeLib.Solver
 {
-  public abstract class CubeSolver: IPluginable
-  {
-    public Rubik Rubik { get; set; }
-    protected Rubik StandardCube { get; set; }
-    protected Solution Solution { get; set; }
+	/// <summary>
+	/// Represents the CubeSolver, and forces all implementing classes to have several methods
+	/// </summary>
+	public abstract class CubeSolver : IPluginable
+	{
 
-    public abstract string Name { get; }
-    public abstract string Description { get; }
+		// **** PROPERTIES ****
 
-    public Solution Solve(Rubik cube)
-    {
-      Rubik = cube.DeepClone();
-      Solution = new Solution(this, cube);
-      InitStandardCube();
+		/// <summary>
+		/// The Rubik which will be used to solve the transferred Rubik
+		/// </summary>
+		public Rubik Rubik { get; set; }
 
-      GetSolution();
-      RemoveUnnecessaryMoves();
-      return Solution;
-    }
+		/// <summary>
+		/// A solved Rubik
+		/// </summary>
+		protected Rubik StandardCube { get; set; }
 
-    public abstract void GetSolution();
+		/// <summary>
+		/// Returns the solution for this solver used for the Rubik
+		/// </summary>
+		protected Solution Solution { get; set; }
 
-    public Rubik ReturnRubik(Rubik cube)
-    {
-      Solve(cube);
-      return Rubik;
-    }
+		/// <summary>
+		/// The name of this solver
+		/// </summary>
+		public abstract string Name { get; }
 
-    public bool TrySolve(Rubik rubik, out Solution solution)
-    {
-      solution = this.Solution;
-      bool solvable = Solvability.FullTest(rubik);
-      if (solvable) solution = Solve(rubik);
-      return solvable;
-    }
+		/// <summary>
+		/// The descrption of this solver
+		/// </summary>
+		public abstract string Description { get; }
 
-    protected void RemoveUnnecessaryMoves()
-    {
-      bool finished = false;
-      while (!finished)
-      {
-        finished = true;
-        for (int i = 0; i < Solution.Algorithm.Moves.Count; i++)
-        {
-          if (i != Solution.Algorithm.Moves.Count - 1) if (Solution.Algorithm.Moves[i].Layer == Solution.Algorithm.Moves[i + 1].Layer && Solution.Algorithm.Moves[i].Direction != Solution.Algorithm.Moves[i + 1].Direction)
-            {
-              finished = false;
-              Solution.Algorithm.Moves.RemoveAt(i + 1);
-              Solution.Algorithm.Moves.RemoveAt(i);
-              if (i != 0) i--;
-            }
-          if (i < Solution.Algorithm.Moves.Count - 2) if (Solution.Algorithm.Moves[i].Layer == Solution.Algorithm.Moves[i + 1].Layer && Solution.Algorithm.Moves[i].Layer == Solution.Algorithm.Moves[i + 2].Layer
-              && Solution.Algorithm.Moves[i].Direction == Solution.Algorithm.Moves[i + 1].Direction && Solution.Algorithm.Moves[i].Direction == Solution.Algorithm.Moves[i + 2].Direction)
-            {
-              finished = false;
-              bool direction = !Solution.Algorithm.Moves[i + 2].Direction;
-              Solution.Algorithm.Moves.RemoveAt(i + 1);
-              Solution.Algorithm.Moves.RemoveAt(i);
-              Solution.Algorithm.Moves[i].Direction = direction;
-              if (i != 0) i--;
-            }
-        }
-      }
-    }
 
-    protected void InitStandardCube()
-    {
-      StandardCube = Rubik.GenStandardCube();
-    }
 
-    protected CubeFlag GetTargetFlags(Cube cube)
-    {
-      return StandardCube.Cubes.First(cu => ScrambledEquals(cu.Colors, cube.Colors)).Position.Flags;
-    }
+		// **** METHODS ****
 
-    protected void SolverMove(CubeFlag layer, bool direction)
-    {
-      Rubik.RotateLayer(layer, direction);
-      Solution.Algorithm.Moves.Add(new LayerMove(layer, direction));
-    }
+		/// <summary>
+		/// Returns the solution for the transferred Rubik
+		/// </summary>
+		/// <param name="cube">Defines the Rubik to be solved</param>
+		/// <returns></returns>
+		public Solution Solve(Rubik cube)
+		{
+			Rubik = cube.DeepClone();
+			Solution = new Solution(this, cube);
+			InitStandardCube();
 
-    protected void SolverAlgorithm(string moves, params object[] placeholders)
-    {
-      Algorithm algorithm = new Algorithm(moves, placeholders);
-      SolverAlgorithm(algorithm);
-    }
+			GetSolution();
+			RemoveUnnecessaryMoves();
+			return Solution;
+		}
 
-    protected void SolverAlgorithm(Algorithm algorithm)
-    {
-      foreach (LayerMove m in algorithm.Moves) SolverMove(m.Layer,m.Direction);
-    }
+		public abstract void GetSolution();
 
-    protected bool ScrambledEquals<T>(IEnumerable<T> list1, IEnumerable<T> list2)
-    {
-      var cnt = new Dictionary<T, int>();
-      foreach (T s in list1)
-      {
-        if (cnt.ContainsKey(s))
-        {
-          cnt[s]++;
-        }
-        else
-        {
-          cnt.Add(s, 1);
-        }
-      }
-      foreach (T s in list2)
-      {
-        if (cnt.ContainsKey(s))
-        {
-          cnt[s]--;
-        }
-        else
-        {
-          return false;
-        }
-      }
-      return cnt.Values.All(c => c == 0);
-    }
-  }
+		public Rubik ReturnRubik(Rubik cube)
+		{
+			Solve(cube);
+			return Rubik;
+		}
+
+		/// <summary>
+		/// Returns true if the given Rubik is solvable
+		/// </summary>
+		/// <param name="rubik">Defines the Rubik to be solved</param>
+		/// <param name="solution">Defines the solution to be set if the solving process was successful</param>
+		/// <returns></returns>
+		public bool TrySolve(Rubik rubik, out Solution solution)
+		{
+			solution = this.Solution;
+			bool solvable = Solvability.FullTest(rubik);
+			if (solvable)
+				solution = Solve(rubik);
+			return solvable;
+		}
+
+		/// <summary>
+		/// Removes unneccessary moves out of the solution (e.g. "F' F" or "F F F F")
+		/// </summary>
+		protected void RemoveUnnecessaryMoves()
+		{
+			bool finished = false;
+			while (!finished)
+			{
+				finished = true;
+				for (int i = 0; i < Solution.Algorithm.Moves.Count; i++)
+				{
+					if (i != Solution.Algorithm.Moves.Count - 1) if (Solution.Algorithm.Moves[i].Layer == Solution.Algorithm.Moves[i + 1].Layer && Solution.Algorithm.Moves[i].Direction != Solution.Algorithm.Moves[i + 1].Direction)
+						{
+							finished = false;
+							Solution.Algorithm.Moves.RemoveAt(i + 1);
+							Solution.Algorithm.Moves.RemoveAt(i);
+							if (i != 0)
+								i--;
+						}
+					if (i < Solution.Algorithm.Moves.Count - 2) if (Solution.Algorithm.Moves[i].Layer == Solution.Algorithm.Moves[i + 1].Layer && Solution.Algorithm.Moves[i].Layer == Solution.Algorithm.Moves[i + 2].Layer
+						&& Solution.Algorithm.Moves[i].Direction == Solution.Algorithm.Moves[i + 1].Direction && Solution.Algorithm.Moves[i].Direction == Solution.Algorithm.Moves[i + 2].Direction)
+						{
+							finished = false;
+							bool direction = !Solution.Algorithm.Moves[i + 2].Direction;
+							Solution.Algorithm.Moves.RemoveAt(i + 1);
+							Solution.Algorithm.Moves.RemoveAt(i);
+							Solution.Algorithm.Moves[i].Direction = direction;
+							if (i != 0)
+								i--;
+						}
+				}
+			}
+		}
+
+		/// <summary>
+		/// Initializes the StandardCube
+		/// </summary>
+		protected void InitStandardCube()
+		{
+			StandardCube = Rubik.GenStandardCube();
+		}
+
+		/// <summary>
+		/// Returns the position of given cube where it has to be when the Rubik is solved
+		/// </summary>
+		/// <param name="cube">Defines the cube to be analyzed</param>
+		/// <returns></returns>
+		protected CubeFlag GetTargetFlags(Cube cube)
+		{
+			return StandardCube.Cubes.First(cu => CollectionMethods.ScrambledEquals(cu.Colors, cube.Colors)).Position.Flags;
+		}
+
+		/// <summary>
+		/// Adds an move to the solution and executes it on the Rubik
+		/// </summary>
+		/// <param name="layer">Defines the layer to be rotated</param>
+		/// <param name="direction">Defines the direction of the rotation</param>
+		protected void SolverMove(CubeFlag layer, bool direction)
+		{
+			Rubik.RotateLayer(layer, direction);
+			Solution.Algorithm.Moves.Add(new LayerMove(layer, direction));
+		}
+
+		/// <summary>
+		/// Executes the given algorithm
+		/// </summary>
+		/// <param name="moves">Defines a notation string, which is filled with placeholders</param>
+		/// <param name="placeholders">Defines the objects to be inserted for the placeholders</param>
+		protected void SolverAlgorithm(string moves, params object[] placeholders)
+		{
+			Algorithm algorithm = new Algorithm(moves, placeholders);
+			SolverAlgorithm(algorithm);
+		}
+
+		/// <summary>
+		/// Executes the given alorithm on the Rubik
+		/// </summary>
+		/// <param name="algorithm">Defines the algorithm to be executed</param>
+		protected void SolverAlgorithm(Algorithm algorithm)
+		{
+			foreach (LayerMove m in algorithm.Moves)
+				SolverMove(m.Layer, m.Direction);
+		}
+	}
 }
