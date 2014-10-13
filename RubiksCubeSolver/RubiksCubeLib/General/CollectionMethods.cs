@@ -12,7 +12,7 @@ namespace RubiksCubeLib
 	{
 
 		/// <summary>
-		/// Returns true if both lists are equal even if they are scrambled (i.e. in a different order)
+		/// Returns true if both lists are equal even if they are scrambled (i.e. differently ordered)
 		/// </summary>
 		/// <typeparam name="T">Defines the type of both lists</typeparam>
 		/// <param name="list1">Defines the first list to be analyzed</param>

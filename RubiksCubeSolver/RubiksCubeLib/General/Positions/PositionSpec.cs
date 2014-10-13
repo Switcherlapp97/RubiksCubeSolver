@@ -6,7 +6,7 @@ using System.Text;
 namespace RubiksCubeLib
 {
 	/// <summary>
-	/// I HAVE NO IDEA
+	/// Represents the FacePosition and the position of the matching cube
 	/// </summary>
 	public struct PositionSpec
 	{
