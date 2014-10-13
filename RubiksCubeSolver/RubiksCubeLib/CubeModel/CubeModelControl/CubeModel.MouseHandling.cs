@@ -9,20 +9,34 @@ using System.Diagnostics;
 
 namespace RubiksCubeLib.CubeModel
 {
+  /// <summary>
+  /// Represents a 3D rubiks cube
+  /// </summary>
   public partial class CubeModel
   {
+    /// <summary>
+    /// Gets or sets the permission to perform mouse activities
+    /// </summary>
     public bool MouseHandling { get; set; }
 
-    protected PositionSpec oldSelection = PositionSpec.Default;
-    protected PositionSpec currentSelection = PositionSpec.Default;
+    private PositionSpec oldSelection = PositionSpec.Default;
+    private PositionSpec currentSelection = PositionSpec.Default;
 
+    /// <summary>
+    /// Converts negative angles to positive
+    /// </summary>
+    /// <param name="angleInDeg"></param>
+    /// <returns></returns>
     private double ToPositiveAngle(double angleInDeg)
     {
       return angleInDeg < 0 ? 360 + angleInDeg : angleInDeg;
     }
 
-    //cube rotation
     private Point oldMousePos = new Point(-1, -1);
+
+    /// <summary>
+    /// Detection and execution of the rotation of the whole cube
+    /// </summary>
     protected override void OnMouseMove(MouseEventArgs e)
     {
       if (MouseHandling)
@@ -49,6 +63,9 @@ namespace RubiksCubeLib.CubeModel
       base.OnMouseMove(e);
     }
 
+    /// <summary>
+    /// Detection and execution of mouse-controlled layer rotations
+    /// </summary>
     protected override void OnMouseClick(MouseEventArgs e)
     {
       if (MouseHandling)

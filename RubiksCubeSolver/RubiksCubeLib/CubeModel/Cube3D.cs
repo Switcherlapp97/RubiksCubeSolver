@@ -6,12 +6,29 @@ using RubiksCubeLib.RubiksCube;
 
 namespace RubiksCubeLib.CubeModel
 {
+  /// <summary>
+  /// Represents a 3D cube
+  /// </summary>
   [Serializable]
   public class Cube3D
   {
-    public IEnumerable<Face3D> Faces { get; set; }
+    /// <summary>
+    /// Gets the faces of the 3D cube
+    /// </summary>
+    public IEnumerable<Face3D> Faces { get; private set; }
+
+    /// <summary>
+    /// Gets the position of the 3D cube
+    /// </summary>
     public CubeFlag Position { get; set; }
 
+    /// <summary>
+    /// Initializes a new instance of the Cube3D class
+    /// </summary>
+    /// <param name="location">Center point</param>
+    /// <param name="scale">Scale</param>
+    /// <param name="position">Position</param>
+    /// <param name="faces">Faces</param>
     public Cube3D(Point3D location, double scale, CubeFlag position, IEnumerable<Face> faces)
     {
       Faces = UniCube.GenFaces3D(position);
@@ -27,12 +44,23 @@ namespace RubiksCubeLib.CubeModel
       });
     }
 
+    /// <summary>
+    /// Initializes a new instance of the Cube3D class
+    /// </summary>
+    /// <param name="faces">Faces</param>
+    /// <param name="position">Position</param>
     public Cube3D(IEnumerable<Face3D> faces, CubeFlag position)
     {
       Faces = faces;
       Position = position;
     }
 
+    /// <summary>
+    /// Rotates the point around a particular axis
+    /// </summary>
+    /// <param name="type">Rotation axis</param>
+    /// <param name="angle">Angle to be rotated</param>
+    /// <param name="center">Center point of rotation</param>
     public Cube3D Rotate(RotationType type, double angle, Point3D center)
     {
       //Deep Clone
@@ -50,6 +78,15 @@ namespace RubiksCubeLib.CubeModel
       return new Cube3D(faces, Position);
     }
 
+    /// <summary>
+    /// Projects the 3D cube to 2D view
+    /// </summary>
+    /// <param name="viewWidth">Width of projection screen</param>
+    /// <param name="viewHeight">Height of projection screen</param>
+    /// <param name="fov">Factor</param>
+    /// <param name="viewDistance">View distance to cube</param>
+    /// <param name="scale">Scale</param>
+    /// <returns>Projected cube</returns>
     public Cube3D Project(int viewWidth, int viewHeight, int fov, int viewDistance, double scale)
     {
       return new Cube3D(Faces.Select(f => f.Project(viewWidth, viewHeight, fov, viewDistance, scale)), Position);

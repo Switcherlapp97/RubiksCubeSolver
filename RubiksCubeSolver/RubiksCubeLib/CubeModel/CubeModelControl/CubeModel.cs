@@ -12,32 +12,59 @@ using System.Diagnostics;
 
 namespace RubiksCubeLib.CubeModel
 {
+  /// <summary>
+  /// Represents a 3D rubiks cube
+  /// </summary>
   public partial class CubeModel : UserControl
   {
+    /// <summary>
+    /// Gets the rotation angles in the direction of x, y and z
+    /// </summary>
     public double[] Rotation { get; private set; }
 
+    /// <summary>
+    /// Gets the rotation angles of the specific layers
+    /// </summary>
     [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
     public Dictionary<CubeFlag, double> LayerRotation { get; private set; }
 
+    /// <summary>
+    /// Gets the moves in the queue
+    /// </summary>
     [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
     public Queue<RotationInfo> Moves { get; private set; }
 
+    /// <summary>
+    /// Gets the information about the drawn Rubik's Cube
+    /// </summary>
     [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
-    public Rubik Rubik { get; set; }
+    public Rubik Rubik { get; private set; }
 
-    protected CubeModelRenderer Renderer { get; set; }
-    protected IEnumerable<Face3D> CurrentFrame { get; set; }
+    private CubeModelRenderer renderer;
+    private IEnumerable<Face3D> currentFrame;
 
+    /// <summary>
+    /// Occurs when the selection of any sub face has changed
+    /// </summary>
+    /// <param name="sender">The source of the event</param>
+    /// <param name="e">Selection changed event data</param>
     public delegate void SelectionChangedHandler(object sender, SelectionChangedEventArgs e);
     public event SelectionChangedHandler OnSelectionChanged;
-    protected void BroadCastSelectionChanged()
+    private void BroadCastSelectionChanged()
     {
       if (OnSelectionChanged == null) return;
       OnSelectionChanged(this, new SelectionChangedEventArgs(currentSelection.CubePosition, currentSelection.FacePosition));
     }
 
+    /// <summary>
+    /// Initializes a new instance of the CubeModel class
+    /// </summary>
     public CubeModel() : this(new Rubik()) { }
 
+    /// <summary>
+    /// Initializes a new instance of the CubeModel class
+    /// </summary>
+    /// <param name="rubik">Rubik's Cube that has to be drawn</param>
     public CubeModel(Rubik rubik)
     {
       Rubik = rubik;
@@ -49,13 +76,13 @@ namespace RubiksCubeLib.CubeModel
       ResetLayerRotation();
       InitSelection();
 
-      Renderer = new CubeModelRenderer(this, this.ClientRectangle);
-      Renderer.OnRender += OnRender;
-      Renderer.OnRotatingFinished += OnRotatingFinished;
+      renderer = new CubeModelRenderer(this, this.ClientRectangle);
+      renderer.OnRender += OnRender;
+      renderer.OnRotatingFinished += OnRotatingFinished;
 
       int min = Math.Min(ClientRectangle.Height, ClientRectangle.Width);
-      CurrentFrame = GenFacesProjected(this.ClientRectangle, 3 * ((double)min / (double)400));
-      Renderer.StartRender();
+      currentFrame = GenFacesProjected(this.ClientRectangle, 3 * ((double)min / (double)400));
+      renderer.StartRender();
 
       InitializeComponent();
       SetStyle(ControlStyles.AllPaintingInWmPaint, true);
@@ -64,15 +91,13 @@ namespace RubiksCubeLib.CubeModel
       SetStyle(ControlStyles.UserPaint, true);
     }
 
-    public void Scramble(int moves)
-    {
-      Rubik.Scramble(moves);
-    }
-
     #region Selection
     private SelectionCollection selections;
 
-    protected virtual void InitSelection()
+    /// <summary>
+    /// Add for all 54 sub faces of the cube an entry to a selection collection and set the selection to None
+    /// </summary>
+    private void InitSelection()
     {
       selections = new SelectionCollection();
       Rubik.Cubes.ForEach(c => c.Faces.ToList().ForEach(f =>
@@ -81,7 +106,11 @@ namespace RubiksCubeLib.CubeModel
         }));
     }
 
-    protected virtual void ResetFaceSelection(Selection selection)
+    /// <summary>
+    /// Set a selection to all entries in the selection collection
+    /// </summary>
+    /// <param name="selection">New selection</param>
+    private void ResetFaceSelection(Selection selection)
     {
       Rubik.Cubes.ForEach(c => c.Faces.Where(f => f.Color != Color.Black).ToList().ForEach(f =>
         {
@@ -104,6 +133,9 @@ namespace RubiksCubeLib.CubeModel
     #endregion
 
     #region ContextMenuStrip ColorPicker
+    /// <summary>
+    /// Generates a context menu strip to allow users to change face colors
+    /// </summary>
     private void InitColorPicker()
     {
       ContextMenuStrip = new ContextMenuStrip();
@@ -120,12 +152,12 @@ namespace RubiksCubeLib.CubeModel
       ContextMenuStrip.Closed += ContextMenuStrip_Closed;
     }
 
-    void ContextMenuStrip_Closed(object sender, ToolStripDropDownClosedEventArgs e)
+    private void ContextMenuStrip_Closed(object sender, ToolStripDropDownClosedEventArgs e)
     {
       MouseHandling = true;
     }
 
-    void ContextMenuStrip_ItemClicked(object sender, ToolStripItemClickedEventArgs e)
+    private void ContextMenuStrip_ItemClicked(object sender, ToolStripItemClickedEventArgs e)
     {
       Color col = Rubik.Colors.First();
       for (int i = 0; i < Rubik.Colors.Length; i++)
@@ -135,7 +167,7 @@ namespace RubiksCubeLib.CubeModel
       Rubik.SetFaceColor(currentSelection.CubePosition, currentSelection.FacePosition, col);
     }
 
-    void ContextMenuStrip_Opening(object sender, CancelEventArgs e)
+    private void ContextMenuStrip_Opening(object sender, CancelEventArgs e)
     {
       if ((Control.ModifierKeys & Keys.Shift) != 0 && !currentSelection.IsDefault)
       {
@@ -152,6 +184,9 @@ namespace RubiksCubeLib.CubeModel
     }
     #endregion
 
+    /// <summary>
+    /// Resets the rotation of specific layers
+    /// </summary>
     private void ResetLayerRotation()
     {
       LayerRotation = new Dictionary<CubeFlag, double>();
@@ -161,14 +196,20 @@ namespace RubiksCubeLib.CubeModel
       }
     }
 
+    /// <summary>
+    /// Start render cycle
+    /// </summary>
     public void StartRender()
     {
-      Renderer.StartRender();
+      renderer.StartRender();
     }
 
+    /// <summary>
+    /// Stop render cycle
+    /// </summary>
     public void StopRender()
     {
-      Renderer.StopRender();
+      renderer.StopRender();
     }
 
     protected override void OnKeyDown(KeyEventArgs e)
@@ -182,7 +223,7 @@ namespace RubiksCubeLib.CubeModel
       base.OnKeyDown(e);
     }
 
-    protected virtual void OnRotatingFinished(object sender, RotationFinishedEventArgs e)
+    private void OnRotatingFinished(object sender, RotationFinishedEventArgs e)
     {
       ResetLayerRotation();
       foreach (AnimatedLayerMove m in e.Info.Moves)
@@ -192,27 +233,48 @@ namespace RubiksCubeLib.CubeModel
       selections.Reset();
     }
 
-    protected void OnRender(object sender, IEnumerable<Face3D> e)
+    private void OnRender(object sender, IEnumerable<Face3D> e)
     {
-      CurrentFrame = e;
+      currentFrame = e;
       Invalidate();
     }
 
+    /// <summary>
+    /// Registers a new animated rotation
+    /// </summary>
+    /// <param name="move">Movement that will be performed</param>
+    /// <param name="milliseconds">Duration of the animatied rotation</param>
     public void RotateLayerAnimated(LayerMove move, int milliseconds)
     {
       Moves.Enqueue(new RotationInfo(move, milliseconds));
     }
 
+    /// <summary>
+    /// Registers a new animated rotation
+    /// </summary>
+    /// <param name="layer">Rotation layer</param>
+    /// <param name="direction">Direction of rotation</param>
     public void RotateLayerAnimated(CubeFlag layer, bool direction)
     {
       RotateLayerAnimated(new LayerMove(layer, direction), 200);
     }
 
+    /// <summary>
+    /// Registers a collection of new animated moves
+    /// </summary>
+    /// <param name="moves">Collection of moves</param>
+    /// <param name="milliseconds">Duration of animated rotation</param>
     public void RotateLayersAnimated(LayerMoveCollection moves, int milliseconds)
     {
       Moves.Enqueue(new RotationInfo(moves, milliseconds));
     }
 
+    /// <summary>
+    /// Projects the 3D cubes to 2D view for rendering
+    /// </summary>
+    /// <param name="screen">Render screen</param>
+    /// <param name="scale">Scale</param>
+    /// <returns></returns>
     public IEnumerable<Face3D> GenFacesProjected(Rectangle screen, double scale)
     {
       List<Cube3D> cubesRender = GenCubes3D();
@@ -221,7 +283,11 @@ namespace RubiksCubeLib.CubeModel
       return facesProjected;
     }
 
-    protected List<Cube3D> GenCubes3D()
+    /// <summary>
+    /// Generates 3D cubes from the Rubik cubes
+    /// </summary>
+    /// <returns>Cubes from the Rubik converted to 3D cubes</returns>
+    private List<Cube3D> GenCubes3D()
     {
       List<Cube> cubes = Rubik.Cubes;
 
@@ -250,9 +316,9 @@ namespace RubiksCubeLib.CubeModel
     
     protected override void OnPaint(PaintEventArgs e)
     {
-      if (CurrentFrame != null)
+      if (currentFrame != null)
       {
-        PositionSpec selectedPos = Render(e.Graphics, CurrentFrame, PointToClient(Cursor.Position));
+        PositionSpec selectedPos = Render(e.Graphics, currentFrame, PointToClient(Cursor.Position));
 
         // disallow changes of current selection while color picker is visible
         if (!ContextMenuStrip.Visible)
@@ -266,17 +332,23 @@ namespace RubiksCubeLib.CubeModel
           BroadCastSelectionChanged();
         }
       }
-      base.OnPaint(e);
     }
 
     protected override void OnSizeChanged(EventArgs e)
     {
-      Renderer.SetDrawingArea(ClientRectangle);
+      renderer.SetDrawingArea(ClientRectangle);
       Invalidate();
       base.OnSizeChanged(e);
     }
 
-    protected virtual PositionSpec Render(Graphics g, IEnumerable<Face3D> frame, Point mousePos)
+    /// <summary>
+    /// Renders the current frame
+    /// </summary>
+    /// <param name="g">Graphics</param>
+    /// <param name="frame">Frame to render</param>
+    /// <param name="mousePos">Current mouse position</param>
+    /// <returns></returns>
+    private PositionSpec Render(Graphics g, IEnumerable<Face3D> frame, Point mousePos)
     {
       g.SmoothingMode = SmoothingMode.AntiAlias;
       PositionSpec pos = PositionSpec.Default;
@@ -303,6 +375,9 @@ namespace RubiksCubeLib.CubeModel
       return pos;
     }
 
+    /// <summary>
+    /// Resets the Rubik object and reset all cube and layer rotations and all selections
+    /// </summary>
     public void ResetCube()
     {
       Rubik = new Rubik();

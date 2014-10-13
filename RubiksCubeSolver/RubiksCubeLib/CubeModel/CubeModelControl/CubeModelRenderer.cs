@@ -9,6 +9,9 @@ using System.Windows.Forms;
 
 namespace RubiksCubeLib.CubeModel
 {
+  /// <summary>
+  /// Represents the central render operations to render the 3D model of the rubiks cube without possible delays
+  /// </summary>
   [Serializable]
   public class CubeModelRenderer : IDisposable
   {
@@ -49,7 +52,13 @@ namespace RubiksCubeLib.CubeModel
     private double maxFps = 60;
     public double MaxFps { get { return maxFps; } set { maxFps = value; } }
 
+    /// <summary>
+    /// Gets the current FPS
+    /// </summary>
     public double Fps { get; private set; }
+    /// <summary>
+    /// Gets if the rendering cycle is active
+    /// </summary>
     public bool IsRunning { get; private set; }
 
     private void InitRenderer()
@@ -66,7 +75,10 @@ namespace RubiksCubeLib.CubeModel
       buffer = new IEnumerable<Face3D>[2];
       for (int i = 0; i < buffer.Length; i++) buffer[i] = new List<Face3D>();
     }
-
+    /// <summary>
+    /// Reset the rendering screen
+    /// </summary>
+    /// <param name="screen">Screen measures</param>
     public void SetDrawingArea(Rectangle screen)
     {
       this.screen = screen;
@@ -76,6 +88,9 @@ namespace RubiksCubeLib.CubeModel
       else if (screen.Height > screen.Width) screen.Y = (screen.Height - screen.Width) / 2;
     }
 
+    /// <summary>
+    /// Starts the render cycle
+    /// </summary>
     public void StartRender()
     {
       if (!IsRunning)
@@ -88,6 +103,9 @@ namespace RubiksCubeLib.CubeModel
       }
     }
 
+    /// <summary>
+    /// Stops the render cycle
+    /// </summary>
     public void StopRender()
     {
       if (IsRunning)
@@ -100,6 +118,9 @@ namespace RubiksCubeLib.CubeModel
       }
     }
 
+    /// <summary>
+    /// Aborts the render cycle
+    /// </summary>
     public void AbortRender()
     {
       if (IsRunning)
@@ -154,7 +175,7 @@ namespace RubiksCubeLib.CubeModel
     }
 
     private Stopwatch sw = new Stopwatch();
-    public void RenderLoop()
+    private void RenderLoop()
     {
       int bufferIndex = 0x0;
 
@@ -192,6 +213,9 @@ namespace RubiksCubeLib.CubeModel
       renderHandle[bufferIndex].Set();
     }
 
+    /// <summary>
+    /// Disposes the render object
+    /// </summary>
     public void Dispose()
     {
       AbortRender();

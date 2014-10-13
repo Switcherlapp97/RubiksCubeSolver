@@ -85,28 +85,28 @@
       // scrambleToolStripMenuItem
       // 
       this.scrambleToolStripMenuItem.Name = "scrambleToolStripMenuItem";
-      this.scrambleToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+      this.scrambleToolStripMenuItem.Size = new System.Drawing.Size(129, 22);
       this.scrambleToolStripMenuItem.Text = "Scramble";
       this.scrambleToolStripMenuItem.Click += new System.EventHandler(this.scrambleToolStripMenuItem_Click);
       // 
       // solveToolStripMenuItem1
       // 
       this.solveToolStripMenuItem1.Name = "solveToolStripMenuItem1";
-      this.solveToolStripMenuItem1.Size = new System.Drawing.Size(152, 22);
+      this.solveToolStripMenuItem1.Size = new System.Drawing.Size(129, 22);
       this.solveToolStripMenuItem1.Text = "Solve";
       this.solveToolStripMenuItem1.Click += new System.EventHandler(this.solveToolStripMenuItem1_Click);
       // 
       // resetToolStripMenuItem
       // 
       this.resetToolStripMenuItem.Name = "resetToolStripMenuItem";
-      this.resetToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+      this.resetToolStripMenuItem.Size = new System.Drawing.Size(129, 22);
       this.resetToolStripMenuItem.Text = "Reset";
       this.resetToolStripMenuItem.Click += new System.EventHandler(this.resetToolStripMenuItem_Click);
       // 
       // cornerTestToolStripMenuItem
       // 
       this.cornerTestToolStripMenuItem.Name = "cornerTestToolStripMenuItem";
-      this.cornerTestToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+      this.cornerTestToolStripMenuItem.Size = new System.Drawing.Size(129, 22);
       this.cornerTestToolStripMenuItem.Text = "Parity Test";
       this.cornerTestToolStripMenuItem.Click += new System.EventHandler(this.cornerTestToolStripMenuItem_Click);
       // 
@@ -122,14 +122,14 @@
       // loadToolStripMenuItem
       // 
       this.loadToolStripMenuItem.Name = "loadToolStripMenuItem";
-      this.loadToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+      this.loadToolStripMenuItem.Size = new System.Drawing.Size(151, 22);
       this.loadToolStripMenuItem.Text = "Load Plugins...";
       this.loadToolStripMenuItem.Click += new System.EventHandler(this.loadToolStripMenuItem_Click);
       // 
       // solveToolStripMenuItem
       // 
       this.solveToolStripMenuItem.Name = "solveToolStripMenuItem";
-      this.solveToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+      this.solveToolStripMenuItem.Size = new System.Drawing.Size(151, 22);
       this.solveToolStripMenuItem.Text = "Select Plugin";
       this.solveToolStripMenuItem.Click += new System.EventHandler(this.solveToolStripMenuItem_Click);
       // 
@@ -141,6 +141,7 @@
       this.cubeModel.Name = "cubeModel";
       this.cubeModel.Size = new System.Drawing.Size(380, 287);
       this.cubeModel.TabIndex = 3;
+      this.cubeModel.OnSelectionChanged += new RubiksCubeLib.CubeModel.CubeModel.SelectionChangedHandler(this.cubeModel_OnSelectionChanged);
       // 
       // Form1
       // 

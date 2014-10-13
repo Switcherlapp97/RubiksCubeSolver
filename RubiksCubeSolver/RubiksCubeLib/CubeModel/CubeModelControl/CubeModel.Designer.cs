@@ -17,7 +17,7 @@
       {
         components.Dispose();
       }
-      Renderer.Dispose();
+      renderer.Dispose();
       base.Dispose(disposing);
     } 
 

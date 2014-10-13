@@ -5,6 +5,9 @@ using System.Text;
 
 namespace RubiksCubeLib.CubeModel
 {
+  /// <summary>
+  /// All sorts of possible face selections (multiple values permitted)
+  /// </summary>
   [Flags]
   public enum Selection
   {

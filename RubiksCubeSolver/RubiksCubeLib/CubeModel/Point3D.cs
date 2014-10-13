@@ -4,13 +4,33 @@ using System.Drawing.Drawing2D;
 
 namespace RubiksCubeLib.CubeModel
 {
+  /// <summary>
+  /// Represents a 3D point
+  /// </summary>
   [Serializable]
   public class Point3D
   {
+    /// <summary>
+    /// Gets or sets the X coordinate of the 3D point
+    /// </summary>
     public double X { get; set; }
+
+    /// <summary>
+    /// Gets or sets the Y coordinate of the 3D point
+    /// </summary>
     public double Y { get; set; }
+
+    /// <summary>
+    /// Gets or sets the Z coordinate of the 3D point
+    /// </summary>
     public double Z { get; set; }
 
+    /// <summary>
+    /// Initializes a new instance of the Point3D class
+    /// </summary>
+    /// <param name="x">X coordinate</param>
+    /// <param name="y">Y coordinate</param>
+    /// <param name="z">Z coordinate</param>
     public Point3D(double x, double y, double z)
     {
       this.X = x;
@@ -18,9 +38,14 @@ namespace RubiksCubeLib.CubeModel
       this.Z = z;
     }
 
+    /// <summary>
+    /// Rotates the point around a particular axis
+    /// </summary>
+    /// <param name="type">Rotation axis</param>
+    /// <param name="angleInDeg">Angle to be rotated</param>
     public void Rotate(RotationType type, double angleInDeg)
     {
-      // Rotationsmatrix: http://de.wikipedia.org/wiki/Drehmatrix
+      // Rotation matrix: http://de.wikipedia.org/wiki/Drehmatrix
       double rad = angleInDeg * Math.PI / 180;
       double cosa = Math.Cos(rad);
       double sina = Math.Sin(rad);
@@ -44,6 +69,15 @@ namespace RubiksCubeLib.CubeModel
       }
     }
 
+    /// <summary>
+    /// Projects the 3D point to 2D view
+    /// </summary>
+    /// <param name="viewWidth">Width of projection screen</param>
+    /// <param name="viewHeight">Height of projection screen</param>
+    /// <param name="fov">Factor</param>
+    /// <param name="viewDistance">View distance to point</param>
+    /// <param name="scale">Scale</param>
+    /// <returns>Projected point</returns>
     public Point3D Project(int viewWidth, int viewHeight, int fov, int viewDistance, double scale)
     {
       double factor = fov / (viewDistance + this.Z) * scale;

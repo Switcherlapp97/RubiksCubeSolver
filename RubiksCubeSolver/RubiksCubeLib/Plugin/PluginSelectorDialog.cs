@@ -6,6 +6,10 @@ using System.Windows.Forms;
 
 namespace RubiksCubeLib
 {
+  /// <summary>
+  /// Represents a windwos form to select plugins
+  /// </summary>
+  /// <typeparam name="T">A pluginable type</typeparam>
   public class PluginSelectorDialog<T> : Form where T: IPluginable
   {
     private ListBox lbPlugins;
@@ -13,6 +17,9 @@ namespace RubiksCubeLib
     private Button btnCancel;
 
     private PluginCollection<T> plugins;
+    /// <summary>
+    /// Gets the currently selected plugin
+    /// </summary>
     public T SelectedPlugin { get; private set; }
 
     public PluginSelectorDialog(PluginCollection<T> plugins)
@@ -25,6 +32,7 @@ namespace RubiksCubeLib
       }
     }
 
+    #region Designer
     private void InitializeComponent()
     {
       this.lbPlugins = new System.Windows.Forms.ListBox();
@@ -76,8 +84,8 @@ namespace RubiksCubeLib
       this.Text = "Select Plugin";
       this.Load += new System.EventHandler(this.PluginSelectorDialog_Load);
       this.ResumeLayout(false);
-
     }
+    #endregion
 
     private void lbPlugins_SelectedIndexChanged(object sender, EventArgs e)
     {

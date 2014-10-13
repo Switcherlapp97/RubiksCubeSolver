@@ -42,7 +42,15 @@ namespace TestApplication
       PluginSelectorDialog<CubeSolver> dlg = new PluginSelectorDialog<CubeSolver>(solverPlugins);
       if (dlg.ShowDialog() == System.Windows.Forms.DialogResult.OK)
       {
-        cubeModel.Rubik = dlg.SelectedPlugin.ReturnRubik(cubeModel.Rubik);
+        Solution s;
+        if (solverPlugins.StandardPlugin.TrySolve(cubeModel.Rubik, out s))
+        {
+          s.Algorithm.Moves.ForEach(m => cubeModel.RotateLayerAnimated(m.Layer, m.Direction));
+        }
+        else
+        {
+          MessageBox.Show("Unsolvable");
+        }
       }
     }
 
@@ -53,7 +61,7 @@ namespace TestApplication
 
     private void scrambleToolStripMenuItem_Click(object sender, EventArgs e)
     {
-      cubeModel.Scramble(50);
+      cubeModel.Rubik.Scramble(50);
     }
 
     private void solveToolStripMenuItem1_Click(object sender, EventArgs e)
@@ -68,17 +76,6 @@ namespace TestApplication
         MessageBox.Show("Unsolvable");
       }
       //cubeModel.Rubik = solverPlugins.StandardPlugin.ReturnRubik(cubeModel.Rubik);
-    }
-
-    private void inversionToolStripMenuItem_Click(object sender, EventArgs e)
-    {
-      bool correct = true;
-      while (correct)
-      {
-        cubeModel.Scramble(50);
-        correct = Solvability.FullTest(cubeModel.Rubik);
-      }
-      MessageBox.Show("Fucked up");
     }
 
     private void cornerTestToolStripMenuItem_Click(object sender, EventArgs e)
