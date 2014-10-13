@@ -5,30 +5,59 @@ using System.Text;
 
 namespace RubiksCubeLib
 {
-  public struct PositionSpec
-  {
-    public CubeFlag CubePosition { get; set; }
-    public FacePosition FacePosition { get; set; }
+	/// <summary>
+	/// I HAVE NO IDEA
+	/// </summary>
+	public struct PositionSpec
+	{
 
-    public static PositionSpec Default
-    {
-      get
-      {
-        return new PositionSpec() { CubePosition = CubeFlag.None, FacePosition = FacePosition.None };
-      }
-    }
+		// **** PROPERTIES ****
 
-    public bool Equals(PositionSpec compare)
-    {
-      return (compare.CubePosition == CubePosition && compare.FacePosition == FacePosition);
-    }
+		/// <summary>
+		/// Describes the CubePostion
+		/// </summary>
+		public CubeFlag CubePosition { get; set; }
 
-    public bool IsDefault
-    {
-      get
-      {
-        return (CubePosition == CubeFlag.None || FacePosition == FacePosition.None);
-      }
-    }
-  }
+		/// <summary>
+		/// Describes the FacePosition
+		/// </summary>
+		public FacePosition FacePosition { get; set; }
+
+		/// <summary>
+		/// Returns the default position
+		/// </summary>
+		public static PositionSpec Default
+		{
+			get
+			{
+				return new PositionSpec() { CubePosition = CubeFlag.None, FacePosition = FacePosition.None };
+			}
+		}
+
+		/// <summary>
+		/// Returns true if this position is the default one
+		/// </summary>
+		public bool IsDefault
+		{
+			get
+			{
+				return (CubePosition == CubeFlag.None || FacePosition == FacePosition.None);
+			}
+		}
+
+
+
+		// **** METHODS ****
+
+		/// <summary>
+		/// Returns true if this and given PositionSpec is equal
+		/// </summary>
+		/// <param name="compare">Defines the PositionSpec to be compared with</param>
+		/// <returns></returns>
+		public bool Equals(PositionSpec compare)
+		{
+			return (compare.CubePosition == CubePosition && compare.FacePosition == FacePosition);
+		}
+
+	}
 }

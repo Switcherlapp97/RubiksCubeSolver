@@ -5,112 +5,228 @@ using System.Text;
 
 namespace RubiksCubeLib
 {
-  public class LayerMoveCollection : IList<LayerMove>, IMove
-  {
-    public string Name
-    {
-      get
-      {
-        return string.Join(", ", moves.Select(m => m.Name).ToArray());
-      }
-    }
-    public bool MultipleLayers { get { return true; } }
+	/// <summary>
+	/// Represents a collection of moves of specific layers
+	/// </summary>
+	public class LayerMoveCollection : IList<LayerMove>, IMove
+	{
 
-    public static LayerMoveCollection operator &(LayerMoveCollection collection, LayerMove newMove)
-    {
-      collection.Add(newMove);
-      return collection;
-    }
+		// **** PROPERTIES ****
 
-    private List<LayerMove> moves = new List<LayerMove>();
-    public int IndexOf(LayerMove item)
-    {
-      return moves.IndexOf(item);
-    }
+		/// <summary>
+		/// Returns a connected strings of all LayerMove names
+		/// </summary>
+		public string Name
+		{
+			get
+			{
+				return string.Join(", ", moves.Select(m => m.Name).ToArray());
+			}
+		}
 
-    public void Insert(int index, LayerMove item)
-    {
-      moves.Insert(index, item);
-    }
+		/// <summary>
+		/// Returns true if MultipleLayers are allowed
+		/// </summary>
+		public bool MultipleLayers { get { return true; } }
 
-    public void RemoveAt(int index)
-    {
-      moves.RemoveAt(index);
-    }
+	
+		/// <summary>
+		/// Returns the count of the moves
+		/// </summary>
+		public int Count
+		{
+			get { return moves.Count; }
+		}
 
-    public LayerMove this[int index]
-    {
-      get
-      {
-        return moves[index];
-      }
-      set
-      {
-        moves[index] = value;
-      }
-    }
+		/// <summary>
+		/// Returns true if this Layer is readonly
+		/// </summary>
+		public bool IsReadOnly
+		{
+			get { return false; }
+		}
 
 
-    public void Add(LayerMove item)
-    {
-      CubeFlag flag = CubeFlag.None;
-      foreach (LayerMove m in moves)
-      {
-        flag |= m.Layer;
-      }
-      if (CubeFlagService.IsPossibleMovement(flag))
-      {
-        moves.Add(item);
-      }
-      else throw new Exception("Impossible movement");
-    }
 
-    public void AddRange(IEnumerable<LayerMove> items)
-    {
-      foreach(LayerMove m in items)
-      {
-        Add(m);
-      }
-    }
+		// **** OPERATORS ****
 
-    public void Clear()
-    {
-      moves.Clear();
-    }
+		/// <summary>
+		/// Adds a single LayerMove to the given collection
+		/// </summary>
+		/// <param name="collection">Defines the collection to be expanded</param>
+		/// <param name="newMove">Defines the additional LayerMove</param>
+		/// <returns></returns>
+		public static LayerMoveCollection operator &(LayerMoveCollection collection, LayerMove newMove)
+		{
+			LayerMoveCollection lmc = new LayerMoveCollection();
+			lmc.AddRange(collection);
+			lmc.Add(newMove);
+			return lmc;
+		}
 
-    public bool Contains(LayerMove item)
-    {
-      return moves.Contains(item);
-    }
+		/// <summary>
+		/// Adds a collection of LayerMoves to the given collection
+		/// </summary>
+		/// <param name="collection1">Defines the collection to be expanded</param>
+		/// <param name="collection2">Defines the collection to be added</param>
+		/// <returns></returns>
+		public static LayerMoveCollection operator &(LayerMoveCollection collection1, LayerMoveCollection collection2)
+		{
+			LayerMoveCollection lmc = new LayerMoveCollection();
+			lmc.AddRange(collection1);
+			lmc.AddRange(collection2);
+			return lmc;
+		}
 
-    public void CopyTo(LayerMove[] array, int arrayIndex)
-    {
-      moves.CopyTo(array, arrayIndex);
-    }
 
-    public int Count
-    {
-      get { return moves.Count; }
-    }
+		//The list of the single moves 
+		private List<LayerMove> moves = new List<LayerMove>();
 
-    public bool IsReadOnly
-    {
-      get { return false; }
-    }
 
-    public bool Remove(LayerMove item)
-    {
-      return moves.Remove(item);
-    }
 
-    public IEnumerator<LayerMove> GetEnumerator()
-    {
-      return moves.GetEnumerator();
-    }
+		// **** METHODS ****
 
-    System.Collections.IEnumerator System.Collections.IEnumerable.GetEnumerator()
-    {
-      return moves.GetEnumerator();
-    }
-  }
+		/// <summary>
+		/// Returns the index of a item in the collection
+		/// </summary>
+		/// <param name="item">Defines the item</param>
+		/// <returns></returns>
+		public int IndexOf(LayerMove item)
+		{
+			return moves.IndexOf(item);
+		}
+
+		/// <summary>
+		/// Inserts an item in the collection at a index
+		/// </summary>
+		/// <param name="index">Defines the index where the item is meant to be inserted</param>
+		/// <param name="item">Defines te</param>
+		public void Insert(int index, LayerMove item)
+		{
+			moves.Insert(index, item);
+		}
+
+		/// <summary>
+		/// Removes the item at the given index
+		/// </summary>
+		/// <param name="index">Defines the index where the item is meant to be removed</param>
+		public void RemoveAt(int index)
+		{
+			moves.RemoveAt(index);
+		}
+
+		/// <summary>
+		/// Returns the layermove at the given index
+		/// </summary>
+		/// <param name="index">Defines the index of the item</param>
+		/// <returns></returns>
+		public LayerMove this[int index]
+		{
+			get
+			{
+				return moves[index];
+			}
+			set
+			{
+				moves[index] = value;
+			}
+		}
+
+		/// <summary>
+		/// Adds an item at the end of the collection
+		/// </summary>
+		/// <param name="item">Defines the item which is meant to be added</param>
+		/// <exception cref="System.Exception">Thrown if this movement would be impossible</exception>
+		public void Add(LayerMove item)
+		{
+			CubeFlag flag = CubeFlag.None;
+			foreach (LayerMove m in moves)
+			{
+				flag |= m.Layer;
+			}
+			if (CubeFlagService.IsPossibleMove(flag))
+			{
+				moves.Add(item);
+			}
+			else
+				throw new Exception("Impossible movement");
+		}
+
+		/// <summary>
+		/// Adds multiple items at the end of the collection
+		/// </summary>
+		/// <param name="items">Defines the items which are meant to be added</param>
+		public void AddRange(IEnumerable<LayerMove> items)
+		{
+			foreach (LayerMove m in items)
+				Add(m);
+		}
+
+		/// <summary>
+		/// Adds multiple items at the end of the collection
+		/// </summary>
+		/// <param name="items">Defines the items which are meant to be added</param>
+		public void AddRange(LayerMoveCollection items)
+		{
+			foreach (LayerMove m in items)
+				Add(m);
+		}
+
+		/// <summary>
+		/// Clears the collection
+		/// </summary>
+		public void Clear()
+		{
+			moves.Clear();
+		}
+
+		/// <summary>
+		/// Returns true if this collection contains the given item
+		/// </summary>
+		/// <param name="item">Defines the item to be searched for</param>
+		/// <returns></returns>
+		public bool Contains(LayerMove item)
+		{
+			return moves.Contains(item);
+		}
+
+		/// <summary>
+		/// Copies the entire collection into the given array starting at the given index
+		/// </summary>
+		/// <param name="array">The</param>
+		/// <param name="arrayIndex"></param>
+		public void CopyTo(LayerMove[] array, int arrayIndex)
+		{
+			moves.CopyTo(array, arrayIndex);
+		}
+
+		/// <summary>
+		/// Removes the given item out of the collection
+		/// </summary>
+		/// <param name="item">Defines the item to be removed</param>
+		/// <returns></returns>
+		public bool Remove(LayerMove item)
+		{
+			return moves.Remove(item);
+		}
+
+
+		/// <summary>
+		/// Returns the enumerator of the collection
+		/// </summary>
+		/// <returns></returns>
+		public IEnumerator<LayerMove> GetEnumerator()
+		{
+			return moves.GetEnumerator();
+		}
+
+		/// <summary>
+		/// Returns the enumerator of the collection
+		/// </summary>
+		/// <returns></returns>
+		System.Collections.IEnumerator System.Collections.IEnumerable.GetEnumerator()
+		{
+			return moves.GetEnumerator();
+		}
+	}
 }

@@ -5,10 +5,15 @@ using System.Text;
 
 namespace RubiksCubeLib
 {
-  public enum RotationType
-  {
-    X,
-    Y,
-    Z 
-  }
+	
+	/// <summary>
+	/// Represents an enum which describes the direction of the rotation
+	/// </summary>
+	public enum RotationType
+	{
+		X,
+		Y,
+		Z
+	}
+
 }
