@@ -219,7 +219,7 @@ namespace RubiksCubeLib.RubiksCube
 		private void RotateLayer(LayerMove move)
 		{
 			int repetitions = move.Twice ? 2 : 1;
-			for (int i = 0; i < 1; i++)
+			for (int i = 0; i < repetitions; i++)
 			{
 				IEnumerable<Cube> affected = Cubes.Where(c => c.Position.HasFlag(move.Layer));
 				affected.ToList().ForEach(c => c.NextPos(move.Layer, move.Direction));
@@ -266,7 +266,7 @@ namespace RubiksCubeLib.RubiksCube
 		public void Scramble(int moves)
 		{
 			Random rnd = new Random();
-			for (int i = 0; i < 50; i++)
+			for (int i = 0; i < moves; i++)
 				RotateLayer(new LayerMove((CubeFlag)Math.Pow(2, rnd.Next(0, 9)), Convert.ToBoolean(rnd.Next(0, 2))));
 		}
 
