@@ -62,7 +62,7 @@ namespace BeginnerSolver
           CubeFlag layer = CubeFlagService.FromFacePosition(e.Faces.First(f => (f.Color == Rubik.BottomColor || f.Color == secondColor)
             && f.Position != FacePosition.Top && f.Position != FacePosition.Bottom).Position);
 
-          CubeFlag targetLayer = CubeFlagService.FromFacePosition(StandardCube.Cubes.First(cu => ScrambledEquals(cu.Colors, e.Colors))
+          CubeFlag targetLayer = CubeFlagService.FromFacePosition(StandardCube.Cubes.First(cu => CollectionMethods.ScrambledEquals(cu.Colors, e.Colors))
             .Faces.First(f => f.Color == secondColor).Position);
 
           if (e.Position.HasFlag(CubeFlag.MiddleLayer))
