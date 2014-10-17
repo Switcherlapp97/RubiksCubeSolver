@@ -75,7 +75,6 @@ namespace TestApplication
       {
         MessageBox.Show("Unsolvable");
       }
-      //cubeModel.Rubik = solverPlugins.StandardPlugin.ReturnRubik(cubeModel.Rubik);
     }
 
     private void cornerTestToolStripMenuItem_Click(object sender, EventArgs e)

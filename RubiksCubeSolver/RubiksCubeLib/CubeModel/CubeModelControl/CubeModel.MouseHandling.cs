@@ -32,6 +32,11 @@ namespace RubiksCubeLib.CubeModel
       return angleInDeg < 0 ? 360 + angleInDeg : angleInDeg;
     }
 
+    private double ToNextQuarter(double angleInDeg)
+    {
+      return Math.Round(angleInDeg / 90) * 90;
+    }
+
     private Point oldMousePos = new Point(-1, -1);
 
     /// <summary>
@@ -52,9 +57,12 @@ namespace RubiksCubeLib.CubeModel
             int min = Math.Min(ClientRectangle.Height, ClientRectangle.Width);
             double scale = ((double)min / (double)400) * 6.0;
 
-            Rotation[0] = ToPositiveAngle(Rotation[0] + dy / scale) % 360; // y rotation
-            Rotation[1] = ToPositiveAngle(Rotation[1] - dx / scale) % 360;
-           
+            Rotation[1] = ToPositiveAngle(Rotation[1] - dx / scale) % 360; // x rotation
+
+            if (Rotation[1] < 45 || Rotation[1] > 315) Rotation[0] = ToPositiveAngle(Rotation[0] + dy / scale) % 360; // y rotation
+            else if (Rotation[1] > 45 && Rotation[1] < 135) Rotation[2] = ToPositiveAngle(Rotation[2] + dy / scale) % 360; // z rotation
+            else if (Rotation[1] > 135 && Rotation[1] < 225) Rotation[0] = ToPositiveAngle(Rotation[0] - dy / scale) % 360; // y rotation
+            else if (Rotation[1] > 225 && Rotation[1] < 315) Rotation[2] = ToPositiveAngle(Rotation[2] - dy / scale) % 360; // z rotation          
           }
           else this.Cursor = Cursors.Arrow;
         }

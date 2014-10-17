@@ -6,7 +6,7 @@ using System.Text;
 namespace RubiksCubeLib
 {
 	/// <summary>
-	/// Represents the FacePosition and the position of the matching cube
+	/// Describes the position of a face and the position of its parent cube
 	/// </summary>
 	public struct PositionSpec
 	{

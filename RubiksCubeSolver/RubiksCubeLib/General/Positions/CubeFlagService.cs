@@ -370,5 +370,44 @@ namespace RubiksCubeLib
 					return string.Empty;
 			}
 		}
+
+    public static CubeFlag Parse(string notation)
+    {
+      CubeFlag flags = CubeFlag.None;
+      for (int i = 0; i < notation.Length; i ++)
+      {
+        switch (notation[i])
+        {
+          case 'R':
+            flags |= CubeFlag.RightSlice;
+            break;
+          case 'L':
+            flags |= CubeFlag.LeftSlice;
+            break;
+          case 'U':
+            flags |= CubeFlag.TopLayer;
+            break;
+          case 'D':
+            flags |= CubeFlag.BottomLayer;
+            break;
+          case 'F':
+            flags |= CubeFlag.FrontSlice;
+            break;
+          case 'B':
+            flags |= CubeFlag.BackSlice;
+            break;
+          case 'M':
+            flags |= CubeFlag.MiddleSliceSides;
+            break;
+          case 'E':
+            flags |= CubeFlag.MiddleLayer;
+            break;
+          case 'S':
+            flags |= CubeFlag.MiddleSlice;
+            break;
+        }
+      }
+      return flags;
+    }
 	}
 }

@@ -89,37 +89,7 @@ namespace RubiksCubeLib
 		public static LayerMove Parse(string notation)
 		{
 			string layer = notation[0].ToString();
-			CubeFlag rotationLayer = CubeFlag.None;
-			switch (layer)
-			{
-				case "R":
-					rotationLayer = CubeFlag.RightSlice;
-					break;
-				case "L":
-					rotationLayer = CubeFlag.LeftSlice;
-					break;
-				case "U":
-					rotationLayer = CubeFlag.TopLayer;
-					break;
-				case "D":
-					rotationLayer = CubeFlag.BottomLayer;
-					break;
-				case "F":
-					rotationLayer = CubeFlag.FrontSlice;
-					break;
-				case "B":
-					rotationLayer = CubeFlag.BackSlice;
-					break;
-				case "M":
-					rotationLayer = CubeFlag.MiddleSliceSides;
-					break;
-				case "E":
-					rotationLayer = CubeFlag.MiddleLayer;
-					break;
-				case "S":
-					rotationLayer = CubeFlag.MiddleSlice;
-					break;
-			}
+      CubeFlag rotationLayer = CubeFlagService.Parse(layer);
 			bool direction = notation.Length == 1;
 			return new LayerMove(rotationLayer, direction);
 		}

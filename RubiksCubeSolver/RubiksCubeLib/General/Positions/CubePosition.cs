@@ -7,7 +7,7 @@ namespace RubiksCubeLib
 {
 
 	/// <summary>
-	/// Represents the position of a cube
+	/// Represents the position of a cube and its orientation
 	/// </summary> 
 	[Serializable]
 	public class CubePosition
@@ -35,8 +35,6 @@ namespace RubiksCubeLib
 		/// </summary>
 		public CubeFlag Flags { get { return X | Y | Z; } }
 
-
-
 		// **** CONSTRUCTORS ****
 
 		/// <summary>
@@ -62,7 +60,6 @@ namespace RubiksCubeLib
 		/// </summary>
 		/// <param name="flags">Defines the CubeFlag where the X-, Y- and ZFlag are filtered out</param>
 		public CubePosition(CubeFlag flags) : this(CubeFlagService.FirstXFlag(flags), CubeFlagService.FirstYFlag(flags), CubeFlagService.FirstZFlag(flags)) { }
-
 
 
 		// **** METHODS ****
@@ -119,7 +116,6 @@ namespace RubiksCubeLib
 				|| (position == (CubeFlag.FrontSlice | CubeFlag.MiddleSliceSides | CubeFlag.MiddleLayer))
 				|| (position == (CubeFlag.BackSlice | CubeFlag.MiddleSliceSides | CubeFlag.MiddleLayer)));
 		}
-
 
 
 		/// <summary>

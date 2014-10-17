@@ -9,46 +9,10 @@ namespace RubiksCubeLib.Solver
 {
   public static class Solvability
   {
-    #region permutation parity test
-    #region position definitions
-    private static List<CubePosition> cornerPos = new List<CubePosition>
-    { 
-      new CubePosition(CubeFlag.LeftSlice,CubeFlag.BackSlice,CubeFlag.TopLayer),
-      new CubePosition(CubeFlag.RightSlice,CubeFlag.BackSlice,CubeFlag.TopLayer),
-      new CubePosition(CubeFlag.RightSlice,CubeFlag.FrontSlice,CubeFlag.TopLayer),
-      new CubePosition(CubeFlag.LeftSlice,CubeFlag.FrontSlice,CubeFlag.TopLayer),
-      new CubePosition(CubeFlag.LeftSlice,CubeFlag.BackSlice,CubeFlag.BottomLayer),
-      new CubePosition(CubeFlag.RightSlice,CubeFlag.BackSlice,CubeFlag.BottomLayer),
-      new CubePosition(CubeFlag.RightSlice,CubeFlag.FrontSlice,CubeFlag.BottomLayer),
-      new CubePosition(CubeFlag.LeftSlice,CubeFlag.FrontSlice,CubeFlag.BottomLayer),
-    };
-
-    private static List<CubePosition> edgePos = new List<CubePosition>
-    {
-      new CubePosition(CubeFlag.MiddleSliceSides, CubeFlag.BackSlice,CubeFlag.TopLayer),
-      new CubePosition(CubeFlag.RightSlice, CubeFlag.MiddleSlice, CubeFlag.TopLayer),
-      new CubePosition(CubeFlag.MiddleSliceSides, CubeFlag.FrontSlice, CubeFlag.TopLayer),
-      new CubePosition(CubeFlag.LeftSlice, CubeFlag.MiddleSlice,CubeFlag.TopLayer),
-       
-      new CubePosition(CubeFlag.LeftSlice, CubeFlag.BackSlice,CubeFlag.MiddleLayer),
-      new CubePosition(CubeFlag.RightSlice, CubeFlag.BackSlice, CubeFlag.MiddleLayer),
-      new CubePosition(CubeFlag.RightSlice, CubeFlag.FrontSlice, CubeFlag.MiddleLayer),
-      new CubePosition(CubeFlag.LeftSlice, CubeFlag.FrontSlice,CubeFlag.MiddleLayer),
-
-      new CubePosition(CubeFlag.MiddleSliceSides, CubeFlag.BackSlice,CubeFlag.BottomLayer),
-      new CubePosition(CubeFlag.RightSlice, CubeFlag.MiddleSlice, CubeFlag.BottomLayer),
-      new CubePosition(CubeFlag.MiddleSliceSides, CubeFlag.FrontSlice, CubeFlag.BottomLayer),
-      new CubePosition(CubeFlag.LeftSlice, CubeFlag.MiddleSlice,CubeFlag.BottomLayer),
-    };
-    #endregion
-
     public static bool PermutationParityTest(Rubik rubik)
     {
-      int inversions = 0;
-      Rubik standard = rubik.GenStandardCube();
-      inversions = CountInversions(cornerPos.Select(p => p.Flags).ToList(), Order(rubik, cornerPos))
-        + CountInversions(edgePos.Select(p => p.Flags).ToList(), Order(rubik, edgePos));
-      return inversions % 2 == 0;
+      Pattern p = Pattern.FromRubik(rubik);
+      return p.Inversions % 2 == 0;
     }
 
     private static List<CubeFlag> Order(Rubik r, List<CubePosition> pos)
@@ -81,26 +45,21 @@ namespace RubiksCubeLib.Solver
       }
       return inversions;
     }
-    #endregion
 
-    #region corner parity test
     public static bool CornerParityTest(Rubik rubik)
     {
-      return rubik.Cubes.Where(c => c.IsCorner).Sum(c => GetOrientation(rubik,c)) % 3 == 0;
+      return rubik.Cubes.Where(c => c.IsCorner).Sum(c => PositionOrientation.GetOrientation(rubik,c)) % 3 == 0;
     }
-    #endregion
 
-    #region edge parity test
     public static bool EdgeParityTest(Rubik rubik)
     {
-      return rubik.Cubes.Where(c => c.IsEdge).Sum(c => GetOrientation(rubik,c)) % 2 == 0;
+      return rubik.Cubes.Where(c => c.IsEdge).Sum(c => PositionOrientation.GetOrientation(rubik, c)) % 2 == 0;
     }
 
     private static Cube RefreshCube(Rubik r, Cube c)
     {
       return r.Cubes.First(cu => CollectionMethods.ScrambledEquals(cu.Colors, c.Colors));
     }
-    #endregion
 
     public static int GetOrientation(Rubik rubik, Cube c)
     {
