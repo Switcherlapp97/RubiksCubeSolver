@@ -9,193 +9,226 @@ using System.Diagnostics;
 
 namespace RubiksCubeLib.CubeModel
 {
-  /// <summary>
-  /// Represents a 3D rubiks cube
-  /// </summary>
-  public partial class CubeModel
-  {
-    /// <summary>
-    /// Gets or sets the permission to perform mouse activities
-    /// </summary>
-    public bool MouseHandling { get; set; }
+	/// <summary>
+	/// Represents a 3D rubiks cube
+	/// </summary>
+	public partial class CubeModel
+	{
 
-    private PositionSpec oldSelection = PositionSpec.Default;
-    private PositionSpec currentSelection = PositionSpec.Default;
+		// *** PROPERTIES ***
 
-    /// <summary>
-    /// Converts negative angles to positive
-    /// </summary>
-    /// <param name="angleInDeg"></param>
-    /// <returns></returns>
-    private double ToPositiveAngle(double angleInDeg)
-    {
-      return angleInDeg < 0 ? 360 + angleInDeg : angleInDeg;
-    }
+		/// <summary>
+		/// Gets or sets the permission to perform mouse activities
+		/// </summary>
+		public bool MouseHandling { get; set; }
 
-    private double ToNextQuarter(double angleInDeg)
-    {
-      return Math.Round(angleInDeg / 90) * 90;
-    }
 
-    private Point oldMousePos = new Point(-1, -1);
 
-    /// <summary>
-    /// Detection and execution of the rotation of the whole cube
-    /// </summary>
-    protected override void OnMouseMove(MouseEventArgs e)
-    {
-      if (MouseHandling)
-      {
-        if (oldMousePos.X != -1 && oldMousePos.Y != -1)
-        {
-          if (e.Button == System.Windows.Forms.MouseButtons.Right)
-          {
-            this.Cursor = Cursors.SizeAll;
-            int dx = e.X - oldMousePos.X;
-            int dy = e.Y - oldMousePos.Y;
+		// *** PRIVATE FIELDS ***
 
-            int min = Math.Min(ClientRectangle.Height, ClientRectangle.Width);
-            double scale = ((double)min / (double)400) * 6.0;
+		private PositionSpec _oldSelection = PositionSpec.Default;
+		private PositionSpec _currentSelection = PositionSpec.Default;
 
-            Rotation[1] = ToPositiveAngle(Rotation[1] - dx / scale) % 360; // x rotation
+		private Point _oldMousePos = new Point(-1, -1);
 
-            if (Rotation[1] < 45 || Rotation[1] > 315) Rotation[0] = ToPositiveAngle(Rotation[0] + dy / scale) % 360; // y rotation
-            else if (Rotation[1] > 45 && Rotation[1] < 135) Rotation[2] = ToPositiveAngle(Rotation[2] + dy / scale) % 360; // z rotation
-            else if (Rotation[1] > 135 && Rotation[1] < 225) Rotation[0] = ToPositiveAngle(Rotation[0] - dy / scale) % 360; // y rotation
-            else if (Rotation[1] > 225 && Rotation[1] < 315) Rotation[2] = ToPositiveAngle(Rotation[2] - dy / scale) % 360; // z rotation          
-          }
-          else this.Cursor = Cursors.Arrow;
-        }
-      }
-      oldMousePos = e.Location;
-      base.OnMouseMove(e);
-    }
 
-    /// <summary>
-    /// Detection and execution of mouse-controlled layer rotations
-    /// </summary>
-    protected override void OnMouseClick(MouseEventArgs e)
-    {
-      if (MouseHandling)
-      {
-        if (e.Button == System.Windows.Forms.MouseButtons.Left)
-        {
-          if (oldSelection.IsDefault)
-          {
-            if (currentSelection.IsDefault)
-            {
-              selections.Reset();
-              oldSelection = PositionSpec.Default;
-              currentSelection = PositionSpec.Default;
-            }
-            else
-            {
-              if (!CubePosition.IsCorner(currentSelection.CubePosition))
-              {
-                oldSelection = currentSelection;
-                Rubik.Cubes.ForEach(c => c.Faces.Where(f => f.Color != Color.Black).ToList().ForEach(f =>
-                  {
-                    PositionSpec pos = new PositionSpec() { CubePosition = c.Position.Flags, FacePosition = f.Position };
 
-                    if (currentSelection.CubePosition != c.Position.Flags && !CubePosition.IsCenter(c.Position.Flags) && currentSelection.FacePosition == f.Position)
-                    {
-                      CubeFlag assocLayer = CubeFlagService.FromFacePosition(currentSelection.FacePosition);
-                      CubeFlag commonLayer = CubeFlagService.GetFirstNotInvalidCommonFlag(currentSelection.CubePosition, c.Position.Flags, assocLayer);
+		// *** METHODS ***
 
-                      if (commonLayer != CubeFlag.None && c.Position.HasFlag(commonLayer))
-                      {
-                        selections[pos] |= Selection.Possible;
-                      }
-                      else
-                      {
-                        selections[pos] |= Selection.NotPossible;
-                      }
-                    }
-                    else
-                    {
-                      selections[pos] |= Selection.NotPossible;
-                    }
-                  }));
-              }
-              else
-              {
-                selections.Reset();
-              }
-            }
-          }
-          else
-          {
-            if (!currentSelection.IsDefault)
-            {
-              if (currentSelection.CubePosition != oldSelection.CubePosition)
-              {
-                if (!CubePosition.IsCenter(currentSelection.CubePosition))
-                {
-                  if (oldSelection.FacePosition == currentSelection.FacePosition)
-                  {
-                    CubeFlag assocLayer = CubeFlagService.FromFacePosition(oldSelection.FacePosition);
-                    CubeFlag commonLayer = CubeFlagService.GetFirstNotInvalidCommonFlag(oldSelection.CubePosition, currentSelection.CubePosition, assocLayer);
-                    bool direction = true;
 
-                    if (commonLayer == CubeFlag.TopLayer || commonLayer == CubeFlag.MiddleLayer || commonLayer == CubeFlag.BottomLayer)
-                    {
-                      if (((oldSelection.FacePosition == FacePosition.Back) && currentSelection.CubePosition.HasFlag(CubeFlag.RightSlice))
-                      || ((oldSelection.FacePosition == FacePosition.Left) && currentSelection.CubePosition.HasFlag(CubeFlag.BackSlice))
-                      || ((oldSelection.FacePosition == FacePosition.Front) && currentSelection.CubePosition.HasFlag(CubeFlag.LeftSlice))
-                      || ((oldSelection.FacePosition == FacePosition.Right) && currentSelection.CubePosition.HasFlag(CubeFlag.FrontSlice))) direction = false;
-                      if (commonLayer == CubeFlag.TopLayer || commonLayer == CubeFlag.MiddleLayer) direction = !direction;
-                    }
+		// Editing angles
 
-                    if (commonLayer == CubeFlag.LeftSlice || commonLayer == CubeFlag.MiddleSliceSides || commonLayer == CubeFlag.RightSlice)
-                    {
-                      if (((oldSelection.FacePosition == FacePosition.Bottom) && currentSelection.CubePosition.HasFlag(CubeFlag.BackSlice))
-                      || ((oldSelection.FacePosition == FacePosition.Back) && currentSelection.CubePosition.HasFlag(CubeFlag.TopLayer))
-                      || ((oldSelection.FacePosition == FacePosition.Top) && currentSelection.CubePosition.HasFlag(CubeFlag.FrontSlice))
-                      || ((oldSelection.FacePosition == FacePosition.Front) && currentSelection.CubePosition.HasFlag(CubeFlag.BottomLayer))) direction = false;
-                      if (commonLayer == CubeFlag.LeftSlice) direction = !direction;
-                    }
+		/// <summary>
+		/// Converts negative angles to positive
+		/// </summary>
+		/// <param name="angleInDeg"></param>
+		/// <returns></returns>
+		private double ToPositiveAngle(double angleInDeg)
+		{
+			return angleInDeg < 0 ? 360 + angleInDeg : angleInDeg;
+		}
 
-                    if (commonLayer == CubeFlag.BackSlice || commonLayer == CubeFlag.MiddleSlice || commonLayer == CubeFlag.FrontSlice)
-                    {
-                      if (((oldSelection.FacePosition == FacePosition.Top) && currentSelection.CubePosition.HasFlag(CubeFlag.RightSlice))
-                      || ((oldSelection.FacePosition == FacePosition.Right) && currentSelection.CubePosition.HasFlag(CubeFlag.BottomLayer))
-                      || ((oldSelection.FacePosition == FacePosition.Bottom) && currentSelection.CubePosition.HasFlag(CubeFlag.LeftSlice))
-                      || ((oldSelection.FacePosition == FacePosition.Left) && currentSelection.CubePosition.HasFlag(CubeFlag.TopLayer))) direction = false;
-                      if (commonLayer == CubeFlag.FrontSlice || commonLayer == CubeFlag.MiddleSlice) direction = !direction;
-                    }
+		/// <summary>
+		/// Rounds a angle to 90 deg up
+		/// </summary>
+		/// <param name="angleInDeg"></param>
+		/// <returns></returns>
+		private double ToNextQuarter(double angleInDeg)
+		{
+			return Math.Round(angleInDeg / 90) * 90;
+		}
 
-                    if (commonLayer != CubeFlag.None)
-                    {
-                      RotateLayerAnimated(commonLayer, direction);
-                    }
-                    else
-                    {
-                      Debug.WriteLine("Error: Invalid second selection, does not specify distinct layer");
-                    }
-                  }
-                  else
-                  {
-                    Debug.WriteLine("Error: Invalid second selection, must match orientation of first selection");
-                  }
-                }
-                else
-                {
-                  Debug.WriteLine("Error: Invalid second selection, must not be a center");
-                }
-              }
-              else
-              {
-                Debug.WriteLine("Error: Invalid second selection, must not be first selection");
-              }
-            }
-            selections.Reset();
-            oldSelection = PositionSpec.Default;
-            currentSelection = PositionSpec.Default;
-          }
-        }
-      }
 
-      base.OnMouseClick(e);
-    }
-  }
+		// Handle mouse interactions
+
+		/// <summary>
+		/// Detection and execution of the rotation of the whole cube
+		/// </summary>
+		protected override void OnMouseMove(MouseEventArgs e)
+		{
+			if (this.MouseHandling)
+			{
+				if (_oldMousePos.X != -1 && _oldMousePos.Y != -1)
+				{
+					if (e.Button == System.Windows.Forms.MouseButtons.Right)
+					{
+						this.Cursor = Cursors.SizeAll;
+						int dx = e.X - _oldMousePos.X;
+						int dy = e.Y - _oldMousePos.Y;
+
+						int min = Math.Min(ClientRectangle.Height, ClientRectangle.Width);
+						double scale = ((double)min / (double)400) * 6.0;
+
+						Rotation[1] = ToPositiveAngle(Rotation[1] - dx / scale) % 360; // x rotation
+
+						if (Rotation[1] < 45 || Rotation[1] > 315)
+							Rotation[0] = ToPositiveAngle(Rotation[0] + dy / scale) % 360; // y rotation
+						else if (Rotation[1] > 45 && Rotation[1] < 135)
+							Rotation[2] = ToPositiveAngle(Rotation[2] + dy / scale) % 360; // z rotation
+						else if (Rotation[1] > 135 && Rotation[1] < 225)
+							Rotation[0] = ToPositiveAngle(Rotation[0] - dy / scale) % 360; // y rotation
+						else if (Rotation[1] > 225 && Rotation[1] < 315)
+							Rotation[2] = ToPositiveAngle(Rotation[2] - dy / scale) % 360; // z rotation          
+					}
+					else
+						this.Cursor = Cursors.Arrow;
+				}
+			}
+			_oldMousePos = e.Location;
+			base.OnMouseMove(e);
+		}
+
+		/// <summary>
+		/// Detection and execution of mouse-controlled layer rotations
+		/// </summary>
+		protected override void OnMouseClick(MouseEventArgs e)
+		{
+			if (this.MouseHandling)
+			{
+				if (e.Button == System.Windows.Forms.MouseButtons.Left)
+				{
+					if (_oldSelection.IsDefault)
+					{
+						if (_currentSelection.IsDefault)
+						{
+							_selections.Reset();
+							_oldSelection = PositionSpec.Default;
+							_currentSelection = PositionSpec.Default;
+						}
+						else
+						{
+							if (!CubePosition.IsCorner(_currentSelection.CubePosition))
+							{
+								_oldSelection = _currentSelection;
+								this.Rubik.Cubes.ForEach(c => c.Faces.Where(f => f.Color != Color.Black).ToList().ForEach(f =>
+								  {
+									  PositionSpec pos = new PositionSpec() { CubePosition = c.Position.Flags, FacePosition = f.Position };
+
+									  if (_currentSelection.CubePosition != c.Position.Flags && !CubePosition.IsCenter(c.Position.Flags) && _currentSelection.FacePosition == f.Position)
+									  {
+										  CubeFlag assocLayer = CubeFlagService.FromFacePosition(_currentSelection.FacePosition);
+										  CubeFlag commonLayer = CubeFlagService.GetFirstNotInvalidCommonFlag(_currentSelection.CubePosition, c.Position.Flags, assocLayer);
+
+										  if (commonLayer != CubeFlag.None && c.Position.HasFlag(commonLayer))
+										  {
+											  _selections[pos] |= Selection.Possible;
+										  }
+										  else
+										  {
+											  _selections[pos] |= Selection.NotPossible;
+										  }
+									  }
+									  else
+									  {
+										  _selections[pos] |= Selection.NotPossible;
+									  }
+								  }));
+							}
+							else
+							{
+								_selections.Reset();
+							}
+						}
+					}
+					else
+					{
+						if (!_currentSelection.IsDefault)
+						{
+							if (_currentSelection.CubePosition != _oldSelection.CubePosition)
+							{
+								if (!CubePosition.IsCenter(_currentSelection.CubePosition))
+								{
+									if (_oldSelection.FacePosition == _currentSelection.FacePosition)
+									{
+										CubeFlag assocLayer = CubeFlagService.FromFacePosition(_oldSelection.FacePosition);
+										CubeFlag commonLayer = CubeFlagService.GetFirstNotInvalidCommonFlag(_oldSelection.CubePosition, _currentSelection.CubePosition, assocLayer);
+										bool direction = true;
+
+										if (commonLayer == CubeFlag.TopLayer || commonLayer == CubeFlag.MiddleLayer || commonLayer == CubeFlag.BottomLayer)
+										{
+											if (((_oldSelection.FacePosition == FacePosition.Back) && _currentSelection.CubePosition.HasFlag(CubeFlag.RightSlice))
+											|| ((_oldSelection.FacePosition == FacePosition.Left) && _currentSelection.CubePosition.HasFlag(CubeFlag.BackSlice))
+											|| ((_oldSelection.FacePosition == FacePosition.Front) && _currentSelection.CubePosition.HasFlag(CubeFlag.LeftSlice))
+											|| ((_oldSelection.FacePosition == FacePosition.Right) && _currentSelection.CubePosition.HasFlag(CubeFlag.FrontSlice)))
+												direction = false;
+											if (commonLayer == CubeFlag.TopLayer || commonLayer == CubeFlag.MiddleLayer)
+												direction = !direction;
+										}
+
+										if (commonLayer == CubeFlag.LeftSlice || commonLayer == CubeFlag.MiddleSliceSides || commonLayer == CubeFlag.RightSlice)
+										{
+											if (((_oldSelection.FacePosition == FacePosition.Bottom) && _currentSelection.CubePosition.HasFlag(CubeFlag.BackSlice))
+											|| ((_oldSelection.FacePosition == FacePosition.Back) && _currentSelection.CubePosition.HasFlag(CubeFlag.TopLayer))
+											|| ((_oldSelection.FacePosition == FacePosition.Top) && _currentSelection.CubePosition.HasFlag(CubeFlag.FrontSlice))
+											|| ((_oldSelection.FacePosition == FacePosition.Front) && _currentSelection.CubePosition.HasFlag(CubeFlag.BottomLayer)))
+												direction = false;
+											if (commonLayer == CubeFlag.LeftSlice)
+												direction = !direction;
+										}
+
+										if (commonLayer == CubeFlag.BackSlice || commonLayer == CubeFlag.MiddleSlice || commonLayer == CubeFlag.FrontSlice)
+										{
+											if (((_oldSelection.FacePosition == FacePosition.Top) && _currentSelection.CubePosition.HasFlag(CubeFlag.RightSlice))
+											|| ((_oldSelection.FacePosition == FacePosition.Right) && _currentSelection.CubePosition.HasFlag(CubeFlag.BottomLayer))
+											|| ((_oldSelection.FacePosition == FacePosition.Bottom) && _currentSelection.CubePosition.HasFlag(CubeFlag.LeftSlice))
+											|| ((_oldSelection.FacePosition == FacePosition.Left) && _currentSelection.CubePosition.HasFlag(CubeFlag.TopLayer)))
+												direction = false;
+											if (commonLayer == CubeFlag.FrontSlice || commonLayer == CubeFlag.MiddleSlice)
+												direction = !direction;
+										}
+
+										if (commonLayer != CubeFlag.None)
+										{
+											RotateLayerAnimated(commonLayer, direction);
+										}
+										else
+										{
+											Debug.WriteLine("Error: Invalid second selection, does not specify distinct layer");
+										}
+									}
+									else
+									{
+										Debug.WriteLine("Error: Invalid second selection, must match orientation of first selection");
+									}
+								}
+								else
+								{
+									Debug.WriteLine("Error: Invalid second selection, must not be a center");
+								}
+							}
+							else
+							{
+								Debug.WriteLine("Error: Invalid second selection, must not be first selection");
+							}
+						}
+						_selections.Reset();
+						_oldSelection = PositionSpec.Default;
+						_currentSelection = PositionSpec.Default;
+					}
+				}
+			}
+
+			base.OnMouseClick(e);
+		}
+	}
 }

@@ -10,19 +10,6 @@ namespace RubiksCubeLib.RubiksCube
 	[Serializable]
 	public class Face
 	{
-		
-		// **** PROPERTIES ****
-
-		/// <summary>
-		/// The color of this face
-		/// </summary>
-		public Color Color { get; set; }
-
-		/// <summary>
-		/// The position of this face
-		/// </summary>
-		public FacePosition Position { get; set; }
-
 
 
 		// **** CONSTRUCTORS ****
@@ -39,9 +26,25 @@ namespace RubiksCubeLib.RubiksCube
 		/// <param name="position">Defines the position of this face</param>
 		public Face(Color color, FacePosition position)
 		{
-			Color = color;
-			Position = position;
+			this.Color = color;
+			this.Position = position;
 		}
+
+
+
+
+		// **** PROPERTIES ****
+
+		/// <summary>
+		/// The color of this face
+		/// </summary>
+		public Color Color { get; set; }
+
+		/// <summary>
+		/// The position of this face
+		/// </summary>
+		public FacePosition Position { get; set; }
+
 
 	}
 }

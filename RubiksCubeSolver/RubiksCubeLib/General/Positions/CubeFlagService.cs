@@ -5,6 +5,7 @@ using System.Text;
 
 namespace RubiksCubeLib
 {
+
 	/// <summary>
 	/// Represents a service to analyze CubeFlags, CubePositions and FacePositions
 	/// </summary>
@@ -86,6 +87,7 @@ namespace RubiksCubeLib
 		}
 
 
+
 		/// <summary>
 		/// Converts a CubeFlag into values from -1 to 1
 		/// </summary>
@@ -158,6 +160,7 @@ namespace RubiksCubeLib
 					yield return value;
 			}
 		}
+
 
 
 		/// <summary>
@@ -273,7 +276,8 @@ namespace RubiksCubeLib
 		{
 			return FirstNotInvalidFlag(CommonFlags(a, b), exclude);
 		}
-		
+
+
 		/// <summary>
 		/// Returns a CubeFlag which contains all flags of the first parameter except the ones of the second one
 		/// </summary>
@@ -371,43 +375,44 @@ namespace RubiksCubeLib
 			}
 		}
 
-    public static CubeFlag Parse(string notation)
-    {
-      CubeFlag flags = CubeFlag.None;
-      for (int i = 0; i < notation.Length; i ++)
-      {
-        switch (notation[i])
-        {
-          case 'R':
-            flags |= CubeFlag.RightSlice;
-            break;
-          case 'L':
-            flags |= CubeFlag.LeftSlice;
-            break;
-          case 'U':
-            flags |= CubeFlag.TopLayer;
-            break;
-          case 'D':
-            flags |= CubeFlag.BottomLayer;
-            break;
-          case 'F':
-            flags |= CubeFlag.FrontSlice;
-            break;
-          case 'B':
-            flags |= CubeFlag.BackSlice;
-            break;
-          case 'M':
-            flags |= CubeFlag.MiddleSliceSides;
-            break;
-          case 'E':
-            flags |= CubeFlag.MiddleLayer;
-            break;
-          case 'S':
-            flags |= CubeFlag.MiddleSlice;
-            break;
-        }
-      }
-      return flags;
-    }
+		public static CubeFlag Parse(string notation)
+		{
+			CubeFlag flags = CubeFlag.None;
+			for (int i = 0; i < notation.Length; i++)
+			{
+				switch (notation[i])
+				{
+					case 'R':
+						flags |= CubeFlag.RightSlice;
+						break;
+					case 'L':
+						flags |= CubeFlag.LeftSlice;
+						break;
+					case 'U':
+						flags |= CubeFlag.TopLayer;
+						break;
+					case 'D':
+						flags |= CubeFlag.BottomLayer;
+						break;
+					case 'F':
+						flags |= CubeFlag.FrontSlice;
+						break;
+					case 'B':
+						flags |= CubeFlag.BackSlice;
+						break;
+					case 'M':
+						flags |= CubeFlag.MiddleSliceSides;
+						break;
+					case 'E':
+						flags |= CubeFlag.MiddleLayer;
+						break;
+					case 'S':
+						flags |= CubeFlag.MiddleSlice;
+						break;
+				}
+			}
+			return flags;
+		}
+
 	}
 }

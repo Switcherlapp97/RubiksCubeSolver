@@ -7,6 +7,7 @@ using RubiksCubeLib.CubeModel;
 
 namespace RubiksCubeLib
 {
+
 	/// <summary>
 	/// Represents the standard cube in solved form
 	/// </summary>
@@ -45,5 +46,6 @@ namespace RubiksCubeLib
                 new Face3D(new Point3D[] { new Point3D(-1, 1, 1), new Point3D(-1, 1, -1), new Point3D(-1, -1, -1), new Point3D(-1, -1, 1) }, Color.Black, FacePosition.Left, masterPosition)
       };
 		}
+
 	}
 }

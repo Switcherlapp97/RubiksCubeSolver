@@ -11,7 +11,7 @@ namespace RubiksCubeLib
 	public class LayerMoveCollection : IList<LayerMove>, IMove
 	{
 
-		// **** PROPERTIES ****
+		// *** PROPERTIES ***
 
 		/// <summary>
 		/// Returns a connected strings of all LayerMove names
@@ -20,7 +20,7 @@ namespace RubiksCubeLib
 		{
 			get
 			{
-				return string.Join(", ", moves.Select(m => m.Name).ToArray());
+				return string.Join(", ", _moves.Select(m => m.Name).ToArray());
 			}
 		}
 
@@ -29,13 +29,12 @@ namespace RubiksCubeLib
 		/// </summary>
 		public bool MultipleLayers { get { return true; } }
 
-	
 		/// <summary>
 		/// Returns the count of the moves
 		/// </summary>
 		public int Count
 		{
-			get { return moves.Count; }
+			get { return _moves.Count; }
 		}
 
 		/// <summary>
@@ -48,7 +47,7 @@ namespace RubiksCubeLib
 
 
 
-		// **** OPERATORS ****
+		// *** OPERATORS ***
 
 		/// <summary>
 		/// Adds a single LayerMove to the given collection
@@ -79,12 +78,16 @@ namespace RubiksCubeLib
 		}
 
 
+
+		// *** PRIVATE FIELDS
+
 		//The list of the single moves 
-		private List<LayerMove> moves = new List<LayerMove>();
+		private List<LayerMove> _moves = new List<LayerMove>();
 
 
 
-		// **** METHODS ****
+
+		// *** METHODS ***
 
 		/// <summary>
 		/// Returns the index of a item in the collection
@@ -93,7 +96,7 @@ namespace RubiksCubeLib
 		/// <returns></returns>
 		public int IndexOf(LayerMove item)
 		{
-			return moves.IndexOf(item);
+			return _moves.IndexOf(item);
 		}
 
 		/// <summary>
@@ -103,7 +106,7 @@ namespace RubiksCubeLib
 		/// <param name="item">Defines te</param>
 		public void Insert(int index, LayerMove item)
 		{
-			moves.Insert(index, item);
+			_moves.Insert(index, item);
 		}
 
 		/// <summary>
@@ -112,7 +115,7 @@ namespace RubiksCubeLib
 		/// <param name="index">Defines the index where the item is meant to be removed</param>
 		public void RemoveAt(int index)
 		{
-			moves.RemoveAt(index);
+			_moves.RemoveAt(index);
 		}
 
 		/// <summary>
@@ -124,11 +127,11 @@ namespace RubiksCubeLib
 		{
 			get
 			{
-				return moves[index];
+				return _moves[index];
 			}
 			set
 			{
-				moves[index] = value;
+				_moves[index] = value;
 			}
 		}
 
@@ -140,13 +143,13 @@ namespace RubiksCubeLib
 		public void Add(LayerMove item)
 		{
 			CubeFlag flag = CubeFlag.None;
-			foreach (LayerMove m in moves)
+			foreach (LayerMove m in _moves)
 			{
 				flag |= m.Layer;
 			}
 			if (CubeFlagService.IsPossibleMove(flag))
 			{
-				moves.Add(item);
+				_moves.Add(item);
 			}
 			else
 				throw new Exception("Impossible movement");
@@ -177,7 +180,7 @@ namespace RubiksCubeLib
 		/// </summary>
 		public void Clear()
 		{
-			moves.Clear();
+			_moves.Clear();
 		}
 
 		/// <summary>
@@ -187,7 +190,7 @@ namespace RubiksCubeLib
 		/// <returns></returns>
 		public bool Contains(LayerMove item)
 		{
-			return moves.Contains(item);
+			return _moves.Contains(item);
 		}
 
 		/// <summary>
@@ -197,7 +200,7 @@ namespace RubiksCubeLib
 		/// <param name="arrayIndex"></param>
 		public void CopyTo(LayerMove[] array, int arrayIndex)
 		{
-			moves.CopyTo(array, arrayIndex);
+			_moves.CopyTo(array, arrayIndex);
 		}
 
 		/// <summary>
@@ -207,7 +210,7 @@ namespace RubiksCubeLib
 		/// <returns></returns>
 		public bool Remove(LayerMove item)
 		{
-			return moves.Remove(item);
+			return _moves.Remove(item);
 		}
 
 
@@ -217,7 +220,7 @@ namespace RubiksCubeLib
 		/// <returns></returns>
 		public IEnumerator<LayerMove> GetEnumerator()
 		{
-			return moves.GetEnumerator();
+			return _moves.GetEnumerator();
 		}
 
 		/// <summary>
@@ -226,7 +229,7 @@ namespace RubiksCubeLib
 		/// <returns></returns>
 		System.Collections.IEnumerator System.Collections.IEnumerable.GetEnumerator()
 		{
-			return moves.GetEnumerator();
+			return _moves.GetEnumerator();
 		}
 	}
 }

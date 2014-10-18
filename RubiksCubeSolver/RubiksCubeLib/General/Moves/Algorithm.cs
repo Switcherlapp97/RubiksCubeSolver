@@ -10,21 +10,15 @@ namespace RubiksCubeLib
 	/// </summary>
 	public class Algorithm
 	{
-		// **** FIELDS ****
 
-		//The collection
-		public List<LayerMove> Moves { get; set; }
-
-
-
-		// **** CONSTRUCTORS ****
+		// *** CONSTRUCTORS ***
 
 		/// <summary>
 		/// Constructor
 		/// </summary>
 		public Algorithm()
 		{
-			Moves = new List<LayerMove>();
+			this.Moves = new List<LayerMove>();
 		}
 
 		/// <summary>
@@ -41,16 +35,25 @@ namespace RubiksCubeLib
 		/// 
 		public Algorithm(string algorithm)
 		{
-			Moves = new List<LayerMove>();
-			foreach (string s in algorithm.Split((char.Parse(" "))))
+			this.Moves = new List<LayerMove>();
+			foreach (string s in algorithm.Split(' '))
 			{
-				Moves.Add(LayerMove.Parse(s));
+				this.Moves.Add(LayerMove.Parse(s));
 			}
 		}
 
 
 
-		// **** METHODS ****
+
+		// *** PROPERTIES ***
+
+		//The collection
+		public List<LayerMove> Moves { get; set; }
+
+
+
+
+		// *** METHODS ***
 
 		/// <summary>
 		/// Converts the collection into a notation
@@ -60,5 +63,6 @@ namespace RubiksCubeLib
 		{
 			return string.Join(" ", this.Moves);
 		}
+
 	}
 }

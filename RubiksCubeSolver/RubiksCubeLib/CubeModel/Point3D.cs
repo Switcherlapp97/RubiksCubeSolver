@@ -4,12 +4,33 @@ using System.Drawing.Drawing2D;
 
 namespace RubiksCubeLib.CubeModel
 {
+	
 	/// <summary>
 	/// Represents a 3D point
 	/// </summary>
 	[Serializable]
 	public class Point3D
 	{
+
+		// *** CONSTRUCTOR ***
+
+		/// <summary>
+		/// Initializes a new instance of the Point3D class
+		/// </summary>
+		/// <param name="x">X coordinate</param>
+		/// <param name="y">Y coordinate</param>
+		/// <param name="z">Z coordinate</param>
+		public Point3D(double x, double y, double z)
+		{
+			this.X = x;
+			this.Y = y;
+			this.Z = z;
+		}
+
+
+
+		// *** PROPERTIES ***
+
 		/// <summary>
 		/// Gets or sets the X coordinate of the 3D point
 		/// </summary>
@@ -25,19 +46,10 @@ namespace RubiksCubeLib.CubeModel
 		/// </summary>
 		public double Z { get; set; }
 
-		/// <summary>
-		/// Initializes a new instance of the Point3D class
-		/// </summary>
-		/// <param name="x">X coordinate</param>
-		/// <param name="y">Y coordinate</param>
-		/// <param name="z">Z coordinate</param>
-		public Point3D(double x, double y, double z)
-		{
-			this.X = x;
-			this.Y = y;
-			this.Z = z;
-		}
 
+
+		// *** METHODS ***
+		
 		/// <summary>
 		/// Rotates the point around a particular axis
 		/// </summary>
@@ -50,21 +62,21 @@ namespace RubiksCubeLib.CubeModel
 			double cosa = Math.Cos(rad);
 			double sina = Math.Sin(rad);
 
-			Point3D old = new Point3D(X, Y, Z);
+			Point3D old = new Point3D(this.X, this.Y, this.Z);
 
 			switch (type)
 			{
 				case RotationType.X:
-					Y = old.Y * cosa - old.Z * sina;
-					Z = old.Y * sina + old.Z * cosa;
+					this.Y = old.Y * cosa - old.Z * sina;
+					this.Z = old.Y * sina + old.Z * cosa;
 					break;
 				case RotationType.Y:
-					X = old.Z * sina + old.X * cosa;
-					Z = old.Z * cosa - old.X * sina;
+					this.X = old.Z * sina + old.X * cosa;
+					this.Z = old.Z * cosa - old.X * sina;
 					break;
 				case RotationType.Z:
-					X = old.X * cosa - old.Y * sina;
-					Y = old.X * sina + old.Y * cosa;
+					this.X = old.X * cosa - old.Y * sina;
+					this.Y = old.X * sina + old.Y * cosa;
 					break;
 			}
 		}
@@ -85,5 +97,6 @@ namespace RubiksCubeLib.CubeModel
 			double Yn = this.Y * factor + viewHeight / 2;
 			return new Point3D(Xn, Yn, this.Z);
 		}
+
 	}
 }

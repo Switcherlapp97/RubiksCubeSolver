@@ -3,6 +3,7 @@ using System.Collections.Generic;
 
 namespace RubiksCubeLib
 {
+
 	/// <summary>
 	/// Defines the position (i.e. the layer(s)) of a cube
 	/// </summary>
@@ -25,4 +26,5 @@ namespace RubiksCubeLib
 		YFlags = TopLayer | BottomLayer | MiddleLayer,
 		ZFlags = FrontSlice | BackSlice | MiddleSlice
 	}
+
 }

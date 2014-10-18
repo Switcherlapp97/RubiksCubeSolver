@@ -13,7 +13,37 @@ namespace RubiksCubeLib
 	public class CubePosition
 	{
 
-		// **** PROPERTIES ****
+		// *** CONSTRUCTORS ***
+
+		/// <summary>
+		/// Constructor
+		/// </summary>
+		public CubePosition() { }
+
+		/// <summary>
+		/// Constructor with X-, Y- and ZFlag
+		/// </summary>
+		/// <param name="x">Defines the XFlag</param>
+		/// <param name="y">Defines the YFlag</param>
+		/// <param name="z">Defines the ZFlag</param>
+		public CubePosition(CubeFlag x, CubeFlag y, CubeFlag z)
+		{
+			this.X = x;
+			this.Y = y;
+			this.Z = z;
+		}
+
+		/// <summary>
+		/// Constructor with one CubeFlag
+		/// </summary>
+		/// <param name="flags">Defines the CubeFlag where the X-, Y- and ZFlag are filtered out</param>
+		public CubePosition(CubeFlag flags) : this(CubeFlagService.FirstXFlag(flags), CubeFlagService.FirstYFlag(flags), CubeFlagService.FirstZFlag(flags)) { }
+
+
+
+
+
+		// *** PROPERTIES ***
 
 		/// <summary>
 		/// The XFlag of the cube
@@ -33,33 +63,11 @@ namespace RubiksCubeLib
 		/// <summary>
 		/// Returns all CubeFlags in one
 		/// </summary>
-		public CubeFlag Flags { get { return X | Y | Z; } }
+		public CubeFlag Flags { get { return this.X | this.Y | this.Z; } }
 
-		// **** CONSTRUCTORS ****
 
-		/// <summary>
-		/// Constructor
-		/// </summary>
-		public CubePosition() { }
-		
-		/// <summary>
-		/// Constructor with X-, Y- and ZFlag
-		/// </summary>
-		/// <param name="x">Defines the XFlag</param>
-		/// <param name="y">Defines the YFlag</param>
-		/// <param name="z">Defines the ZFlag</param>
-		public CubePosition(CubeFlag x, CubeFlag y, CubeFlag z)
-		{
-			this.X = x;
-			this.Y = y;
-			this.Z = z;
-		}
 
-		/// <summary>
-		/// Constructor with one CubeFlag
-		/// </summary>
-		/// <param name="flags">Defines the CubeFlag where the X-, Y- and ZFlag are filtered out</param>
-		public CubePosition(CubeFlag flags) : this(CubeFlagService.FirstXFlag(flags), CubeFlagService.FirstYFlag(flags), CubeFlagService.FirstZFlag(flags)) { }
+
 
 
 		// **** METHODS ****
@@ -125,7 +133,7 @@ namespace RubiksCubeLib
 		/// <returns></returns>
 		public bool HasFlag(CubeFlag flag)
 		{
-			return Flags.HasFlag(flag);
+			return this.Flags.HasFlag(flag);
 		}
 
 		/// <summary>
@@ -136,5 +144,6 @@ namespace RubiksCubeLib
 		{
 			return CubeFlagService.GetFlags(Flags);
 		}
+
 	}
 }

@@ -5,6 +5,7 @@ using System.Text;
 
 namespace RubiksCubeLib
 {
+
 	/// <summary>
 	/// Every class implementing this interface are defined by a name and the information whether it allows multiple layers
 	/// </summary>
@@ -21,5 +22,6 @@ namespace RubiksCubeLib
 		/// Describes whether the implementing class allowes multiple layers as move
 		/// </summary>
 		bool MultipleLayers { get; }
+
 	}
 }

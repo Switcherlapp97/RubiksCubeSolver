@@ -188,10 +188,11 @@ namespace RubiksCubeLib.CubeModel
 				bufferIndex ^= 0x1;
 
 				double minTime = 1000.0 / this.MaxFps;
+				if (_sw.ElapsedMilliseconds < minTime)
+					Thread.Sleep(Math.Max((int)(minTime - _sw.ElapsedMilliseconds), 0));
 				while (_sw.Elapsed.TotalMilliseconds < minTime) { }
 
 				_sw.Stop();
-
 
 				_frameTimes.Add(_sw.Elapsed.TotalMilliseconds);
 				int counter = 0;
@@ -206,6 +207,7 @@ namespace RubiksCubeLib.CubeModel
 				if (index > 0)
 					_frameTimes.RemoveRange(0, index);
 				this.Fps = counter + ((1000 - ms) / _frameTimes[0]);
+
 			}
 		}
 

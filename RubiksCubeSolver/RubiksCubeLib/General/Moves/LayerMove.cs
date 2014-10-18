@@ -9,12 +9,35 @@ namespace RubiksCubeLib
 	public class LayerMove : IMove
 	{
 
-		// **** PROPERTIES ****
+		// *** CONSTRUCTORS ***
+
+		/// <summary>
+		/// Constructor
+		/// </summary>
+		/// <param name="layer">Defines the layer to be moved</param>
+		/// <param name="direction">Defines the direction (true == clockwise and false == counter-clockwise)</param>
+		/// <param name="twice">Defines whether this layer will be turned twice or not</param>
+		/// <exception cref="System.Exception">Thrown when layer contains more than one flag</exception>
+		public LayerMove(CubeFlag layer, bool direction = true, bool twice = false)
+		{
+			if (CubeFlagService.CountFlags(layer) == 1)
+			{
+				this.Layer = layer;
+				this.Direction = direction;
+				this.Twice = twice;
+			}
+			else
+				throw new Exception("Impossible movement");
+		}
+
+
+
+		// *** PROPERTIES ***
 
 		/// <summary>
 		/// Returns the name (the notation) of this LayerMove
 		/// </summary>
-		public string Name { get { return string.Format("{0} {1}", Layer, Direction ? "Clockwise" : "Counter-Clockwise"); } }
+		public string Name { get { return string.Format("{0} {1}", this.Layer, this.Direction ? "Clockwise" : "Counter-Clockwise"); } }
 		
 		/// <summary>
 		/// Describes the layer of this LayerMove
@@ -38,30 +61,7 @@ namespace RubiksCubeLib
 
 
 
-		// **** CONSTRUCTORS ****
-
-		/// <summary>
-		/// Constructor
-		/// </summary>
-		/// <param name="layer">Defines the layer to be moved</param>
-		/// <param name="direction">Defines the direction (true == clockwise and false == counter-clockwise)</param>
-		/// <param name="twice">Defines whether this layer will be turned twice or not</param>
-		/// <exception cref="System.Exception">Thrown when layer contains more than one flag</exception>
-		public LayerMove(CubeFlag layer, bool direction = true, bool twice = false)
-		{
-			if (CubeFlagService.CountFlags(layer) == 1)
-			{
-				this.Layer = layer;
-				this.Direction = direction;
-				this.Twice = twice;
-			}
-			else
-				throw new Exception("Impossible movement");
-		}
-
-
-
-		// **** OPERATORS ****
+		// *** OPERATORS ***
 
 		/// <summary>
 		/// Combines two LayerMoves into a LayerMoveCollection
@@ -79,7 +79,7 @@ namespace RubiksCubeLib
 
 
 
-		// **** METHODS ****
+		// *** METHODS ***
 
 		/// <summary>
 		/// Parses a notation string into a LayerMove
@@ -89,9 +89,10 @@ namespace RubiksCubeLib
 		public static LayerMove Parse(string notation)
 		{
 			string layer = notation[0].ToString();
-      CubeFlag rotationLayer = CubeFlagService.Parse(layer);
-			bool direction = notation.Length == 1;
-			return new LayerMove(rotationLayer, direction);
+			CubeFlag rotationLayer = CubeFlagService.Parse(layer);
+			bool direction = notation.Contains("'") || notation.Contains("i");
+			bool twice = notation.Contains("2");
+			return new LayerMove(rotationLayer, direction, twice);
 		}
 
 
@@ -101,10 +102,9 @@ namespace RubiksCubeLib
 		/// <returns></returns>
 		public override string ToString()
 		{
-			string c = "'";
 			string move = string.Empty;
 
-			switch (Layer)
+			switch (this.Layer)
 			{
 				case CubeFlag.TopLayer:
 					move = "U";
@@ -134,9 +134,15 @@ namespace RubiksCubeLib
 					move = "R";
 					break;
 			}
-			if (!Direction)
-				move += c;
+			
+			if (!this.Direction)
+				move += "'";
+
+			if (this.Twice)
+				move += "2";
+
 			return move;
 		}
+
 	}
 }

@@ -5,12 +5,36 @@ using System.Drawing;
 
 namespace RubiksCubeLib.CubeModel
 {
+
 	/// <summary>
 	/// Represents a 3D face
 	/// </summary>
 	[Serializable]
 	public class Face3D
 	{
+
+		// *** CONSTRUCTOR ***
+
+		/// <summary>
+		/// Initializes a new instance of the Face3D class
+		/// </summary>
+		/// <param name="vertices">Vertices of the 3D face</param>
+		/// <param name="color">Color</param>
+		/// <param name="position">Position</param>
+		/// <param name="masterPosition">Position of the parent 3D cube</param>
+		public Face3D(IEnumerable<Point3D> vertices, Color color, FacePosition position, CubeFlag masterPosition)
+		{
+			this.Vertices = vertices;
+			this.Color = color;
+			this.Position = position;
+			this.MasterPosition = masterPosition;
+		}
+
+
+
+
+		// *** PROPERTIES ***
+
 		/// <summary>
 		/// Gets the the 3D vertices of the 3D face
 		/// </summary>
@@ -31,20 +55,10 @@ namespace RubiksCubeLib.CubeModel
 		/// </summary>
 		public CubeFlag MasterPosition { get; private set; }
 
-		/// <summary>
-		/// Initializes a new instance of the Face3D class
-		/// </summary>
-		/// <param name="vertices">Vertices of the 3D face</param>
-		/// <param name="color">Color</param>
-		/// <param name="position">Position</param>
-		/// <param name="masterPosition">Position of the parent 3D cube</param>
-		public Face3D(IEnumerable<Point3D> vertices, Color color, FacePosition position, CubeFlag masterPosition)
-		{
-			Vertices = vertices;
-			Color = color;
-			Position = position;
-			MasterPosition = masterPosition;
-		}
+
+
+
+		// *** METHODS ***
 
 		/// <summary>
 		/// Rotates the point around a particular axis
@@ -67,10 +81,11 @@ namespace RubiksCubeLib.CubeModel
 		/// <returns>Projected face</returns>
 		public Face3D Project(int viewWidth, int viewHeight, int fov, int viewDistance, double scale)
 		{
-			IEnumerable<Point3D> parr = Vertices.Select(v => v.Project(viewWidth, viewHeight, fov, viewDistance, scale));
+			IEnumerable<Point3D> parr = this.Vertices.Select(v => v.Project(viewWidth, viewHeight, fov, viewDistance, scale));
 			double mid = parr.Average(v => v.Z);
 			parr = parr.Select(p => new Point3D(p.X, p.Y, mid));
-			return new Face3D(parr, Color, Position, MasterPosition);
+			return new Face3D(parr, this.Color, this.Position, this.MasterPosition);
 		}
+
 	}
 }

@@ -13,7 +13,7 @@ namespace RubiksCubeLib.Solver
 	public abstract class CubeSolver : IPluginable
 	{
 
-		// **** PROPERTIES ****
+		// *** PROPERTIES ***
 
 		/// <summary>
 		/// The Rubik which will be used to solve the transferred Rubik
@@ -42,7 +42,7 @@ namespace RubiksCubeLib.Solver
 
 
 
-		// **** METHODS ****
+		// *** METHODS ***
 
 		/// <summary>
 		/// Returns the solution for the transferred Rubik
@@ -166,5 +166,6 @@ namespace RubiksCubeLib.Solver
 			foreach (LayerMove m in algorithm.Moves)
 				SolverMove(m.Layer, m.Direction);
 		}
+
 	}
 }

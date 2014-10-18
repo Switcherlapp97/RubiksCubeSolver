@@ -5,13 +5,14 @@ using System.Text;
 
 namespace RubiksCubeLib
 {
+
 	/// <summary>
 	/// Describes the position of a face and the position of its parent cube
 	/// </summary>
 	public struct PositionSpec
 	{
 
-		// **** PROPERTIES ****
+		// *** PROPERTIES ***
 
 		/// <summary>
 		/// Describes the CubePostion
@@ -47,7 +48,8 @@ namespace RubiksCubeLib
 
 
 
-		// **** METHODS ****
+
+		// *** METHODS ***
 
 		/// <summary>
 		/// Returns true if this and given PositionSpec is equal

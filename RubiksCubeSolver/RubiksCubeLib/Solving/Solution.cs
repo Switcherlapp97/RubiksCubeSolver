@@ -13,7 +13,24 @@ namespace RubiksCubeLib.Solver
 	public class Solution
 	{
 
-		// **** PROPERTIES ****
+		// **** CONSTRUCTORS ****
+
+		/// <summary>
+		/// Constructor with the Solver used for this and the Rubik
+		/// </summary>
+		/// <param name="solver">Defines the solver to be used</param>
+		/// <param name="rubik">Defines the Rubik to be solved</param>
+		public Solution(CubeSolver solver, Rubik rubik)
+		{
+			this.StartingRubik = rubik.DeepClone();
+			this.CurrentRubik = rubik;
+			this.SolvingMethod = solver.Name;
+			this.Algorithm = new Algorithm();
+		}
+
+
+
+		// *** PROPERTIES ***
 
 		/// <summary>
 		/// The scrambled Rubik which will be solved
@@ -40,22 +57,6 @@ namespace RubiksCubeLib.Solver
 		/// </summary>
 		public string SolvingMethod { get; private set; }
 
-
-
-		// **** CONSTRUCTORS ****
-
-		/// <summary>
-		/// Constructor with the Solver used for this and the Rubik
-		/// </summary>
-		/// <param name="solver">Defines the solver to be used</param>
-		/// <param name="rubik">Defines the Rubik to be solved</param>
-		public Solution(CubeSolver solver, Rubik rubik)
-		{
-			StartingRubik = rubik.DeepClone();
-			CurrentRubik = rubik;
-			SolvingMethod = solver.Name;
-			Algorithm = new Algorithm();
-		}
 	}
 
 

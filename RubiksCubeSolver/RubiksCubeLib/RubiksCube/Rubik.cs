@@ -18,6 +18,49 @@ namespace RubiksCubeLib.RubiksCube
 	public class Rubik
 	{
 
+
+		// **** CONSTRUCTORS ****
+
+		/// <summary>
+		/// Empty constructor (default colors will be set)
+		/// </summary>
+		public Rubik() : this(Color.Orange, Color.Red, Color.Yellow, Color.White, Color.Blue, Color.Green) { }
+
+		/// <summary>
+		/// Constructor with the colors of the faces
+		/// </summary>
+		/// <param name="cfront">Defines the color of the front face</param>
+		/// <param name="cback">Defines the color of the back face</param>
+		/// <param name="ctop">Defines the color of the top face</param>
+		/// <param name="cbottom">Defines the color of the bot face</param>
+		/// <param name="cright">Defines the color of the right face</param>
+		/// <param name="cleft">Defines the color of the left face</param>
+		public Rubik(Color cfront, Color cback, Color ctop, Color cbottom, Color cright, Color cleft)
+		{
+			Colors = new Color[] { cfront, cback, ctop, cbottom, cright, cleft };
+			Cubes = new List<Cube>();
+			for (int i = -1; i <= 1; i++)
+			{
+				for (int j = -1; j <= 1; j++)
+				{
+					for (int k = -1; k <= 1; k++)
+					{
+						Cubes.Add(new Cube(GenSideFlags(i, j, k)));
+					}
+				}
+			}
+			SetFaceColor(CubeFlag.FrontSlice, FacePosition.Front, cfront);
+			SetFaceColor(CubeFlag.BackSlice, FacePosition.Back, cback);
+			SetFaceColor(CubeFlag.TopLayer, FacePosition.Top, ctop);
+			SetFaceColor(CubeFlag.BottomLayer, FacePosition.Bottom, cbottom);
+			SetFaceColor(CubeFlag.RightSlice, FacePosition.Right, cright);
+			SetFaceColor(CubeFlag.LeftSlice, FacePosition.Left, cleft);
+		}
+
+
+
+
+
 		// **** PROPERTIES ****
 
 		/// <summary>
@@ -62,44 +105,6 @@ namespace RubiksCubeLib.RubiksCube
 
 
 
-
-		// **** CONSTRUCTORS ****
-
-		/// <summary>
-		/// Empty constructor (default colors will be set)
-		/// </summary>
-		public Rubik() : this(Color.Orange, Color.Red, Color.Yellow, Color.White, Color.Blue, Color.Green) { }
-
-		/// <summary>
-		/// Constructor with the colors of the faces
-		/// </summary>
-		/// <param name="cfront">Defines the color of the front face</param>
-		/// <param name="cback">Defines the color of the back face</param>
-		/// <param name="ctop">Defines the color of the top face</param>
-		/// <param name="cbottom">Defines the color of the bot face</param>
-		/// <param name="cright">Defines the color of the right face</param>
-		/// <param name="cleft">Defines the color of the left face</param>
-		public Rubik(Color cfront, Color cback, Color ctop, Color cbottom, Color cright, Color cleft)
-		{
-			Colors = new Color[] { cfront, cback, ctop, cbottom, cright, cleft };
-			Cubes = new List<Cube>();
-			for (int i = -1; i <= 1; i++)
-			{
-				for (int j = -1; j <= 1; j++)
-				{
-					for (int k = -1; k <= 1; k++)
-					{
-						Cubes.Add(new Cube(GenSideFlags(i, j, k)));
-					}
-				}
-			}
-			SetFaceColor(CubeFlag.FrontSlice, FacePosition.Front, cfront);
-			SetFaceColor(CubeFlag.BackSlice, FacePosition.Back, cback);
-			SetFaceColor(CubeFlag.TopLayer, FacePosition.Top, ctop);
-			SetFaceColor(CubeFlag.BottomLayer, FacePosition.Bottom, cbottom);
-			SetFaceColor(CubeFlag.RightSlice, FacePosition.Right, cright);
-			SetFaceColor(CubeFlag.LeftSlice, FacePosition.Left, cleft);
-		}
 
 
 
@@ -194,6 +199,7 @@ namespace RubiksCubeLib.RubiksCube
 		}
 
 
+
 		/// <summary>
 		/// Executes the given move (rotation)
 		/// </summary>
@@ -259,6 +265,7 @@ namespace RubiksCubeLib.RubiksCube
 		}
 
 
+
 		/// <summary>
 		/// Execute random LayerMoves on the cube to scramble it
 		/// </summary>
@@ -269,6 +276,7 @@ namespace RubiksCubeLib.RubiksCube
 			for (int i = 0; i < moves; i++)
 				RotateLayer(new LayerMove((CubeFlag)Math.Pow(2, rnd.Next(0, 9)), Convert.ToBoolean(rnd.Next(0, 2))));
 		}
+
 
 
 		/// <summary>
@@ -317,6 +325,7 @@ namespace RubiksCubeLib.RubiksCube
 		{
 			return GenStandardCube().Cubes.First(cu => CollectionMethods.ScrambledEquals(cu.Colors, cube.Colors)).Position.Flags;
 		}
+
 
 
 		/// <summary>
