@@ -52,6 +52,8 @@
       <SubType>UserControl</SubType>
     </Compile>
     <Compile Include="CubeModel\CubeModelControl\CubeModelRenderer.cs" />
+    <Compile Include="CubeModel\Rotation\RotationFinishedEventArgs.cs" />
+    <Compile Include="CubeModel\Rotation\RotationInfo.cs" />
     <Compile Include="General\CollectionMethods.cs" />
     <Compile Include="General\Moves\IMove.cs" />
     <Compile Include="General\Moves\LayerMoveCollection.cs" />
