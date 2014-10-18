@@ -52,8 +52,6 @@
       <SubType>UserControl</SubType>
     </Compile>
     <Compile Include="CubeModel\CubeModelControl\CubeModelRenderer.cs" />
-    <Compile Include="CubeModel\Rotation\RotationFinishedEventArgs.cs" />
-    <Compile Include="CubeModel\Rotation\RotationInfo.cs" />
     <Compile Include="General\CollectionMethods.cs" />
     <Compile Include="General\Moves\IMove.cs" />
     <Compile Include="General\Moves\LayerMoveCollection.cs" />
@@ -64,8 +62,8 @@
     <Compile Include="General\Positions\PositionSpec.cs" />
     <Compile Include="CubeModel\Face3D.cs" />
     <Compile Include="CubeModel\Point3D.cs" />
-    <Compile Include="CubeModel\CubeModelControl\Rotation\RotationFinishedEventArgs.cs" />
-    <Compile Include="CubeModel\CubeModelControl\Rotation\RotationInfo.cs" />
+    <Compile Include="CubeModel\Rotation\RotationFinishedEventArgs.cs" />
+    <Compile Include="CubeModel\Rotation\RotationInfo.cs" />
     <Compile Include="CubeModel\Selection\Selection.cs" />
     <Compile Include="CubeModel\Selection\SelectionChangedEventArgs.cs" />
     <Compile Include="CubeModel\Selection\SelectionCollection.cs" />

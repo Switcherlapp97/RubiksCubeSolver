@@ -41,6 +41,7 @@ namespace RubiksCubeLib.CubeModel
 		private AutoResetEvent[] _renderHandle;
 		private int _currentBufferIndex;
 		private CubeModel _cmodel;
+    private double _maxFps = 60;
 
 
 
@@ -70,11 +71,12 @@ namespace RubiksCubeLib.CubeModel
 
 
 		// ** PROPERTIES **
-
+    
 		/// <summary>
 		/// Gets or sets the Fps limit
 		/// </summary>
-		public double MaxFps { get; set; }
+    public double MaxFps { get { return _maxFps; } set { _maxFps = value; } }
+    
 
 		/// <summary>
 		/// Gets the current FPS
