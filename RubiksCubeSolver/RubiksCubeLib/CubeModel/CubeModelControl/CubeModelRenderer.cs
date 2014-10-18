@@ -31,8 +31,6 @@ namespace RubiksCubeLib.CubeModel
 
 		// ** PRIVATE FIELDS **
 
-		private double _scale;
-		private Rectangle _screen;
 
 		private List<double> _frameTimes;
 		private IEnumerable<Face3D>[] _buffer;
@@ -41,7 +39,6 @@ namespace RubiksCubeLib.CubeModel
 		private AutoResetEvent[] _renderHandle;
 		private int _currentBufferIndex;
 		private CubeModel _cmodel;
-    private double _maxFps = 60;
 
 
 
@@ -71,12 +68,22 @@ namespace RubiksCubeLib.CubeModel
 
 
 		// ** PROPERTIES **
-    
+
+		/// <summary>
+		/// The screen the renderer projects on
+		/// </summary>
+		public Rectangle Screen { get; set; }
+
+		/// <summary>
+		/// The zoom
+		/// </summary>
+		public double Scale { get; set; }
+
+
 		/// <summary>
 		/// Gets or sets the Fps limit
 		/// </summary>
-    public double MaxFps { get { return _maxFps; } set { _maxFps = value; } }
-    
+		public double MaxFps { get; set; }
 
 		/// <summary>
 		/// Gets the current FPS
@@ -91,10 +98,18 @@ namespace RubiksCubeLib.CubeModel
 
 
 
+
+
+
+
+		// *** METHODS ***
+
+
 		private void InitRenderer()
 		{
 			_frameTimes = new List<double>();
 			this.IsRunning = false;
+			this.MaxFps = 60;
 
 			_updateHandle = new AutoResetEvent[2];
 			for (int i = 0; i < _updateHandle.Length; i++)
@@ -115,9 +130,9 @@ namespace RubiksCubeLib.CubeModel
 		/// <param name="screen">Screen measures</param>
 		public void SetDrawingArea(Rectangle screen)
 		{
-			_screen = screen;
+			this.Screen = screen;
 			int min = Math.Min(screen.Height, screen.Width);
-			_scale = 3 * ((double)min / (double)400);
+			this.Scale = 3 * ((double)min / (double)400);
 			if (screen.Width > screen.Height)
 				screen.X = (screen.Width - screen.Height) / 2;
 			else if (screen.Height > screen.Width)
@@ -190,8 +205,6 @@ namespace RubiksCubeLib.CubeModel
 				bufferIndex ^= 0x1;
 
 				double minTime = 1000.0 / this.MaxFps;
-				if (_sw.ElapsedMilliseconds < minTime)
-					Thread.Sleep(Math.Max((int)(minTime - _sw.ElapsedMilliseconds), 0));
 				while (_sw.Elapsed.TotalMilliseconds < minTime) { }
 
 				_sw.Stop();
@@ -251,11 +264,11 @@ namespace RubiksCubeLib.CubeModel
 				if (RotationIsFinished(currentRotation.Moves))
 					BroadcastRotatingFinished();
 			}
-			_buffer[bufferIndex] = _cmodel.GenFacesProjected(_screen, _scale);
+			_buffer[bufferIndex] = _cmodel.GenFacesProjected(this.Screen, this.Scale);
 			_updateHandle[bufferIndex].Set();
 		}
 
-		
+
 		private bool RotationIsFinished(List<AnimatedLayerMove> moves)
 		{
 			foreach (AnimatedLayerMove m in moves)

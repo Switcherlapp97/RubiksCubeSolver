@@ -113,12 +113,12 @@ namespace RubiksCubeLib.CubeModel
 		}
 
 
-		
 
 
 
 
-		
+
+
 		// *** METHODS ***
 
 		/// <summary>
@@ -228,7 +228,7 @@ namespace RubiksCubeLib.CubeModel
 
 
 
-		
+
 		// ** COLOR PICKER **
 
 		private void InitColorPicker()
@@ -350,7 +350,6 @@ namespace RubiksCubeLib.CubeModel
 				double factor = ((Math.Sin((double)Environment.TickCount / (double)200) + 1) / 4) + 0.75;
 				PositionSpec facePos = new PositionSpec() { FacePosition = face.Position, CubePosition = face.MasterPosition };
 
-
 				if (_selections[facePos].HasFlag(Selection.Second))
 					b = new HatchBrush(HatchStyle.Percent75, Color.Black, face.Color);
 				else if (_selections[facePos].HasFlag(Selection.NotPossible))
@@ -363,7 +362,7 @@ namespace RubiksCubeLib.CubeModel
 					b = new SolidBrush(face.Color);
 
 				g.FillPolygon(b, parr);
-				g.DrawPolygon(Pens.Black, parr);
+				g.DrawPolygon(new Pen(Color.Black, 1), parr);
 
 
 				GraphicsPath gp = new GraphicsPath();
@@ -371,6 +370,7 @@ namespace RubiksCubeLib.CubeModel
 				if (gp.IsVisible(mousePos))
 					pos = facePos;
 			}
+
 
 			g.DrawString(string.Format("X: {0:f1} | Y: {1:f1} | Z: {2:f1}", this.Rotation[0], this.Rotation[1], this.Rotation[2]), this.Font, Brushes.Black, 5, this.Height - 20);
 			return pos;

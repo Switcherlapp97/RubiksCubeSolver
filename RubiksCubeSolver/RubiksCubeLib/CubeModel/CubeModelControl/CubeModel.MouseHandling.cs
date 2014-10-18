@@ -59,6 +59,7 @@ namespace RubiksCubeLib.CubeModel
 		}
 
 
+
 		// Handle mouse interactions
 
 		/// <summary>
@@ -79,15 +80,15 @@ namespace RubiksCubeLib.CubeModel
 						int min = Math.Min(ClientRectangle.Height, ClientRectangle.Width);
 						double scale = ((double)min / (double)400) * 6.0;
 
-						Rotation[1] = ToPositiveAngle(Rotation[1] - dx / scale) % 360; // x rotation
+						Rotation[1] = ToPositiveAngle(Rotation[1] - dx / scale) % 360; // y rotation
 
-						if (Rotation[1] < 45 || Rotation[1] > 315)
-							Rotation[0] = ToPositiveAngle(Rotation[0] + dy / scale) % 360; // y rotation
-						else if (Rotation[1] > 45 && Rotation[1] < 135)
+						if (Rotation[1] >= 315 || Rotation[1] > 45)
+							Rotation[0] = ToPositiveAngle(Rotation[0] + dy / scale) % 360; // x rotation
+						else if (Rotation[1] >= 45 && Rotation[1] < 135)
 							Rotation[2] = ToPositiveAngle(Rotation[2] + dy / scale) % 360; // z rotation
-						else if (Rotation[1] > 135 && Rotation[1] < 225)
-							Rotation[0] = ToPositiveAngle(Rotation[0] - dy / scale) % 360; // y rotation
-						else if (Rotation[1] > 225 && Rotation[1] < 315)
+						else if (Rotation[1] >= 135 && Rotation[1] < 225)
+							Rotation[0] = ToPositiveAngle(Rotation[0] - dy / scale) % 360; // x rotation
+						else if (Rotation[1] >= 225 && Rotation[1] < 315)
 							Rotation[2] = ToPositiveAngle(Rotation[2] - dy / scale) % 360; // z rotation          
 					}
 					else
@@ -97,6 +98,20 @@ namespace RubiksCubeLib.CubeModel
 			_oldMousePos = e.Location;
 			base.OnMouseMove(e);
 		}
+
+
+		/// <summary>
+		/// Returns true if the value is between the given bounds
+		/// </summary>
+		/// <param name="value">Defines the value to be checked</param>
+		/// <param name="lbound">Defines the left bound (inclusive)</param>
+		/// <param name="rbound">Defines the right bound (exclusive)</param>
+		/// <returns></returns>
+		private bool IsInRange(double value, double lbound, double rbound)
+		{
+			return value >= lbound && value < rbound;
+		}
+
 
 		/// <summary>
 		/// Detection and execution of mouse-controlled layer rotations
