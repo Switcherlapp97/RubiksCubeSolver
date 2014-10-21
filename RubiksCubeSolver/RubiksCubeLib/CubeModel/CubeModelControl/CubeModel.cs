@@ -44,10 +44,8 @@ namespace RubiksCubeLib.CubeModel
 			_renderer = new CubeModelRenderer(this, this.ClientRectangle);
 			_renderer.OnRender += OnRender;
 			_renderer.OnRotatingFinished += OnRotatingFinished;
-
-			int min = Math.Min(ClientRectangle.Height, ClientRectangle.Width);
-			_currentFrame = GenFacesProjected(this.ClientRectangle, 3 * ((double)min / (double)400));
 			_renderer.StartRender();
+			
 
 			InitializeComponent();
 			SetStyle(ControlStyles.AllPaintingInWmPaint, true);
@@ -64,6 +62,10 @@ namespace RubiksCubeLib.CubeModel
 		private IEnumerable<Face3D> _currentFrame;
 
 		private SelectionCollection _selections;
+
+		private const int VIEWDISTANCE = 4;
+		private const int FOV = 100;
+
 
 
 
@@ -136,7 +138,7 @@ namespace RubiksCubeLib.CubeModel
 
 		protected override void OnSizeChanged(EventArgs e)
 		{
-			_renderer.SetDrawingArea(ClientRectangle);
+			_renderer.SetDrawingArea(this.ClientRectangle);
 			this.Invalidate();
 			base.OnSizeChanged(e);
 		}
@@ -427,7 +429,7 @@ namespace RubiksCubeLib.CubeModel
 		public IEnumerable<Face3D> GenFacesProjected(Rectangle screen, double scale)
 		{
 			List<Cube3D> cubesRender = GenCubes3D();
-			IEnumerable<Face3D> facesProjected = cubesRender.Select(c => c.Project(screen.Width, screen.Height, 100, 4, scale).Faces).Aggregate((a, b) => a.Concat(b));
+			IEnumerable<Face3D> facesProjected = cubesRender.Select(c => c.Project(screen.Width, screen.Height, FOV, VIEWDISTANCE, scale).Faces).Aggregate((a, b) => a.Concat(b));
 			facesProjected = facesProjected.OrderBy(f => f.Vertices.ElementAt(0).Z).Reverse();
 			return facesProjected;
 		}
