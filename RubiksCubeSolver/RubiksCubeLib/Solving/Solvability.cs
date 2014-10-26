@@ -7,63 +7,60 @@ using System.Drawing;
 
 namespace RubiksCubeLib.Solver
 {
+  /// <summary>
+  /// A collection of solvability tests
+  /// </summary>
   public static class Solvability
   {
+    /// <summary>
+    /// Permutation parity test
+    /// </summary>
+    /// <param name="rubik">Rubik to be tested</param>
+    /// <returns>True, if the given Rubik passes the permutation parity test</returns>
     public static bool PermutationParityTest(Rubik rubik)
     {
       Pattern p = Pattern.FromRubik(rubik);
       return p.Inversions % 2 == 0;
     }
 
-    private static List<CubeFlag> Order(Rubik r, List<CubePosition> pos)
-    {
-      Random rnd = new Random();
-      pos.OrderBy(p => rnd.Next());
-
-      List<CubeFlag> result = new List<CubeFlag>();
-      foreach (CubePosition p in pos)
-      {
-        result.Add(r.Cubes.First(c => r.GetTargetFlags(c) == p.Flags).Position.Flags);
-      }
-      return result;
-    }
-
-    private static int CountInversions(List<CubeFlag> standard, List<CubeFlag> input)
-    {
-      int inversions = 0;
-      for (int i = 0; i < input.Count; i++)
-      {
-        int index = standard.IndexOf(input[i]);
-        for (int j = 0; j < input.Count; j++)
-        {
-          int index2 = standard.IndexOf(input[j]);
-          if (index2 > index && j < i)
-          {
-            inversions++;
-          }
-        }
-      }
-      return inversions;
-    }
-
+    /// <summary>
+    /// Corner parity test
+    /// </summary>
+    /// <param name="rubik">Rubik to be tested</param>
+    /// <returns>True, if the given Rubik passes the corner parity test</returns>
     public static bool CornerParityTest(Rubik rubik)
     {
-      return rubik.Cubes.Where(c => c.IsCorner).Sum(c => PositionOrientation.GetOrientation(rubik,c)) % 3 == 0;
+      return rubik.Cubes.Where(c => c.IsCorner).Sum(c => (int)GetOrientation(rubik,c)) % 3 == 0;
     }
 
+    /// <summary>
+    /// Edge parity test
+    /// </summary>
+    /// <param name="rubik">Rubik to be tested</param>
+    /// <returns>True, if the given Rubik passes the edge parity test</returns>
     public static bool EdgeParityTest(Rubik rubik)
     {
-      return rubik.Cubes.Where(c => c.IsEdge).Sum(c => PositionOrientation.GetOrientation(rubik, c)) % 2 == 0;
+      return rubik.Cubes.Where(c => c.IsEdge).Sum(c => (int)GetOrientation(rubik, c)) % 2 == 0;
     }
 
+    /// <summary>
+    /// Refreshes the position of a cube
+    /// </summary>
+    /// <param name="r">Parent rubik of the cube</param>
     private static Cube RefreshCube(Rubik r, Cube c)
     {
       return r.Cubes.First(cu => CollectionMethods.ScrambledEquals(cu.Colors, c.Colors));
     }
 
-    public static int GetOrientation(Rubik rubik, Cube c)
+    /// <summary>
+    /// Returns the
+    /// </summary>
+    /// <param name="rubik"></param>
+    /// <param name="c"></param>
+    /// <returns></returns>
+    public static Orientation GetOrientation(Rubik rubik, Cube c)
     {
-      int orientation = 0;
+      Orientation orientation = Orientation.Correct;
       if (c.IsEdge)
       {
         CubeFlag targetFlags = rubik.GetTargetFlags(c);
@@ -75,18 +72,18 @@ namespace RubiksCubeLib.Solver
 
           Cube clonedCube = RefreshCube(clone, c);
           Face yFace = clonedCube.Faces.First(f => f.Color == rubik.TopColor || f.Color == rubik.BottomColor);
-          if (!FacePosition.YPos.HasFlag(yFace.Position)) orientation = 1;
+          if (!FacePosition.YPos.HasFlag(yFace.Position)) orientation = Orientation.Clockwise;
         }
         else
         {
           Face zFace = c.Faces.First(f => f.Color == rubik.FrontColor || f.Color == rubik.BackColor);
           if (c.Position.HasFlag(CubeFlag.MiddleLayer))
           {
-            if (!FacePosition.ZPos.HasFlag(zFace.Position)) orientation = 1;
+            if (!FacePosition.ZPos.HasFlag(zFace.Position)) orientation = Orientation.Clockwise;
           }
           else
           {
-            if (!FacePosition.YPos.HasFlag(zFace.Position)) orientation = 1;
+            if (!FacePosition.YPos.HasFlag(zFace.Position)) orientation = Orientation.Clockwise;
           }
         }
       }
@@ -97,9 +94,9 @@ namespace RubiksCubeLib.Solver
         {
           if (FacePosition.XPos.HasFlag(face.Position) ^ !((c.Position.HasFlag(CubeFlag.BottomLayer) ^ (c.Position.HasFlag(CubeFlag.FrontSlice) ^ c.Position.HasFlag(CubeFlag.RightSlice)))))
           {
-            orientation = 1;
+            orientation = Orientation.CounterClockwise;
           }
-          else orientation = 2;
+          else orientation = Orientation.Clockwise;
         }
       }
 

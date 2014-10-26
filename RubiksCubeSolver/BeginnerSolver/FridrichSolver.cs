@@ -1,61 +1,68 @@
-﻿using System;
+﻿using RubiksCubeLib;
+using RubiksCubeLib.RubiksCube;
+using RubiksCubeLib.Solver;
+using System;
 using System.Collections.Generic;
+using System.Drawing;
 using System.Linq;
 using System.Text;
-using RubiksCubeSolver.RubiksCube;
-using System.Drawing;
 
-namespace RubiksCubeSolver.Solver
+namespace BeginnerSolver
 {
-  public class FridrichSolver: ISolver
+  public class FridrichSolver: CubeSolver
   {
-    public FridrichSolver(Rubik rubik)
+    public override string Name { get { return "Beginner with full OLL and PLL"; } }
+    public override string Description { get { return "First two layers are solved with beginner method. Last layer with oll and pll of Fridrich."; } }
+
+    public FridrichSolver() { }
+
+    public FridrichSolver(Rubik cube)
     {
-      Rubik = rubik.DeepClone();
-      Solution = new Solution(rubik);
+      Rubik = cube.DeepClone();
+      Solution = new Solution(this, cube);
       InitStandardCube();
     }
 
     public override void GetSolution()
     {
       SolveFirstCross();
-      CompleteFirstTwoLayers();
+      CompleteFirstLayer();
+      CompleteMiddleLayer();
+      Oll();
+      Pll();
     }
 
     private void SolveFirstCross()
     {
-      //Step 1: Get color of the bottom layer
-      Color bottomColor = Rubik.GetFaceColor(CubeFlag.BottomLayer | CubeFlag.MiddleSliceSides | CubeFlag.MiddleSlice, FacePosition.Bottom);
-
-      //Step 2: Get the edges with target position on the bottom layer
+      // Step 1: Get the edges with target position on the bottom layer
       IEnumerable<Cube> bottomEdges = Rubik.Cubes.Where(c => c.IsEdge && GetTargetFlags(c).HasFlag(CubeFlag.BottomLayer));
 
-      //Step 3: Rotate a correct orientated edge of the bottom layer to target position
-      IEnumerable<Cube> solvedBottomEdges = bottomEdges.Where(bE => bE.Position.Flags == GetTargetFlags(bE) && bE.Faces.First(f => f.Color == bottomColor).Position == FacePosition.Bottom);
-      if (bottomEdges.Count(bE => bE.Position.HasFlag(CubeFlag.BottomLayer) && bE.Faces.First(f => f.Color == bottomColor).Position == FacePosition.Bottom) > 0)
+      // Step 2: Rotate a correct orientated edge of the bottom layer to target position
+      IEnumerable<Cube> solvedBottomEdges = bottomEdges.Where(bE => bE.Position.Flags == GetTargetFlags(bE) && bE.Faces.First(f => f.Color == Rubik.BottomColor).Position == FacePosition.Bottom);
+      if (bottomEdges.Count(bE => bE.Position.HasFlag(CubeFlag.BottomLayer) && bE.Faces.First(f => f.Color == Rubik.BottomColor).Position == FacePosition.Bottom) > 0)
       {
         while (solvedBottomEdges.Count() < 1)
         {
           SolverMove(CubeFlag.BottomLayer, true);
-          solvedBottomEdges = bottomEdges.Where(bE => bE.Position.Flags == GetTargetFlags(bE) && bE.Faces.First(f => f.Color == bottomColor).Position == FacePosition.Bottom);
+          solvedBottomEdges = bottomEdges.Where(bE => bE.Position.Flags == GetTargetFlags(bE) && bE.Faces.First(f => f.Color == Rubik.BottomColor).Position == FacePosition.Bottom);
         }
       }
 
-      //Step 4: Solve incorrect edges of the bottom layer
+      // Step 3: Solve incorrect edges of the bottom layer
       while (solvedBottomEdges.Count() < 4)
       {
         IEnumerable<Cube> unsolvedBottomEdges = bottomEdges.Except(solvedBottomEdges);
         Cube e = (unsolvedBottomEdges.FirstOrDefault(c => c.Position.HasFlag(CubeFlag.TopLayer)) != null)
             ? unsolvedBottomEdges.FirstOrDefault(c => c.Position.HasFlag(CubeFlag.TopLayer)) : unsolvedBottomEdges.First();
-        Color secondColor = e.Colors.First(co => co != bottomColor && co != Color.Black);
+        Color secondColor = e.Colors.First(co => co != Rubik.BottomColor && co != Color.Black);
 
         if (e.Position.Flags != GetTargetFlags(e))
         {
-          //Rotate to top layer
-          CubeFlag layer = CubePosition.FacePosToLayerPos(e.Faces.First(f => (f.Color == bottomColor || f.Color == secondColor)
+          // Rotate to top layer
+          CubeFlag layer = CubeFlagService.FromFacePosition(e.Faces.First(f => (f.Color == Rubik.BottomColor || f.Color == secondColor)
             && f.Position != FacePosition.Top && f.Position != FacePosition.Bottom).Position);
 
-          CubeFlag targetLayer = CubePosition.FacePosToLayerPos(StandardCube.Cubes.First(cu => ScrambledEquals(cu.Colors, e.Colors))
+          CubeFlag targetLayer = CubeFlagService.FromFacePosition(StandardCube.Cubes.First(cu => CollectionMethods.ScrambledEquals(cu.Colors, e.Colors))
             .Faces.First(f => f.Color == secondColor).Position);
 
           if (e.Position.HasFlag(CubeFlag.MiddleLayer))
@@ -82,7 +89,7 @@ namespace RubiksCubeSolver.Solver
           }
           if (e.Position.HasFlag(CubeFlag.BottomLayer)) for (int i = 0; i < 2; i++) SolverMove(layer, true);
 
-          //Rotate over target position
+          // Rotate over target position
           while (!e.Position.HasFlag(targetLayer)) SolverMove(CubeFlag.TopLayer, true);
 
           //Rotate to target position
@@ -90,135 +97,182 @@ namespace RubiksCubeSolver.Solver
           CubeFlag targetPos = GetTargetFlags(e);
         }
 
-        //Flip the incorrect orientated edges with the algorithm: Fi D Ri Di
-        if (e.Faces.First(f => f.Position == FacePosition.Bottom).Color != bottomColor)
+        // Flip the incorrect orientated edges with the algorithm: Fi D Ri Di
+        if (Solvability.GetOrientation(Rubik, e) != 0)
         {
-          CubeFlag frontSlice = CubePosition.FacePosToLayerPos(e.Faces.First(f => f.Color == bottomColor).Position);
+          CubeFlag frontSlice = CubeFlagService.FromFacePosition(e.Faces.First(f => f.Color == Rubik.BottomColor).Position);
 
           SolverMove(frontSlice, false);
           SolverMove(CubeFlag.BottomLayer, true);
 
-          CubeFlag rightSlice = CubePosition.FacePosToLayerPos(e.Faces.First(f => f.Color == secondColor).Position);
+          CubeFlag rightSlice = CubeFlagService.FromFacePosition(e.Faces.First(f => f.Color == secondColor).Position);
 
           SolverMove(rightSlice, false);
-
           SolverMove(CubeFlag.BottomLayer, false);
         }
         List<Face> faces = e.Faces.ToList();
-        solvedBottomEdges = bottomEdges.Where(bE => bE.Position.Flags == GetTargetFlags(bE) && bE.Faces.First(f => f.Color == bottomColor).Position == FacePosition.Bottom);
+        solvedBottomEdges = bottomEdges.Where(bE => bE.Position.Flags == GetTargetFlags(bE) && bE.Faces.First(f => f.Color == Rubik.BottomColor).Position == FacePosition.Bottom);
       }
     }
 
-    private void CompleteFirstTwoLayers()
+    private void CompleteFirstLayer()
     {
-      Color bottomColor = Rubik.GetFaceColor(CubeFlag.BottomLayer | CubeFlag.MiddleSliceSides | CubeFlag.MiddleSlice, FacePosition.Bottom);
-
-      IEnumerable<Cube> middleEdges = Rubik.Cubes.Where(c => c.IsEdge && GetTargetFlags(c).HasFlag(CubeFlag.MiddleLayer));
+      // Step 1: Get the corners with target position on bottom layer
       IEnumerable<Cube> bottomCorners = Rubik.Cubes.Where(c => c.IsCorner && GetTargetFlags(c).HasFlag(CubeFlag.BottomLayer));
+      IEnumerable<Cube> solvedBottomCorners = bottomCorners.Where(bC => bC.Position.Flags == GetTargetFlags(bC) && bC.Faces.First(f => f.Color == Rubik.BottomColor).Position == FacePosition.Bottom);
 
-      IEnumerable<Cube> solvedMiddleEdges = middleEdges.Where(c => c.Position == GetTargetCubePosition(c));
-      IEnumerable<Cube> solvedBottomCorners = bottomCorners.Where(c => c.Position == GetTargetCubePosition(c));
-
-      while (solvedBottomCorners.Count() < 4 || solvedMiddleEdges.Count() < 4)
+      // Step 2: Solve incorrect edges
+      while (solvedBottomCorners.Count() < 4)
       {
-        //Get pairs
-        Cube corner = bottomCorners.Except(solvedBottomCorners).FirstOrDefault(c => c.Position.HasFlag(CubeFlag.TopLayer));
-        if (corner == null) corner = bottomCorners.Except(solvedBottomCorners).First();
-        IEnumerable<Color> cornerColors = corner.Colors.Where(co => co != bottomColor && co != Color.Black);
-        Cube edge = middleEdges.First(c => ScrambledEquals(cornerColors, c.Colors.Where(co => co != Color.Black)));
+        IEnumerable<Cube> unsolvedBottomCorners = bottomCorners.Except(solvedBottomCorners);
+        Cube c = (unsolvedBottomCorners.FirstOrDefault(bC => bC.Position.HasFlag(CubeFlag.TopLayer)) != null)
+          ? unsolvedBottomCorners.First(bC => bC.Position.HasFlag(CubeFlag.TopLayer)) : unsolvedBottomCorners.First();
 
-        #region Move corner and edge to the top layer
-
-        if (corner.Position.HasFlag(CubeFlag.BottomLayer))
+        if (c.Position.Flags != GetTargetFlags(c))
         {
-          //Rotate corner to top layer
-          CubeFlag l = corner.Position.FirstFlag(CubeFlag.BottomLayer | CubeFlag.None);
-
-          bool direction = new TestScenario(Rubik, new LayerMove(l, true)).TestCubePosition(corner, CubeFlag.TopLayer);
-          SolverMove(l, direction);
-          SolverMove(CubeFlag.TopLayer, true);
-          SolverMove(l, !direction);
-        }
-
-        if (edge.Position.HasFlag(CubeFlag.MiddleLayer))
-        {
-          CubeFlag l = edge.Position.FirstFlag(CubeFlag.MiddleLayer | CubeFlag.None);
-          bool direction = new TestScenario(Rubik, new LayerMove(l, true)).TestCubePosition(edge, CubeFlag.TopLayer);
-          SolverMove(l, direction);
-          while ((corner.Position.HasFlag(l) && corner.Position.HasFlag(CubeFlag.TopLayer)) || edge.Position.HasFlag(l)) SolverMove(CubeFlag.TopLayer, true);
-          SolverMove(l, !direction);
-        }
-        #endregion
-
-        #region Seperate corner and edge if necessary
-        bool nextTo = false;
-
-        CubeFlag commonLayers = corner.Position.CommonFlags(edge.Position.Flags);
-        nextTo = commonLayers != CubeFlag.None;
-
-        bool colorsCorrect = corner.Faces.First(f => f.Position == FacePosition.Top).Color == edge.Faces.First(f => f.Position == FacePosition.Top).Color &&
-          corner.Faces.First(f => f.Position != FacePosition.Top && f.Color != bottomColor).Position == edge.Faces.First(f => f.Position != FacePosition.Top && f.Color != bottomColor).Position;
-
-        if (nextTo && !colorsCorrect)
-        {
-          CubeFlag l = new CubePosition(corner.Position.ExceptFlag(commonLayers)).FirstFlag(CubeFlag.TopLayer | CubeFlag.None);
-          SolverMove(l, true);
-          do
+          // Rotate to top layer
+          if (c.Position.HasFlag(CubeFlag.BottomLayer))
           {
-            SolverMove(CubeFlag.TopLayer, true);
-          } while (((corner.Position.HasFlag(l) && corner.Position.HasFlag(CubeFlag.TopLayer)) || edge.Position.HasFlag(l)));
-          SolverMove(l, false);
-        }
-        #endregion
+            Face leftFace = c.Faces.First(f => f.Position != FacePosition.Bottom && f.Color != Color.Black);
+            CubeFlag leftSlice = CubeFlagService.FromFacePosition(leftFace.Position);
 
-        #region Bottom face on top layer
-        if (corner.Faces.First(f => f.Position == FacePosition.Top).Color == bottomColor)
+            SolverMove(leftSlice, false);
+            if (c.Position.HasFlag(CubeFlag.BottomLayer))
+            {
+              SolverMove(leftSlice, true);
+              leftFace = c.Faces.First(f => f.Position != FacePosition.Bottom && f.Color != leftFace.Color && f.Color != Color.Black);
+              leftSlice = CubeFlagService.FromFacePosition(leftFace.Position);
+              SolverMove(leftSlice, false);
+            }
+            SolverAlgorithm("U' {0} U", CubeFlagService.CubeFlagToString(leftSlice));
+          }
+
+          // Rotate over target position
+          CubeFlag targetPos = CubeFlagService.ExceptFlag(GetTargetFlags(c), CubeFlag.BottomLayer);
+
+          while (!c.Position.HasFlag(targetPos)) SolverMove(CubeFlag.TopLayer, true);
+        }
+
+        // Rotate to target position with the algorithm: Li Ui L U
+        Face leftFac = c.Faces.First(f => f.Position != FacePosition.Top && f.Position != FacePosition.Bottom && f.Color != Color.Black);
+
+        CubeFlag leftSlic = CubeFlagService.FromFacePosition(leftFac.Position);
+
+        SolverMove(leftSlic, false);
+        if (!c.Position.HasFlag(CubeFlag.TopLayer))
         {
-          Color edgeFaceColor = edge.Faces.First(f => f.Position != FacePosition.Top && f.Color != Color.Black).Color;
-          CubeFlag edgePos = edge.Position.Flags;
-          Cube centerCube = Rubik.Cubes.First(c => c.IsCenter && c.Faces.First(f => f.Color != Color.Black).Color == edgeFaceColor);
-          CubeFlag edgeStartLayer = CubeFlag.None;
-
-          //Rotate edge to start position of algorithm
-          while ((edge.Position.Flags & ~CubeFlag.TopLayer) != (centerCube.Position.Flags & ~CubeFlag.MiddleLayer)) SolverMove(CubeFlag.TopLayer, true);
-          if (edgeFaceColor == centerCube.Faces.First(f => f.Color != Color.Black).Color)
-            edgeStartLayer = CubePosition.FacePosToLayerPos(centerCube.Faces.First(f => f.Color != Color.Black).Position);
-
-          //Get rotation direction of edge start layer with virtual rubik object
-          //Func<Rubik, bool> getRotationDirection = new Func<RubiksCube.Rubik, bool>(delegate(Rubik r)
-          //  {
-          //    r.RotateLayer(edgeStartLayer, true);
-          //    while((RefreshCube(corner,r).Position.Flags & ~CubeFlag.TopLayer) != (RefreshCube(edge,r).Position.Flags & ~CubeFlag.MiddleLayer)) r.RotateLayer(CubeFlag.TopLayer, true);
-          //    r.RotateLayer(edgeStartLayer, false);
-          //    return RefreshCube(edge, r).Faces.First(f => f.Position == FacePosition.Top) == RefreshCube(corner, r).Faces.First(f => f.Position == FacePosition.Top);
-          //  });
-
-          //bool direction = new TestScenario(Rubik).Test(getRotationDirection);
-
-          Rubik testRubik = Rubik.DeepClone();
-          testRubik.RotateLayer(edgeStartLayer, true);
-          while ((RefreshCube(corner, testRubik).Position.Flags & ~CubeFlag.TopLayer) != (RefreshCube(edge, testRubik).Position.Flags & ~CubeFlag.MiddleLayer)) testRubik.RotateLayer(CubeFlag.TopLayer, true);
-          testRubik.RotateLayer(edgeStartLayer, false);
-          bool direction = RefreshCube(edge, testRubik).Faces.First(f => f.Position == FacePosition.Top) == RefreshCube(corner, testRubik).Faces.First(f => f.Position == FacePosition.Top);
-
-          //Fit edge and corner together
-          SolverMove(edgeStartLayer, direction);
-          while ((corner.Position.Flags & ~CubeFlag.TopLayer) != (edge.Position.Flags & ~CubeFlag.MiddleLayer)) SolverMove(CubeFlag.TopLayer, true);
-          SolverMove(edgeStartLayer, !direction);
-
-          ////Rotate edge and corner to target slot
-          //bool directionTop = new TestScenario(Rubik, new LayerMove(CubeFlag.TopLayer, true)).TestCubePosition(corner, edgeStartLayer);
-          //bool directionSlice = !new TestScenario(Rubik, new LayerMove(edgeStartLayer, true)).TestCubePosition(corner, CubeFlag.BottomLayer);
-          //SolverAlgorithm("U{0} {1} U{2} {3}", directionTop ? "" : "'", directionSlice ? CubePosition.CubeFlagToString(edgeStartLayer) : CubePosition.CubeFlagToString(edgeStartLayer) + "'",
-          //  directionTop ? "'" : "", directionSlice ? CubePosition.CubeFlagToString(edgeStartLayer) + "'" : CubePosition.CubeFlagToString(edgeStartLayer));
-
-          break;
+          SolverMove(leftSlic, true);
+          leftFac = c.Faces.First(f => f.Position != FacePosition.Top && f.Position != FacePosition.Bottom && f.Color != leftFac.Color && f.Color != Color.Black);
+          leftSlic = CubeFlagService.FromFacePosition(leftFac.Position);
         }
-        #endregion
-        else break;
+        else SolverMove(leftSlic, true);
 
-        //To Do:
-        //CompleteFirstTwoLayers implementation
+        while (c.Faces.First(f => f.Color == Rubik.BottomColor).Position != FacePosition.Bottom)
+        {
+          if (c.Faces.First(f => f.Color == Rubik.BottomColor).Position == FacePosition.Top)
+          {
+            SolverAlgorithm("{0}' U U {0} U", CubeFlagService.CubeFlagToString(leftSlic));
+          }
+          else
+          {
+            Face frontFac = c.Faces.First(f => f.Position != FacePosition.Top && f.Position != FacePosition.Bottom
+              && f.Color != Color.Black && f.Position != CubeFlagService.ToFacePosition(leftSlic));
+
+            if (c.Faces.First(f => f.Color == Rubik.BottomColor).Position == frontFac.Position && !c.Position.HasFlag(CubeFlag.BottomLayer))
+            {
+              SolverAlgorithm("U' {0}' U {0}", CubeFlagService.CubeFlagToString(leftSlic));
+            }
+            else SolverAlgorithm("{0}' U' {0} U", CubeFlagService.CubeFlagToString(leftSlic));
+          }
+        }
+        solvedBottomCorners = bottomCorners.Where(bC => bC.Position.Flags == GetTargetFlags(bC) && bC.Faces.First(f => f.Color == Rubik.BottomColor).Position == FacePosition.Bottom);
+      }
+    }
+
+    private void CompleteMiddleLayer()
+    {
+      // Step 1: Get the egdes of the middle layer
+      List<Cube> middleEdges = Rubik.Cubes.Where(c => c.IsEdge).Where(c => GetTargetFlags(c).HasFlag(CubeFlag.MiddleLayer)).ToList();
+
+      List<Face> coloredFaces = new List<Face>();
+      Rubik.Cubes.Where(cu => cu.IsCenter).ToList().ForEach(cu => coloredFaces.Add(cu.Faces.First(f => f.Color != Color.Black)));
+      IEnumerable<Cube> solvedMiddleEdges = middleEdges.Where(mE => mE.Position.Flags == GetTargetFlags(mE) && mE.Faces.Count(f => coloredFaces.Count(cf => cf.Color == f.Color && cf.Position == f.Position) == 1) == 2);
+
+      // Step 2: solve incorrect middle edges 
+      while (solvedMiddleEdges.Count() < 4)
+      {
+        IEnumerable<Cube> unsolvedMiddleEdges = middleEdges.Except(solvedMiddleEdges);
+        Cube c = (unsolvedMiddleEdges.FirstOrDefault(cu => !cu.Position.HasFlag(CubeFlag.MiddleLayer)) != null)
+          ? unsolvedMiddleEdges.First(cu => !cu.Position.HasFlag(CubeFlag.MiddleLayer)) : unsolvedMiddleEdges.First();
+
+        // Rotate to top layer
+        if (!c.Position.HasFlag(CubeFlag.TopLayer))
+        {
+          Face frontFace = c.Faces.First(f => f.Color != Color.Black);
+          CubeFlag frontSlice = CubeFlagService.FromFacePosition(frontFace.Position);
+          Face face = c.Faces.First(f => f.Color != Color.Black && f.Color != frontFace.Color);
+          CubeFlag slice = CubeFlagService.FromFacePosition(face.Position);
+
+          if (new TestScenario(Rubik, new LayerMove(slice, true)).TestCubePosition(c, CubeFlag.TopLayer))
+          {
+            // Algorithm to the right: U R Ui Ri Ui Fi U F
+            SolverAlgorithm("U {0} U' {0}' U' {1}' U {1}", CubeFlagService.CubeFlagToString(slice), CubeFlagService.CubeFlagToString(frontSlice));
+          }
+          else
+          {
+            // Algorithm to the left: Ui Li U L U F Ui Fi
+            SolverAlgorithm("U' {0}' U {0} U {1} U' {1}'", CubeFlagService.CubeFlagToString(slice), CubeFlagService.CubeFlagToString(frontSlice));
+          }
+        }
+
+        // Rotate to start position for the algorithm
+        List<Cube> centers = Rubik.Cubes.Where(cu => cu.IsCenter).Where(m => m.Colors.First(co => co != Color.Black)
+            == c.Faces.First(f => f.Color != Color.Black && f.Position != FacePosition.Top).Color &&
+            (m.Position.Flags & ~CubeFlag.MiddleLayer) == (c.Position.Flags & ~CubeFlag.TopLayer)).ToList();
+
+        while (centers.Count() < 1)
+        {
+          SolverMove(CubeFlag.TopLayer, true);
+
+          centers = Rubik.Cubes.Where(cu => cu.IsCenter).Where(m => m.Colors.First(co => co != Color.Black)
+            == c.Faces.First(f => f.Color != Color.Black && f.Position != FacePosition.Top).Color &&
+            (m.Position.Flags & ~CubeFlag.MiddleLayer) == (c.Position.Flags & ~CubeFlag.TopLayer)).ToList();
+        }
+
+        // Rotate to target position
+        Face frontFac = c.Faces.First(f => f.Color != Color.Black && f.Position != FacePosition.Top);
+        CubeFlag frontSlic = CubeFlagService.FromFacePosition(frontFac.Position);
+
+        CubeFlag slic = CubeFlagService.FirstNotInvalidFlag(GetTargetFlags(c), CubeFlag.MiddleLayer | frontSlic);
+
+        if (!new TestScenario(Rubik, new LayerMove(CubeFlag.TopLayer, true)).TestCubePosition(c, slic))
+        {
+          // Algorithm to the right: U R Ui Ri Ui Fi U F
+          SolverAlgorithm("U {0} U' {0}' U' {1}' U {1}", CubeFlagService.CubeFlagToString(slic), CubeFlagService.CubeFlagToString(frontSlic));
+        }
+        else
+        {
+          // Algorithm to the left: Ui Li U L U F Ui Fi
+          SolverAlgorithm("U' {0}' U {0} U {1} U' {1}'", CubeFlagService.CubeFlagToString(slic), CubeFlagService.CubeFlagToString(frontSlic));
+        }
+        solvedMiddleEdges = middleEdges.Where(mE => mE.Faces.Count(f => coloredFaces.Count(cf => cf.Color == f.Color && cf.Position == f.Position) == 1) == 2);
+      }
+    }
+
+    private void Oll()
+    {
+      OllPattern p = new OllPattern();
+      Algorithm oll = p.FindBestMatch(Pattern.FromRubik(this.Rubik), CubeFlag.TopLayer);
+      if (oll != null) SolverAlgorithm(oll); // else no oll algorithm required
+    }
+
+    private void Pll()
+    {
+      PllPattern p = new PllPattern();
+      for (int i = 0; i < 4; i++)
+      {
+        Algorithm pll = p.FindBestMatch(Pattern.FromRubik(Rubik), CubeFlag.TopLayer);
+        if (pll != null) { SolverAlgorithm(pll); break; }
       }
     }
   }

@@ -36,7 +36,6 @@ namespace RubiksCubeLib
     {
       List<T> pluginsFromFile = new PluginConnector<T>().GetPluginsFromDll(fileName);
       pluginsFromFile = pluginsFromFile.Where(p => Add(p)).ToList();
-      if (pluginsFromFile.Count == 0) System.Windows.Forms.MessageBox.Show("No plugins found");
     }
 
     /// <summary>
@@ -47,7 +46,6 @@ namespace RubiksCubeLib
     {
       List<T> pluginsFromDir = new PluginConnector<T>().LoadPlugins(dirName);
       pluginsFromDir = pluginsFromDir.Where(p => Add(p)).ToList();
-      if(pluginsFromDir.Count == 0) System.Windows.Forms.MessageBox.Show("No plugins found");
     }
 
     /// <summary>

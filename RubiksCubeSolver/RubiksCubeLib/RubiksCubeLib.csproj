@@ -58,7 +58,7 @@
     <Compile Include="General\Moves\LayerMove.cs" />
     <Compile Include="General\Positions\CubeFlagService.cs" />
     <Compile Include="General\Positions\CubePosition.cs" />
-    <Compile Include="General\Positions\PositionOrientation.cs" />
+    <Compile Include="General\Positions\Orientation.cs" />
     <Compile Include="General\Positions\PositionSpec.cs" />
     <Compile Include="CubeModel\Face3D.cs" />
     <Compile Include="CubeModel\Point3D.cs" />
@@ -85,8 +85,9 @@
     <Compile Include="ScanInput\ScanEventArgs.cs" />
     <Compile Include="Solving\CubeSolver.cs" />
     <Compile Include="Plugin\PluginConnector.cs" />
-    <Compile Include="Solving\Pattern.cs" />
-    <Compile Include="Solving\PatternTable.cs" />
+    <Compile Include="Solving\Pattern\PatternTable.cs" />
+    <Compile Include="Solving\Pattern\PatternItem.cs" />
+    <Compile Include="Solving\Pattern\Pattern.cs" />
     <Compile Include="Solving\Solution.cs" />
     <Compile Include="Solving\Solvability.cs" />
     <Compile Include="Solving\TestScenario.cs" />

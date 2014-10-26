@@ -64,11 +64,11 @@ namespace RubiksCubeLib.CubeModel
     {
       bool d = move.Direction;
       if (move.Layer == CubeFlag.TopLayer || move.Layer == CubeFlag.MiddleLayer || move.Layer == CubeFlag.LeftSlice || move.Layer == CubeFlag.FrontSlice || move.Layer == CubeFlag.MiddleSlice) d = !d;
-      int rotationTarget = 90;
-      if (d) rotationTarget = -90;
+      int rotationTarget = move.Twice ? 180 : 90;
+      if (d) rotationTarget *= -1;
       Target = rotationTarget;
 
-      Move = new LayerMove(move.Layer, move.Direction);
+      Move = new LayerMove(move.Layer, move.Direction, move.Twice);
     }
   }
 }

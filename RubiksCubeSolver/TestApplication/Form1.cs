@@ -45,7 +45,7 @@ namespace TestApplication
         Solution s;
         if (solverPlugins.StandardPlugin.TrySolve(cubeModel.Rubik, out s))
         {
-          s.Algorithm.Moves.ForEach(m => cubeModel.RotateLayerAnimated(m.Layer, m.Direction));
+          s.Algorithm.Moves.ForEach(m => cubeModel.RotateLayerAnimated(m));
         }
         else
         {
@@ -67,9 +67,9 @@ namespace TestApplication
     private void solveToolStripMenuItem1_Click(object sender, EventArgs e)
     {
       Solution s;
-      if (solverPlugins.StandardPlugin.TrySolve(cubeModel.Rubik,out s))
+      if (solverPlugins.StandardPlugin.TrySolve(cubeModel.Rubik, out s))
       {
-        s.Algorithm.Moves.ForEach(m => cubeModel.RotateLayerAnimated(m.Layer, m.Direction));
+        s.Algorithm.Moves.ForEach(m => cubeModel.RotateLayerAnimated(m));
       }
       else
       {

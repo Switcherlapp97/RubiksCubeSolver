@@ -41,7 +41,9 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="BeginnerSolver.cs" />
+    <Compile Include="FridrichSolver.cs" />
     <Compile Include="OllPattern.cs" />
+    <Compile Include="PllPattern.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>

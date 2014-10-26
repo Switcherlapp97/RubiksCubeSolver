@@ -18,7 +18,7 @@ namespace RubiksCubeLib
 		/// </summary>
 		public Algorithm()
 		{
-			this.Moves = new List<LayerMove>();
+			this.Moves = new List<IMove>();
 		}
 
 		/// <summary>
@@ -35,10 +35,20 @@ namespace RubiksCubeLib
 		/// 
 		public Algorithm(string algorithm)
 		{
-			this.Moves = new List<LayerMove>();
+			this.Moves = new List<IMove>();
 			foreach (string s in algorithm.Split(' '))
 			{
-				this.Moves.Add(LayerMove.Parse(s));
+        LayerMove move;
+        LayerMoveCollection collection;
+        if (LayerMove.TryParse(s, out move))
+        {
+          this.Moves.Add(move);
+        }
+        else if (LayerMoveCollection.TryParse(s, out collection))
+        {
+          this.Moves.Add(collection);
+        }
+        else throw new Exception("Invalid notation");
 			}
 		}
 
@@ -47,8 +57,10 @@ namespace RubiksCubeLib
 
 		// *** PROPERTIES ***
 
-		//The collection
-		public List<LayerMove> Moves { get; set; }
+		/// <summary>
+		/// Gets or sets the the collection of layer moves
+		/// </summary>
+		public List<IMove> Moves { get; set; }
 
 
 
@@ -58,11 +70,25 @@ namespace RubiksCubeLib
 		/// <summary>
 		/// Converts the collection into a notation
 		/// </summary>
-		/// <returns></returns>
 		public override string ToString()
 		{
 			return string.Join(" ", this.Moves);
 		}
+
+    /// <summary>
+    /// Transforms the algorithm
+    /// </summary>
+    /// <param name="rotationLayer">Transformation layer</param>
+    /// <returns>Transformed algorithm</returns>
+    public Algorithm Transform(CubeFlag rotationLayer)
+    {
+      Algorithm newAlgorithm = new Algorithm();
+      for (int i = 0; i < Moves.Count; i++)
+      {
+        newAlgorithm.Moves.Add(Moves[i].Transform(rotationLayer));
+      }
+      return newAlgorithm;
+    }
 
 	}
 }

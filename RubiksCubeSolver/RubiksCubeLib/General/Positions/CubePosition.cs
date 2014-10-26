@@ -145,5 +145,24 @@ namespace RubiksCubeLib
 			return CubeFlagService.GetFlags(Flags);
 		}
 
+    /// <summary>
+    /// Calculates the next position after a layer rotation
+    /// </summary>
+    /// <param name="layer">Rotation layer</param>
+    /// <param name="direction">Rotation direction</param>
+    public void NextFlag(CubeFlag layer, bool direction)
+    {
+      CubeFlag newFlags = CubeFlagService.NextFlags(Flags, layer, direction);
+
+      this.X = CubeFlagService.FirstXFlag(newFlags);
+      this.Y = CubeFlagService.FirstYFlag(newFlags);
+      this.Z = CubeFlagService.FirstZFlag(newFlags);
+    }
+
+    public override string ToString()
+    {
+      return Flags.ToString();
+    }
+
 	}
 }

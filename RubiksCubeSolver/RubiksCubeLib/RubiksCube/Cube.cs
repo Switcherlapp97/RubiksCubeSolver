@@ -13,8 +13,6 @@ namespace RubiksCubeLib.RubiksCube
 	[Serializable]
 	public class Cube
 	{
-
-
 		// *** CONSTRUCTORS ***
 
 		/// <summary>
@@ -150,105 +148,8 @@ namespace RubiksCubeLib.RubiksCube
 		/// <param name="direction">Defines the direction of the rotation (true == clockwise)</param>
 		public void NextPos(CubeFlag layer, bool direction)
 		{
-			if (layer == CubeFlag.LeftSlice || layer == CubeFlag.BottomLayer || layer == CubeFlag.BackSlice)
-				direction = !direction;
-
-			//Get the direction of the rotation depending on the layer
-			RotationType rotation;
-			if (layer == CubeFlag.RightSlice || layer == CubeFlag.MiddleSliceSides || layer == CubeFlag.LeftSlice)
-				rotation = RotationType.X;
-			else if (layer == CubeFlag.TopLayer || layer == CubeFlag.MiddleLayer || layer == CubeFlag.BottomLayer)
-				rotation = RotationType.Y;
-			else
-				rotation = RotationType.Z;
-
-			Cube oldCube = DeepClone();
-
-			#region X-Rotation
-			if (rotation == RotationType.X)
-			{
-				if (this.IsCorner)
-				{
-					//Set new position of corner
-					Position.Y = ((direction ^ oldCube.Position.Z == CubeFlag.BackSlice)) ? CubeFlag.TopLayer : CubeFlag.BottomLayer;
-					Position.Z = ((direction ^ oldCube.Position.Y == CubeFlag.TopLayer)) ? CubeFlag.FrontSlice : CubeFlag.BackSlice;
-				}
-				if (IsEdge || (IsCenter && layer == CubeFlag.MiddleSliceSides))
-				{
-					//Set new position of edge or center (if necessary)
-					if (oldCube.Position.Y == CubeFlag.TopLayer || oldCube.Position.Y == CubeFlag.BottomLayer)
-						this.Position.Y = CubeFlag.MiddleLayer;
-					if (oldCube.Position.Z == CubeFlag.FrontSlice)
-						this.Position.Y = (direction) ? CubeFlag.TopLayer : CubeFlag.BottomLayer;
-					if (oldCube.Position.Z == CubeFlag.BackSlice)
-						this.Position.Y = (direction) ? CubeFlag.BottomLayer : CubeFlag.TopLayer;
-
-					if (oldCube.Position.Z == CubeFlag.FrontSlice || oldCube.Position.Z == CubeFlag.BackSlice)
-						this.Position.Z = CubeFlag.MiddleSlice;
-					if (oldCube.Position.Y == CubeFlag.TopLayer)
-						this.Position.Z = (direction) ? CubeFlag.BackSlice : CubeFlag.FrontSlice;
-					if (oldCube.Position.Y == CubeFlag.BottomLayer)
-						this.Position.Z = (direction) ? CubeFlag.FrontSlice : CubeFlag.BackSlice;
-				}
-			}
-			#endregion
-
-			#region Y-Rotation
-			if (rotation == RotationType.Y)
-			{
-				if (this.IsCorner)
-				{
-					//Set new position
-					this.Position.X = (!(direction ^ oldCube.Position.Z == CubeFlag.BackSlice)) ? CubeFlag.RightSlice : CubeFlag.LeftSlice;
-					this.Position.Z = (!(direction ^ oldCube.Position.X == CubeFlag.RightSlice)) ? CubeFlag.FrontSlice : CubeFlag.BackSlice;
-				}
-				if (this.IsEdge || (this.IsCenter && layer == CubeFlag.MiddleLayer))
-				{
-					//Set new position
-					if (oldCube.Position.X == CubeFlag.RightSlice || oldCube.Position.X == CubeFlag.LeftSlice)
-						this.Position.X = CubeFlag.MiddleSliceSides;
-					if (oldCube.Position.Z == CubeFlag.FrontSlice)
-						this.Position.X = (direction) ? CubeFlag.LeftSlice : CubeFlag.RightSlice;
-					if (oldCube.Position.Z == CubeFlag.BackSlice)
-						this.Position.X = (direction) ? CubeFlag.RightSlice : CubeFlag.LeftSlice;
-
-					if (oldCube.Position.Z == CubeFlag.FrontSlice || oldCube.Position.Z == CubeFlag.BackSlice)
-						this.Position.Z = CubeFlag.MiddleSlice;
-					if (oldCube.Position.X == CubeFlag.RightSlice)
-						this.Position.Z = (direction) ? CubeFlag.FrontSlice : CubeFlag.BackSlice;
-					if (oldCube.Position.X == CubeFlag.LeftSlice)
-						this.Position.Z = (direction) ? CubeFlag.BackSlice : CubeFlag.FrontSlice;
-				}
-			}
-			#endregion
-
-			#region Z-Rotation
-			if (rotation == RotationType.Z)
-			{
-				if (this.IsCorner)
-				{
-					this.Position.X = (!(direction ^ oldCube.Position.Y == CubeFlag.TopLayer)) ? CubeFlag.RightSlice : CubeFlag.LeftSlice;
-					this.Position.Y = (!(direction ^ oldCube.Position.X == CubeFlag.LeftSlice)) ? CubeFlag.TopLayer : CubeFlag.BottomLayer;
-				}
-				if (this.IsEdge || (IsCenter && layer == CubeFlag.MiddleSlice))
-				{
-					if (oldCube.Position.X == CubeFlag.RightSlice || oldCube.Position.X == CubeFlag.LeftSlice)
-						this.Position.X = CubeFlag.MiddleSliceSides;
-					if (oldCube.Position.Y == CubeFlag.TopLayer)
-						this.Position.X = (direction) ? CubeFlag.RightSlice : CubeFlag.LeftSlice;
-					if (oldCube.Position.Y == CubeFlag.BottomLayer)
-						this.Position.X = (direction) ? CubeFlag.LeftSlice : CubeFlag.RightSlice;
-
-					if (oldCube.Position.Y == CubeFlag.TopLayer || oldCube.Position.Y == CubeFlag.BottomLayer)
-						this.Position.Y = CubeFlag.MiddleLayer;
-					if (oldCube.Position.X == CubeFlag.RightSlice)
-						this.Position.Y = (direction) ? CubeFlag.BottomLayer : CubeFlag.TopLayer;
-					if (oldCube.Position.X == CubeFlag.LeftSlice)
-						this.Position.Y = (direction) ? CubeFlag.TopLayer : CubeFlag.BottomLayer;
-				}
-			}
-			#endregion
-
+      Cube oldCube = DeepClone();
+      Position.NextFlag(layer, direction);
 			#region Colors
 			if (this.IsCorner)
 			{
@@ -302,8 +203,6 @@ namespace RubiksCubeLib.RubiksCube
 				}
 			}
 			#endregion
-
 		}
-
 	}
 }

@@ -48,16 +48,5 @@ namespace RubiksCubeLib
 			}
 			return cnt.Values.All(c => c == 0);
 		}
-
-		public static Dictionary<T, T> Order<T>(List<T> standard, Dictionary<T, T> newOrder)
-		{
-			Dictionary<T, T> result = new Dictionary<T, T>();
-			foreach (T t in standard)
-			{
-				result.Add(t, newOrder.ContainsKey(t) ? newOrder[t] : t);
-			}
-			return result;
-		}
-
 	}
 }
