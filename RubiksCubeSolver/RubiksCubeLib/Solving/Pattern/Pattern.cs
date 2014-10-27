@@ -88,8 +88,15 @@ namespace RubiksCubeLib.Solver
     {
       get
       {
-        return CountInversions(CornerPositions.Select(pos => pos.Flags).ToList(),
-          Order(CornerPositions, Items).Select(pos => pos.CurrentPosition.Flags).ToList());
+        List<CubeFlag> newOrder = new List<CubeFlag>();
+        foreach (CubePosition p in CornerPositions)
+        {
+          PatternItem affected = Items.FirstOrDefault(i => i.TargetPosition == p.Flags);
+          CubePosition pos = affected != null ? affected.CurrentPosition : p;
+          newOrder.Add(pos.Flags);
+        }
+
+        return CountInversions(CornerPositions.Select(pos => pos.Flags).ToList(), newOrder);
       }
     }
 
@@ -100,20 +107,27 @@ namespace RubiksCubeLib.Solver
     {
       get
       {
-        return CountInversions(EdgePositions.Select(pos => pos.Flags).ToList(),
-          Order(EdgePositions, Items).Select(pos => pos.CurrentPosition.Flags).ToList());
+        List<CubeFlag> newOrder = new List<CubeFlag>();
+        foreach (CubePosition p in EdgePositions)
+        {
+          PatternItem affected = Items.FirstOrDefault(i => i.TargetPosition == p.Flags);
+          CubePosition pos = affected != null ? affected.CurrentPosition : p;
+          newOrder.Add(pos.Flags);
+        }
+
+        return CountInversions(EdgePositions.Select(pos => pos.Flags).ToList(), newOrder);
       }
     }
 
     /// <summary>
     /// Gets the number of required 120° corner rotations
     /// </summary>
-    public int CornerRotations { get { return Order(CornerPositions, Items).Sum(c => (int)c.CurrentOrientation); } }
+    public int CornerRotations { get { return Items.Where(i => CornerPositions.Contains(i.CurrentPosition)).Sum(c => (int)c.CurrentOrientation); } }
 
     /// <summary>
     /// Gets the number of flipped edges
     /// </summary>
-    public int EdgeFlips { get { return Order(EdgePositions, Items).Sum(c => (int)c.CurrentOrientation); } }
+    public int EdgeFlips { get { return Items.Where(i => EdgePositions.Contains(i.CurrentPosition)).Sum(c => (int)c.CurrentOrientation); } }
 
     /// <summary>
     /// True, if pattern is possible

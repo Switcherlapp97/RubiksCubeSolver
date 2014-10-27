@@ -262,7 +262,7 @@ namespace BeginnerSolver
     private void Oll()
     {
       OllPattern p = new OllPattern();
-      Algorithm oll = p.FindBestMatch(Pattern.FromRubik(this.Rubik), CubeFlag.TopLayer);
+      Algorithm oll = p.FindBestMatch(Pattern.FromRubik(this.Rubik), CubeFlag.TopLayer, PatternFilter.SameFlipCount);
       if (oll != null) SolverAlgorithm(oll); // else no oll algorithm required
     }
 
@@ -271,8 +271,9 @@ namespace BeginnerSolver
       PllPattern p = new PllPattern();
       for (int i = 0; i < 4; i++)
       {
-        Algorithm pll = p.FindBestMatch(Pattern.FromRubik(Rubik), CubeFlag.TopLayer);
+        Algorithm pll = p.FindBestMatch(Pattern.FromRubik(Rubik), CubeFlag.TopLayer, PatternFilter.SameInversionCount);
         if (pll != null) { SolverAlgorithm(pll); break; }
+        SolverMove(CubeFlag.TopLayer, true);
       }
     }
   }

@@ -45,6 +45,7 @@ namespace TestApplication
         Solution s;
         if (solverPlugins.StandardPlugin.TrySolve(cubeModel.Rubik, out s))
         {
+          MessageBox.Show(s.MovesCount.ToString());
           s.Algorithm.Moves.ForEach(m => cubeModel.RotateLayerAnimated(m));
         }
         else
@@ -80,6 +81,14 @@ namespace TestApplication
     private void cornerTestToolStripMenuItem_Click(object sender, EventArgs e)
     {
       MessageBox.Show(Solvability.FullTest(cubeModel.Rubik) ? "Solvable" : "Unsolvable");
+    }
+
+    private void button1_Click(object sender, EventArgs e)
+    {
+      Pattern fromRubik = Pattern.FromRubik(cubeModel.Rubik);
+      Pattern p = new Pattern(new string[] { "MFU,RSU", "RSU,MFU", "RBU,LBU", "LBU,RBU" }, 1.0 / 18.0);
+      int i = p.CornerRotations;
+      //p = p.Transform(CubeFlag.TopLayer).Transform(CubeFlag.TopLayer).Transform(CubeFlag.TopLayer);
     }
   }
 }

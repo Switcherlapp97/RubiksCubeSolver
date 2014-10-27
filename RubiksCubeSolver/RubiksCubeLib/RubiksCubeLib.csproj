@@ -85,6 +85,7 @@
     <Compile Include="ScanInput\ScanEventArgs.cs" />
     <Compile Include="Solving\CubeSolver.cs" />
     <Compile Include="Plugin\PluginConnector.cs" />
+    <Compile Include="Solving\Pattern\PatternFilter.cs" />
     <Compile Include="Solving\Pattern\PatternTable.cs" />
     <Compile Include="Solving\Pattern\PatternItem.cs" />
     <Compile Include="Solving\Pattern\Pattern.cs" />

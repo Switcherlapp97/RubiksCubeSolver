@@ -159,6 +159,17 @@ namespace RubiksCubeLib
       this.Z = CubeFlagService.FirstZFlag(newFlags);
     }
 
+    public override bool Equals(object obj)
+    {
+      CubePosition second = (CubePosition)obj;
+      return this.X == second.X && this.Y == second.Y && this.Z == second.Z;
+    }
+
+    public override int GetHashCode()
+    {
+      return (int)this.X + (int)this.Y + (int)this.Z;
+    }
+
     public override string ToString()
     {
       return Flags.ToString();

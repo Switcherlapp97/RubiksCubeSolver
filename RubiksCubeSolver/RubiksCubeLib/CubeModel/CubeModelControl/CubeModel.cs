@@ -409,10 +409,9 @@ namespace RubiksCubeLib.CubeModel
         if (cr.Position.HasFlag(CubeFlag.RightSlice))
           cr = cr.Rotate(RotationType.X, LayerRotation[CubeFlag.RightSlice], new Point3D(d, 0, 0));
 
-
-        cr = cr.Rotate(RotationType.X, this.Rotation[0], new Point3D(0, 0, 0));
         cr = cr.Rotate(RotationType.Y, this.Rotation[1], new Point3D(0, 0, 0));
         cr = cr.Rotate(RotationType.Z, this.Rotation[2], new Point3D(0, 0, 0));
+        cr = cr.Rotate(RotationType.X, this.Rotation[0], new Point3D(0, 0, 0));
         cubes3D.Add(cr);
       }
       return cubes3D;
