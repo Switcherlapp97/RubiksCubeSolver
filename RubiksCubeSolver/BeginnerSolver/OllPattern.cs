@@ -68,7 +68,7 @@ namespace BeginnerSolver
 
         // T-shapes
         {new Pattern(new string[] {"LBU,2", "LFU,1", "MFU,1", "MBU,1"}, 1.0 / 54.0), new Algorithm("R U R' U' R' F R F'")}, // OLL #33
-        {new Pattern(new string[] {"LBU,2", "LFU,1", "MFU,1", "MBU,1"}, 1.0 / 54.0), new Algorithm("F R U R' U' F'")}, // OLL #45
+        {new Pattern(new string[] {"LBU,1", "LFU,2", "MFU,1", "MBU,1"}, 1.0 / 54.0), new Algorithm("F R U R' U' F'")}, // OLL #45
 
         // C-shapes
         {new Pattern(new string[] {"LBU,1", "RBU,2", "MFU,1", "MBU,1"}, 1.0 / 54.0), new Algorithm("R U R' U' B' R' F R F' B")}, // OLL #34

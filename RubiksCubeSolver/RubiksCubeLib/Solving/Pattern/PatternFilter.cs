@@ -16,12 +16,18 @@ namespace RubiksCubeLib.Solver
     public Func<Pattern, Pattern, bool> Filter { get; set; }
 
     /// <summary>
+    /// Gets or sets whether the filter is used only in the beginning
+    /// </summary>
+    public bool OnlyAtBeginning { get; set; }
+
+    /// <summary>
     /// Initializes a new instance of the PatternFilter class
     /// </summary>
     /// <param name="filter">Equality check between two patterns</param>
-    public PatternFilter(Func<Pattern,Pattern, bool> filter)
+    public PatternFilter(Func<Pattern, Pattern, bool> filter, bool onlyAtBeginning = false)
     {
       this.Filter = filter;
+      this.OnlyAtBeginning = onlyAtBeginning;
     }
 
     #region Predefined filters
@@ -49,7 +55,7 @@ namespace RubiksCubeLib.Solver
         return new PatternFilter(new Func<Pattern, Pattern, bool>(delegate(Pattern p1, Pattern p2)
         {
           return p1.EdgeFlips == p2.EdgeFlips && p1.CornerRotations == p2.CornerRotations;
-        }));
+        }), true);
       }
     }
     #endregion
