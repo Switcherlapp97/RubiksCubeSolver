@@ -4,11 +4,11 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{241C63D7-F7D0-4C6B-AF5B-8E37FAE17F03}</ProjectGuid>
+    <ProjectGuid>{4C13BB99-B0CA-4078-9C4F-C0D4FAA8AA17}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>BeginnerSolver</RootNamespace>
-    <AssemblyName>BeginnerSolver</AssemblyName>
+    <RootNamespace>FridrichSolver</RootNamespace>
+    <AssemblyName>FridrichSolver</AssemblyName>
     <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
   </PropertyGroup>
@@ -40,7 +40,9 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="BeginnerSolver.cs" />
+    <Compile Include="FridrichSolver.cs" />
+    <Compile Include="OllPattern.cs" />
+    <Compile Include="PllPattern.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>

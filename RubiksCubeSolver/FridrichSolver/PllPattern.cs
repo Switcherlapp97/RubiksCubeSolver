@@ -5,7 +5,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
-namespace BeginnerSolver
+namespace FridrichSolver
 {
   public class PllPattern: PatternTable
   {

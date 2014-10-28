@@ -7,7 +7,7 @@ using System.Drawing;
 using System.Linq;
 using System.Text;
 
-namespace BeginnerSolver
+namespace FridrichSolver
 {
   public class FridrichSolver: CubeSolver
   {
