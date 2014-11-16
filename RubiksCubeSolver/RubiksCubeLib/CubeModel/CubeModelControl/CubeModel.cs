@@ -149,7 +149,8 @@ namespace RubiksCubeLib.CubeModel
       this.LayerRotation = new Dictionary<CubeFlag, double>();
       foreach (CubeFlag rp in (CubeFlag[])Enum.GetValues(typeof(CubeFlag)))
       {
-        this.LayerRotation[rp] = 0;
+        if (rp != CubeFlag.XFlags && rp != CubeFlag.YFlags && rp != CubeFlag.ZFlags)
+          this.LayerRotation[rp] = 0;
       }
     }
 

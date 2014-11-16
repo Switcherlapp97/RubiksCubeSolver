@@ -91,8 +91,8 @@ namespace RubiksCubeLib
       {
         if (standardPlugIn == null)
         {
-          if (Count > 0) StandardPlugin = plugins.First();
-          throw new Exception("No plugins available!");
+          if (Count > 0) return  plugins.First();
+          else throw new Exception("No plugins available!");
         }
         else
         {

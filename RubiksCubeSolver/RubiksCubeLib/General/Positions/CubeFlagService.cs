@@ -351,7 +351,7 @@ namespace RubiksCubeLib
     /// <summary>
     /// Converts the given CubeFlag into a notation string
     /// </summary>
-    public static string CubeFlagToString(CubeFlag flag)
+    public static string ToString(CubeFlag flag)
     {
       switch (flag)
       {

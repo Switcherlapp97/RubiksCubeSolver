@@ -40,6 +40,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="F2LPattern.cs" />
     <Compile Include="FridrichSolver.cs" />
     <Compile Include="OllPattern.cs" />
     <Compile Include="PllPattern.cs" />

@@ -20,7 +20,7 @@ namespace TestApplication
     public Form1()
     {
       InitializeComponent();
-      solverPlugins.AddFolder(@"C:\Users\Anwender\Desktop\plugins");
+      solverPlugins.AddFolder(@"Path");
     }
 
     private void cubeModel_OnSelectionChanged(object sender, RubiksCubeLib.CubeModel.SelectionChangedEventArgs e)

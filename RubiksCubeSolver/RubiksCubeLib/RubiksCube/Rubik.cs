@@ -7,6 +7,7 @@ using System.IO;
 using System.Runtime.Serialization.Formatters.Binary;
 using RubiksCubeLib.ScanInput;
 using System.Xml.Serialization;
+using RubiksCubeLib.Solver;
 
 namespace RubiksCubeLib.RubiksCube
 {
@@ -325,6 +326,11 @@ namespace RubiksCubeLib.RubiksCube
 		{
 			return GenStandardCube().Cubes.First(cu => CollectionMethods.ScrambledEquals(cu.Colors, cube.Colors)).Position.Flags;
 		}
+
+    public bool IsCorrect(Cube cube)
+    {
+      return cube.Position.Flags == GetTargetFlags(cube) && Solvability.GetOrientation(this, cube) == 0;
+    }
 
 
 

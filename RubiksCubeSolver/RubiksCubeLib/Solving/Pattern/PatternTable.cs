@@ -36,6 +36,8 @@ namespace RubiksCubeLib.Solver
         {
           matches.Add(kvp.Key, kvp.Value); // Add to matches
         }
+        if (rotationLayer == CubeFlag.None) return matches;
+
         if (filter.OnlyAtBeginning)
         {
           transformedPatterns = filteredPatterns.Except(matches).ToDictionary(pa => pa.Key.Transform(rotationLayer), a => a.Value.Transform(rotationLayer));
@@ -47,7 +49,6 @@ namespace RubiksCubeLib.Solver
           filteredPatterns = transformedPatterns.Where(kvp => filter.Filter(p, kvp.Key)).ToDictionary(pa => pa.Key, a => a.Value);
         }
       }
-
       return matches;
     }
 

@@ -58,6 +58,17 @@ namespace RubiksCubeLib.Solver
         }), true);
       }
     }
+
+    public static PatternFilter None
+    {
+      get
+      {
+        return new PatternFilter(new Func<Pattern, Pattern, bool>(delegate(Pattern p1, Pattern p2)
+        {
+          return true;
+        }), true);
+      }
+    }
     #endregion
   }
 }

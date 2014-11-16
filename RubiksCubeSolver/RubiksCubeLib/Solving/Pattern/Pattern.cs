@@ -152,7 +152,7 @@ namespace RubiksCubeLib.Solver
     /// </param>
     public Pattern(string[] pattern, double probability = 0)
     {
-      Probability = probability;
+      this.Probability = probability;
       List<PatternItem> newItems = new List<PatternItem>();
 
       foreach (string item in pattern)
@@ -166,6 +166,12 @@ namespace RubiksCubeLib.Solver
     /// Initializes a new instance of the pattern class
     /// </summary>
     public Pattern() { }
+
+    public Pattern(IEnumerable<PatternItem> items, double probability = 0)
+    {
+      this.Probability = probability;
+      Items = Order(Positions, items);
+    }
 
     /// <summary>
     /// Converts a rubik to a pattern
