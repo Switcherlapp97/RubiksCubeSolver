@@ -22,25 +22,18 @@ namespace RubiksCubeLib.Solver
 		/// <param name="rubik">Defines the Rubik to be solved</param>
 		public Solution(CubeSolver solver, Rubik rubik)
 		{
-			this.StartingRubik = rubik.DeepClone();
-			this.CurrentRubik = rubik;
+      this.Pattern = Pattern.FromRubik(rubik);
 			this.SolvingMethod = solver.Name;
 			this.Algorithm = new Algorithm();
 		}
-
-
+    
 
 		// *** PROPERTIES ***
 
 		/// <summary>
 		/// The scrambled Rubik which will be solved
 		/// </summary>
-		public Rubik StartingRubik { get; private set; }
-
-		/// <summary>
-		/// The Rubik after executing the algorithm
-		/// </summary>
-		public Rubik CurrentRubik { get; private set; }
+		public Pattern Pattern { get; private set; }
 
 		/// <summary>
 		/// The algorithm for the solution

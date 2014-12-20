@@ -90,6 +90,7 @@
     <Compile Include="Solving\Pattern\PatternItem.cs" />
     <Compile Include="Solving\Pattern\Pattern.cs" />
     <Compile Include="Solving\Solution.cs" />
+    <Compile Include="Solving\SolutionFoundEventArgs.cs" />
     <Compile Include="Solving\Solvability.cs" />
     <Compile Include="Solving\TestScenario.cs" />
   </ItemGroup>

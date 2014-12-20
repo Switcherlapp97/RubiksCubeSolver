@@ -21,6 +21,10 @@ namespace TestApplication
     {
       InitializeComponent();
       solverPlugins.AddFolder(@"C:\Users\Anwender\Desktop\RubiksCubeSolver\trunk\RubiksCubeSolver\FridrichSolver\bin\Debug");
+      foreach (CubeSolver solver in solverPlugins.GetAll())
+      {
+        solver.OnSolutionFound += ExecuteSolution;
+      }
     }
 
     private void cubeModel_OnSelectionChanged(object sender, RubiksCubeLib.CubeModel.SelectionChangedEventArgs e)
@@ -42,17 +46,18 @@ namespace TestApplication
       PluginSelectorDialog<CubeSolver> dlg = new PluginSelectorDialog<CubeSolver>(solverPlugins);
       if (dlg.ShowDialog() == System.Windows.Forms.DialogResult.OK)
       {
-        Solution s;
-        if (solverPlugins.StandardPlugin.TrySolve(cubeModel.Rubik, out s))
-        {
-          MessageBox.Show(s.MovesCount.ToString());
-          s.Algorithm.Moves.ForEach(m => cubeModel.RotateLayerAnimated(m));
-        }
-        else
-        {
-          MessageBox.Show("Unsolvable");
-        }
+        solverPlugins.StandardPlugin.TrySolveAsync(cubeModel.Rubik);
       }
+    }
+
+    private void ExecuteSolution(object sender, SolutionFoundEventArgs e)
+    {
+      if (e.Solvable)
+      {
+        MessageBox.Show(string.Format("Solution found with {0}: Moves count: {1}; Elapsed Milliseconds {2}", e.Solution.SolvingMethod,e.Solution.MovesCount,e.Milliseconds / 1000));
+        e.Solution.Algorithm.Moves.ForEach(m => cubeModel.RotateLayerAnimated(m));
+      }
+      else MessageBox.Show("Unsolvable");
     }
 
     private void resetToolStripMenuItem_Click(object sender, EventArgs e)
@@ -67,15 +72,7 @@ namespace TestApplication
 
     private void solveToolStripMenuItem1_Click(object sender, EventArgs e)
     {
-      Solution s;
-      if (solverPlugins.StandardPlugin.TrySolve(cubeModel.Rubik, out s))
-      {
-        s.Algorithm.Moves.ForEach(m => cubeModel.RotateLayerAnimated(m));
-      }
-      else
-      {
-        MessageBox.Show("Unsolvable");
-      }
+      solverPlugins.StandardPlugin.TrySolveAsync(cubeModel.Rubik);
     }
 
     private void cornerTestToolStripMenuItem_Click(object sender, EventArgs e)

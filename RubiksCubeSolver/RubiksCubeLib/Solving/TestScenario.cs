@@ -46,7 +46,5 @@ namespace RubiksCubeLib.Solver
       return Rubik.Cubes.First(cu => CollectionMethods.ScrambledEquals(cu.Colors, c.Colors));
     }
 
-    
-
   }
 }

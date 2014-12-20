@@ -4,6 +4,9 @@ using System.Linq;
 using System.Text;
 using RubiksCubeLib.RubiksCube;
 using System.Drawing;
+using System.Threading.Tasks;
+using System.Threading;
+using System.Diagnostics;
 
 namespace RubiksCubeLib.Solver
 {
@@ -48,7 +51,7 @@ namespace RubiksCubeLib.Solver
     /// Returns the solution for the transferred Rubik
     /// </summary>
     /// <param name="cube">Defines the Rubik to be solved</param>
-    public Solution Solve(Rubik cube)
+    private Solution Solve(Rubik cube)
     {
       Rubik = cube.DeepClone();
       Solution = new Solution(this, cube);
@@ -61,15 +64,6 @@ namespace RubiksCubeLib.Solver
 
     public abstract void GetSolution();
 
-    /// <summary>
-    /// Returns the solved Rubik
-    /// </summary>
-    /// <param name="cube">Defines the Rubik to be solved</param>
-    public Rubik ReturnRubik(Rubik cube)
-    {
-      Solve(cube);
-      return Rubik;
-    }
 
     /// <summary>
     /// Returns true if the given Rubik is solvable
@@ -85,6 +79,28 @@ namespace RubiksCubeLib.Solver
         solution = Solve(rubik);
       return solvable;
     }
+
+    public delegate void SolutionFoundEventHandler(object sender, SolutionFoundEventArgs e);
+    public event SolutionFoundEventHandler OnSolutionFound;
+
+    public void TrySolveAsync(Rubik rubik)
+    {
+      Thread t = new Thread(() => SolveAsync(rubik));
+      t.Start();
+    }
+
+    private void SolveAsync(Rubik rubik)
+    {
+      Stopwatch sw = new Stopwatch();
+      sw.Start();
+      bool solvable = Solvability.FullTest(rubik);
+      Solution solution = null;
+      if (solvable)
+        solution = Solve(rubik);
+      sw.Stop();
+      OnSolutionFound(this, new SolutionFoundEventArgs(solvable, solution, (int)sw.ElapsedMilliseconds));
+    }
+
 
     /// <summary>
     /// Removes all unnecessary moves from the solution algorithm
