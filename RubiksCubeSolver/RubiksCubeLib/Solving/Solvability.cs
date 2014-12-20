@@ -92,7 +92,7 @@ namespace RubiksCubeLib.Solver
         Face face = c.Faces.First(f => f.Color == rubik.TopColor || f.Color == rubik.BottomColor);
         if (!FacePosition.YPos.HasFlag(face.Position))
         {
-          if (FacePosition.XPos.HasFlag(face.Position) ^ !((c.Position.HasFlag(CubeFlag.BottomLayer) ^ (c.Position.HasFlag(CubeFlag.FrontSlice) ^ c.Position.HasFlag(CubeFlag.RightSlice)))))
+          if (FacePosition.XPos.HasFlag(face.Position) ^ !(c.Position.HasFlag(CubeFlag.BottomLayer) ^ (c.Position.HasFlag(CubeFlag.FrontSlice) ^ c.Position.HasFlag(CubeFlag.RightSlice))))
           {
             orientation = Orientation.CounterClockwise;
           }

@@ -41,6 +41,8 @@
       this.loadToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
       this.solveToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
       this.cubeModel = new RubiksCubeLib.CubeModel.CubeModel();
+      this.saveToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+      this.openToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
       this.statusStripSelection.SuspendLayout();
       this.menuStrip1.SuspendLayout();
       this.SuspendLayout();
@@ -77,7 +79,9 @@
             this.scrambleToolStripMenuItem,
             this.solveToolStripMenuItem1,
             this.resetToolStripMenuItem,
-            this.cornerTestToolStripMenuItem});
+            this.cornerTestToolStripMenuItem,
+            this.saveToolStripMenuItem,
+            this.openToolStripMenuItem});
       this.rubikToolStripMenuItem.Name = "rubikToolStripMenuItem";
       this.rubikToolStripMenuItem.Size = new System.Drawing.Size(49, 20);
       this.rubikToolStripMenuItem.Text = "Rubik";
@@ -85,28 +89,28 @@
       // scrambleToolStripMenuItem
       // 
       this.scrambleToolStripMenuItem.Name = "scrambleToolStripMenuItem";
-      this.scrambleToolStripMenuItem.Size = new System.Drawing.Size(129, 22);
+      this.scrambleToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
       this.scrambleToolStripMenuItem.Text = "Scramble";
       this.scrambleToolStripMenuItem.Click += new System.EventHandler(this.scrambleToolStripMenuItem_Click);
       // 
       // solveToolStripMenuItem1
       // 
       this.solveToolStripMenuItem1.Name = "solveToolStripMenuItem1";
-      this.solveToolStripMenuItem1.Size = new System.Drawing.Size(129, 22);
+      this.solveToolStripMenuItem1.Size = new System.Drawing.Size(152, 22);
       this.solveToolStripMenuItem1.Text = "Solve";
       this.solveToolStripMenuItem1.Click += new System.EventHandler(this.solveToolStripMenuItem1_Click);
       // 
       // resetToolStripMenuItem
       // 
       this.resetToolStripMenuItem.Name = "resetToolStripMenuItem";
-      this.resetToolStripMenuItem.Size = new System.Drawing.Size(129, 22);
+      this.resetToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
       this.resetToolStripMenuItem.Text = "Reset";
       this.resetToolStripMenuItem.Click += new System.EventHandler(this.resetToolStripMenuItem_Click);
       // 
       // cornerTestToolStripMenuItem
       // 
       this.cornerTestToolStripMenuItem.Name = "cornerTestToolStripMenuItem";
-      this.cornerTestToolStripMenuItem.Size = new System.Drawing.Size(129, 22);
+      this.cornerTestToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
       this.cornerTestToolStripMenuItem.Text = "Parity Test";
       this.cornerTestToolStripMenuItem.Click += new System.EventHandler(this.cornerTestToolStripMenuItem_Click);
       // 
@@ -143,6 +147,20 @@
       this.cubeModel.TabIndex = 3;
       this.cubeModel.OnSelectionChanged += new RubiksCubeLib.CubeModel.CubeModel.SelectionChangedHandler(this.cubeModel_OnSelectionChanged);
       // 
+      // saveToolStripMenuItem
+      // 
+      this.saveToolStripMenuItem.Name = "saveToolStripMenuItem";
+      this.saveToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+      this.saveToolStripMenuItem.Text = "Save...";
+      this.saveToolStripMenuItem.Click += new System.EventHandler(this.saveToolStripMenuItem_Click);
+      // 
+      // openToolStripMenuItem
+      // 
+      this.openToolStripMenuItem.Name = "openToolStripMenuItem";
+      this.openToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+      this.openToolStripMenuItem.Text = "Open...";
+      this.openToolStripMenuItem.Click += new System.EventHandler(this.openToolStripMenuItem_Click);
+      // 
       // Form1
       // 
       this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -177,6 +195,8 @@
     private System.Windows.Forms.ToolStripMenuItem resetToolStripMenuItem;
     private RubiksCubeLib.CubeModel.CubeModel cubeModel;
     private System.Windows.Forms.ToolStripMenuItem cornerTestToolStripMenuItem;
+    private System.Windows.Forms.ToolStripMenuItem saveToolStripMenuItem;
+    private System.Windows.Forms.ToolStripMenuItem openToolStripMenuItem;
 
 
   }

@@ -45,6 +45,11 @@ namespace RubiksCubeLib.Solver
     }
 
     /// <summary>
+    /// Initializes a new instance of the PatternItem class
+    /// </summary>
+    public PatternItem() { }
+
+    /// <summary>
     /// Parses a string to a pattern item
     /// </summary>
     /// <param name="s">The string to be parsed

@@ -20,7 +20,7 @@ namespace TestApplication
     public Form1()
     {
       InitializeComponent();
-      solverPlugins.AddFolder(@"Path");
+      solverPlugins.AddFolder(@"C:\Users\Anwender\Desktop\RubiksCubeSolver\trunk\RubiksCubeSolver\FridrichSolver\bin\Debug");
     }
 
     private void cubeModel_OnSelectionChanged(object sender, RubiksCubeLib.CubeModel.SelectionChangedEventArgs e)
@@ -81,6 +81,30 @@ namespace TestApplication
     private void cornerTestToolStripMenuItem_Click(object sender, EventArgs e)
     {
       MessageBox.Show(Solvability.FullTest(cubeModel.Rubik) ? "Solvable" : "Unsolvable");
+    }
+
+    private void saveToolStripMenuItem_Click(object sender, EventArgs e)
+    {
+      using (SaveFileDialog sfd = new SaveFileDialog())
+      {
+        sfd.Filter = "XML-Files|*.xml";
+        if (sfd.ShowDialog() == System.Windows.Forms.DialogResult.OK)
+        {
+          cubeModel.SavePattern(sfd.FileName);
+        }
+      }
+    }
+
+    private void openToolStripMenuItem_Click(object sender, EventArgs e)
+    {
+      using (OpenFileDialog ofd = new OpenFileDialog())
+      {
+        ofd.Filter = "XML-Files|*.xml";
+        if (ofd.ShowDialog() == System.Windows.Forms.DialogResult.OK)
+        {
+          cubeModel.LoadPattern(ofd.FileName);
+        }
+      }
     }
   }
 }

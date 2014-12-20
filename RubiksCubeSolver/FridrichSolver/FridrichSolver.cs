@@ -12,8 +12,8 @@ namespace FridrichSolver
 {
   public class FridrichSolver : CubeSolver
   {
-    public override string Name { get { return "Beginner with full OLL and PLL"; } }
-    public override string Description { get { return "First two layers are solved with beginner method. Last layer with oll and pll of Fridrich."; } }
+    public override string Name { get { return "Fridrich"; } }
+    public override string Description { get { return "Full Fridrich method without ELL and COLL"; } }
 
     public FridrichSolver() { }
 
@@ -152,11 +152,17 @@ namespace FridrichSolver
 
         while (!corner.Position.HasFlag(target.Flags & ~CubeFlag.BottomLayer)) SolverMove(CubeFlag.TopLayer, true);
 
+        PatternFilter filter = new PatternFilter(new Func<Pattern, Pattern, bool>(delegate(Pattern p1, Pattern p2)
+        {
+          PatternItem item = new PatternItem(corner.Position, Solvability.GetOrientation(this.Rubik, corner),target.Flags);
+          return p2.Items.Any(i => i.Equals(item));
+        }), true);
+
         Algorithm algo = null;
         for (int i = 0; i < 4; i++)
         {
           F2LPattern pattern = new F2LPattern(Rubik.GetTargetFlags(edge), Rubik.GetTargetFlags(corner), rightSlice, frontSlice);
-          algo = pattern.FindBestMatch(Pattern.FromRubik(Rubik), CubeFlag.None, PatternFilter.None);
+          algo = pattern.FindBestMatch(Pattern.FromRubik(Rubik), CubeFlag.None, filter);
           if (algo != null) { SolverAlgorithm(algo); break; }
           SolverMove(CubeFlag.TopLayer, true);
         }

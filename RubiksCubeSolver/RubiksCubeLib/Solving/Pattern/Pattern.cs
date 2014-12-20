@@ -5,6 +5,7 @@ using System.IO;
 using System.Linq;
 using System.Runtime.Serialization.Formatters.Binary;
 using System.Text;
+using System.Xml.Serialization;
 
 namespace RubiksCubeLib.Solver
 {
@@ -74,7 +75,7 @@ namespace RubiksCubeLib.Solver
     /// <summary>
     /// Gets or sets the specific pattern elements
     /// </summary>
-    public IEnumerable<PatternItem> Items { get; set; }
+    public List<PatternItem> Items { get; set; }
 
     /// <summary>
     /// Gets the number of required inversions
@@ -159,7 +160,7 @@ namespace RubiksCubeLib.Solver
       {
         newItems.Add(PatternItem.Parse(item));
       }
-      Items = Order(Positions, newItems);
+      Items = Order(Positions, newItems).ToList();
     }
 
     /// <summary>
@@ -170,7 +171,7 @@ namespace RubiksCubeLib.Solver
     public Pattern(IEnumerable<PatternItem> items, double probability = 0)
     {
       this.Probability = probability;
-      Items = Order(Positions, items);
+      Items = Order(Positions, items).ToList();
     }
 
     /// <summary>
@@ -283,6 +284,33 @@ namespace RubiksCubeLib.Solver
         item.Transform(rotationLayer);
       }
       return newPattern;
+    }
+
+    public void SaveXML(string path)
+    {
+      XmlSerializer serializer = new XmlSerializer(typeof(Pattern));
+      using (StreamWriter sw = new StreamWriter(path))
+      {
+        serializer.Serialize(sw, this);
+      }
+    }
+
+    public static Pattern FromXml(string path)
+    {
+      Pattern pattern = null;
+      try
+      {
+        XmlSerializer deserializer = new XmlSerializer(typeof(Pattern));
+        using (StreamReader sr = new StreamReader(path))
+        {
+          pattern = (Pattern)deserializer.Deserialize(sr);
+        }
+      }
+      catch
+      {
+        System.Windows.Forms.MessageBox.Show("Xml input error");
+      }
+      return pattern;
     }
   }
 }

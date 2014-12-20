@@ -9,6 +9,7 @@ using System.Windows.Forms;
 using RubiksCubeLib.RubiksCube;
 using System.Drawing.Drawing2D;
 using System.Diagnostics;
+using RubiksCubeLib.Solver;
 
 namespace RubiksCubeLib.CubeModel
 {
@@ -139,6 +140,16 @@ namespace RubiksCubeLib.CubeModel
       _renderer.SetDrawingArea(ClientRectangle);
       this.Invalidate();
       base.OnSizeChanged(e);
+    }
+
+    public void LoadPattern(string path)
+    {
+      this.Rubik = Rubik.FromPattern(Pattern.FromXml(path));
+    }
+
+    public void SavePattern(string path)
+    {
+      Pattern.FromRubik(this.Rubik).SaveXML(path);
     }
 
     /// <summary>
@@ -431,11 +442,6 @@ namespace RubiksCubeLib.CubeModel
       facesProjected = facesProjected.OrderBy(f => f.Vertices.ElementAt(0).Z).Reverse();
       return facesProjected;
     }
-
-
-
-
-
 
 
     // ** ENLARGE RENDER QUEUE **
