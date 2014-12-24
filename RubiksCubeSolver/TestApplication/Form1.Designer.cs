@@ -141,7 +141,6 @@
       // 
       this.cubeModel.Dock = System.Windows.Forms.DockStyle.Fill;
       this.cubeModel.Location = new System.Drawing.Point(0, 24);
-      this.cubeModel.MouseHandling = true;
       this.cubeModel.Name = "cubeModel";
       this.cubeModel.Size = new System.Drawing.Size(380, 287);
       this.cubeModel.TabIndex = 3;
