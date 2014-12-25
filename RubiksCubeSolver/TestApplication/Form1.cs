@@ -20,7 +20,6 @@ namespace TestApplication
     public Form1()
     {
       InitializeComponent();
-      solverPlugins.AddFolder(@"C:\Users\Anwender\Desktop\RubiksCubeSolver\trunk\RubiksCubeSolver\FridrichSolver\bin\Debug");
       foreach (CubeSolver solver in solverPlugins.GetAll())
       {
         solver.OnSolutionFound += ExecuteSolution;

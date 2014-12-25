@@ -41,14 +41,9 @@ namespace RubiksCubeLib.CubeModel
       InitColorPicker();
       ResetLayerRotation();
       InitSelection();
+      InitRenderer();
 
-      _renderer = new CubeModelRenderer(this, this.ClientRectangle);
-      _renderer.OnRender += OnRender;
-      _renderer.OnRotatingFinished += OnRotatingFinished;
-
-      int min = Math.Min(ClientRectangle.Height, ClientRectangle.Width);
-      _currentFrame = GenFacesProjected(this.ClientRectangle, 3 * ((double)min / (double)400));
-      _renderer.StartRender();
+      this.StartRender();
 
       InitializeComponent();
       SetStyle(ControlStyles.AllPaintingInWmPaint, true);
@@ -61,8 +56,8 @@ namespace RubiksCubeLib.CubeModel
 
     // *** PRIVATE FIELDS ***
 
-    private CubeModelRenderer _renderer;
-    private IEnumerable<Face3D> _currentFrame;
+    //private CubeModelRenderer _renderer;
+    //private IEnumerable<Face3D> _currentFrame;
 
     private SelectionCollection _selections;
 
@@ -137,7 +132,7 @@ namespace RubiksCubeLib.CubeModel
 
     protected override void OnSizeChanged(EventArgs e)
     {
-      _renderer.SetDrawingArea(ClientRectangle);
+      this.SetDrawingArea(this.ClientRectangle);
       this.Invalidate();
       base.OnSizeChanged(e);
     }
@@ -293,41 +288,14 @@ namespace RubiksCubeLib.CubeModel
     // ** RENDERING **
 
     /// <summary>
-    /// Start render cycle
-    /// </summary>
-    public void StartRender()
-    {
-      _renderer.StartRender();
-    }
-
-    /// <summary>
-    /// Stop render cycle
-    /// </summary>
-    public void StopRender()
-    {
-      _renderer.StopRender();
-    }
-
-    /// <summary>
-    /// Gets handled when the render loop executes
-    /// </summary>
-    /// <param name="sender"></param>
-    /// <param name="e"></param>
-    private void OnRender(object sender, IEnumerable<Face3D> e)
-    {
-      _currentFrame = e;
-      this.Invalidate();
-    }
-
-    /// <summary>
     /// Updates the cubeModel (including the selection)
     /// </summary>
     /// <param name="e"></param>
     protected override void OnPaint(PaintEventArgs e)
     {
-      if (_currentFrame != null)
+      if (_buffer[_currentBufferIndex] != null)
       {
-        PositionSpec selectedPos = Render(e.Graphics, _currentFrame, PointToClient(Cursor.Position));
+        PositionSpec selectedPos = Render(e.Graphics, _buffer[_currentBufferIndex], PointToClient(Cursor.Position));
 
         // disallow changes of current selection while color picker is visible
         if (!this.ContextMenuStrip.Visible)
@@ -473,6 +441,7 @@ namespace RubiksCubeLib.CubeModel
     /// <param name="milliseconds">Duration of animated rotation</param>
     public void RotateLayerAnimated(IMove moves, int milliseconds)
     {
+      this.MouseHandling = false;
       this.Moves.Enqueue(new RotationInfo(moves, milliseconds));
     }
 
