@@ -27,6 +27,8 @@ namespace RubiksCubeLib.CubeModel
 		{
 			this.Faces = UniCube.GenFaces3D(position);
 			this.Position = position;
+      this.Location = location;
+      this.Scale = scale;
 			this.Faces.ToList().ForEach(f =>
 			{
 				f.Color = faces.First(face => face.Position == f.Position).Color;
@@ -47,10 +49,12 @@ namespace RubiksCubeLib.CubeModel
 		/// </summary>
 		/// <param name="faces">Faces</param>
 		/// <param name="position">Position</param>
-		public Cube3D(IEnumerable<Face3D> faces, CubeFlag position)
+		public Cube3D(IEnumerable<Face3D> faces, CubeFlag position, Point3D location, double scale)
 		{
 			this.Faces = faces;
 			this.Position = position;
+      this.Location = location;
+      this.Scale = scale;
 		}
 
 
@@ -61,12 +65,14 @@ namespace RubiksCubeLib.CubeModel
 		/// <summary>
 		/// Gets the faces of the 3D cube
 		/// </summary>
-		public IEnumerable<Face3D> Faces { get; private set; }
+		public IEnumerable<Face3D> Faces { get; set; }
 
 		/// <summary>
 		/// Gets the position of the 3D cube
 		/// </summary>
 		public CubeFlag Position { get; set; }
+    public Point3D Location { get; private set; }
+    public double Scale { get; private set; }
 
 
 
@@ -79,22 +85,22 @@ namespace RubiksCubeLib.CubeModel
 		/// <param name="type">Rotation axis</param>
 		/// <param name="angle">Angle to be rotated</param>
 		/// <param name="center">Center point of rotation</param>
-		public Cube3D Rotate(RotationType type, double angle, Point3D center)
-		{
-			//Deep Clone
-			List<Face3D> faces = new List<Face3D>();
-			foreach (Face3D f in Faces)
-			{
-				List<Point3D> edges = new List<Point3D>();
-				foreach (Point3D p in f.Vertices) { edges.Add(new Point3D(p.X, p.Y, p.Z)); }
-				Face3D f2 = new Face3D(edges, f.Color, f.Position, f.MasterPosition);
-				f2.Vertices.ToList().ForEach(e => { e.X -= center.X; e.Y -= center.Y; e.Z -= center.Z; });
-				f2.Rotate(type, angle);
-				f2.Vertices.ToList().ForEach(e => { e.X += center.X; e.Y += center.Y; e.Z += center.Z; });
-				faces.Add(f2);
-			}
-			return new Cube3D(faces, this.Position);
-		}
+    public Cube3D Rotate(RotationType type, double angle, Point3D center)
+    {
+      //Deep Clone
+      List<Face3D> faces = new List<Face3D>();
+      foreach (Face3D f in Faces)
+      {
+        List<Point3D> edges = new List<Point3D>();
+        foreach (Point3D p in f.Vertices) { edges.Add(new Point3D(p.X, p.Y, p.Z)); }
+        Face3D f2 = new Face3D(edges, f.Color, f.Position, f.MasterPosition);
+        f2.Vertices.ToList().ForEach(e => { e.X -= center.X; e.Y -= center.Y; e.Z -= center.Z; });
+        f2.Rotate(type, angle);
+        f2.Vertices.ToList().ForEach(e => { e.X += center.X; e.Y += center.Y; e.Z += center.Z; });
+        faces.Add(f2);
+      }
+      return new Cube3D(faces, this.Position, this.Location,this.Scale);
+    }
 
 		/// <summary>
 		/// Projects the 3D cube to 2D view
@@ -107,7 +113,7 @@ namespace RubiksCubeLib.CubeModel
 		/// <returns>Projected cube</returns>
 		public Cube3D Project(int viewWidth, int viewHeight, int fov, int viewDistance, double scale)
 		{
-			return new Cube3D(this.Faces.Select(f => f.Project(viewWidth, viewHeight, fov, viewDistance, scale)), this.Position);
+			return new Cube3D(this.Faces.Select(f => f.Project(viewWidth, viewHeight, fov, viewDistance, scale)), this.Position, this.Location,this.Scale);
 		}
 
 	}

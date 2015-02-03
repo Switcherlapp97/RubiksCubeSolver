@@ -1,4 +1,5 @@
 ﻿using RubiksCubeLib;
+using RubiksCubeLib.CubeModel;
 using RubiksCubeLib.RubiksCube;
 using RubiksCubeLib.Solver;
 using System;
@@ -20,15 +21,17 @@ namespace TestApplication
     public Form1()
     {
       InitializeComponent();
-      foreach (CubeSolver solver in solverPlugins.GetAll())
-      {
-        solver.OnSolutionFound += ExecuteSolution;
-      }
+      solverPlugins.AddFolder(@"C:\Users\Anwender\Desktop\RubiksCubeSolver\trunk\RubiksCubeSolver\FridrichSolver\bin\Debug");
+      AddSolvingHandlers();
     }
 
-    private void cubeModel_OnSelectionChanged(object sender, RubiksCubeLib.CubeModel.SelectionChangedEventArgs e)
+    private void AddSolvingHandlers()
     {
-      statusLblSelection.Text = string.Format("[{0}] | {1}", e.Position.CubePosition, e.Position.FacePosition);
+      foreach (CubeSolver solver in solverPlugins.GetAll())
+      {
+        solver.OnSolutionFound -= ExecuteSolution;
+        solver.OnSolutionFound += ExecuteSolution;
+      }
     }
 
     private void loadToolStripMenuItem_Click(object sender, EventArgs e)
@@ -37,6 +40,7 @@ namespace TestApplication
       if (fbd.ShowDialog() == System.Windows.Forms.DialogResult.OK)
       {
         solverPlugins.AddFolder(fbd.SelectedPath);
+        AddSolvingHandlers();
       }
     }
 
@@ -45,6 +49,7 @@ namespace TestApplication
       PluginSelectorDialog<CubeSolver> dlg = new PluginSelectorDialog<CubeSolver>(solverPlugins);
       if (dlg.ShowDialog() == System.Windows.Forms.DialogResult.OK)
       {
+        cubeModel.MouseHandling = false;
         solverPlugins.StandardPlugin.TrySolveAsync(cubeModel.Rubik);
       }
     }
@@ -102,5 +107,6 @@ namespace TestApplication
         }
       }
     }
+
   }
 }

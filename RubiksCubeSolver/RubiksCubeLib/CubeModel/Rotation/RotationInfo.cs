@@ -19,6 +19,8 @@ namespace RubiksCubeLib.CubeModel
     /// </summary>
     public List<AnimatedLayerMove> Moves { get; set; }
 
+    public string Name { get; private set; }
+
     /// <summary>
     /// Initializes a new instance of the RotationInfo class
     /// </summary>
@@ -27,6 +29,7 @@ namespace RubiksCubeLib.CubeModel
     public RotationInfo(IMove move, int milliseconds)
     {
       Milliseconds = milliseconds;
+      this.Name = move.Name;
       Moves = new List<AnimatedLayerMove>();
       if (move.MultipleLayers)
       {
@@ -51,6 +54,7 @@ namespace RubiksCubeLib.CubeModel
     /// Gets the target angle of rotation in degrees
     /// </summary>
     public int Target { get; set; }
+
     /// <summary>
     /// Gets the layer move of the animated rotation
     /// </summary>

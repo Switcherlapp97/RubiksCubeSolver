@@ -54,6 +54,7 @@
     <Compile Include="CubeModel\CubeModelControl\CubeModel.Rendering.cs">
       <SubType>UserControl</SubType>
     </Compile>
+    <Compile Include="CubeModel\CubeModelControl\StateChangedEventArgs.cs" />
     <Compile Include="General\CollectionMethods.cs" />
     <Compile Include="General\Moves\IMove.cs" />
     <Compile Include="General\Moves\LayerMoveCollection.cs" />

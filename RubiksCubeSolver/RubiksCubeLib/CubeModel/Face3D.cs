@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Drawing;
+using RubiksCubeLib.RubiksCube;
 
 namespace RubiksCubeLib.CubeModel
 {
@@ -65,10 +66,11 @@ namespace RubiksCubeLib.CubeModel
 		/// </summary>
 		/// <param name="type">Rotation axis</param>
 		/// <param name="angleInDeg">Angle to be rotated</param>
-		public void Rotate(RotationType type, double angleInDeg)
-		{
-			this.Vertices.ToList().ForEach(v => v.Rotate(type, angleInDeg));
-		}
+    public void Rotate(RotationType type, double angleInDeg)
+    {
+      this.Vertices.ToList().ForEach(v => v.Rotate(type, angleInDeg));
+    }
+
 
 		/// <summary>
 		/// Projects the 3D face to 2D view
@@ -86,6 +88,11 @@ namespace RubiksCubeLib.CubeModel
 			parr = parr.Select(p => new Point3D(p.X, p.Y, mid));
 			return new Face3D(parr, this.Color, this.Position, this.MasterPosition);
 		}
+
+    public Point3D GetCenter()
+    {
+      return new Point3D(this.Vertices.Average(v => v.X), this.Vertices.Average(v => v.Y), this.Vertices.Average(v => v.Z));
+    }
 
 	}
 }

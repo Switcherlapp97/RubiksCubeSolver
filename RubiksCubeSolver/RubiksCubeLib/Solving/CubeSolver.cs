@@ -98,9 +98,8 @@ namespace RubiksCubeLib.Solver
       if (solvable)
         solution = Solve(rubik);
       sw.Stop();
-      OnSolutionFound(this, new SolutionFoundEventArgs(solvable, solution, (int)sw.ElapsedMilliseconds));
+      if (OnSolutionFound != null) OnSolutionFound(this, new SolutionFoundEventArgs(solvable, solution, (int)sw.ElapsedMilliseconds));
     }
-
 
     /// <summary>
     /// Removes all unnecessary moves from the solution algorithm

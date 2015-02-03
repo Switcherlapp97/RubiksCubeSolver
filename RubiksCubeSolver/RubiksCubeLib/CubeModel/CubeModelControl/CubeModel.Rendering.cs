@@ -25,7 +25,7 @@ namespace RubiksCubeLib.CubeModel
     /// <summary>
     /// Gets or sets the screen the renderer projects on
     /// </summary>
-    public Rectangle Screen { get; set; }
+    public Rectangle Screen { get; private set; }
 
     /// <summary>
     /// Gets or sets the FPS limit
@@ -51,7 +51,8 @@ namespace RubiksCubeLib.CubeModel
 
       _frameTimes = new List<double>();
       this.IsRunning = false;
-      this.MaxFps = 10000;
+
+       this.MaxFps = 50;
 
       _updateHandle = new AutoResetEvent[2];
       for (int i = 0; i < _updateHandle.Length; i++)
@@ -72,7 +73,7 @@ namespace RubiksCubeLib.CubeModel
     /// <param name="screen">Screen measures</param>
     public void SetDrawingArea(Rectangle screen)
     {
-      this.Screen = screen;
+      this.Screen = new Rectangle(screen.X, screen.Y, screen.Width, screen.Height - 50);
       int min = Math.Min(screen.Height, screen.Width);
       this.Zoom = 3 * ((double)min / (double)400);
       if (screen.Width > screen.Height)
@@ -135,12 +136,12 @@ namespace RubiksCubeLib.CubeModel
         _sw.Restart();
         Render(bufferIndex);
         bufferIndex ^= 0x1;
-
-        double minTime = 1000.0 / this.MaxFps;
+        
         double start = _sw.Elapsed.TotalMilliseconds;
         while (_sw.Elapsed.TotalMilliseconds < start + 20) { } // 20 ms timeout for rendering other UI controls
 
-        while (_sw.Elapsed.TotalMilliseconds < minTime) { }
+        double minTime = 1000.0 / this.MaxFps;
+        while (_sw.Elapsed.TotalMilliseconds < minTime) { } // keep max fps
 
         _sw.Stop();
 
@@ -157,7 +158,6 @@ namespace RubiksCubeLib.CubeModel
         if (index > 0)
           _frameTimes.RemoveRange(0, index);
         this.Fps = counter + ((1000 - ms) / _frameTimes[0]);
-        Console.WriteLine(this.Fps);
       }
     }
 
@@ -208,7 +208,7 @@ namespace RubiksCubeLib.CubeModel
     {
       foreach (AnimatedLayerMove m in moves)
       {
-        if (!(m.Target > 0 && this.LayerRotation[m.Move.Layer] >= m.Target) && !(m.Target < 0 && this.LayerRotation[m.Move.Layer] <= m.Target))
+        if (!(m.Target > 0 && this.LayerRotation[m.Move.Layer] >= m.Target) && !(m.Target < 0 && LayerRotation[m.Move.Layer] <= m.Target))
           return false;
       }
       return true;
@@ -222,6 +222,8 @@ namespace RubiksCubeLib.CubeModel
         this.Rubik.RotateLayer(new LayerMove(m.Move.Layer, m.Move.Direction, m.Move.Twice));
       }
       _selections.Reset();
+
+      this.State = Moves.Count > 0 ? string.Format("Rotating {0}", Moves.Peek().Name) : "Ready";
       if (Moves.Count < 1) this.MouseHandling = true;
     }
   }
