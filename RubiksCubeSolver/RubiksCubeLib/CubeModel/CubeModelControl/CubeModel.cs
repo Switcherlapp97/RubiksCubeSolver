@@ -37,7 +37,9 @@ namespace RubiksCubeLib.CubeModel
       this.Rotation = new double[] { 0, 0, 0 };
       this.Moves = new Queue<RotationInfo>();
       this.MouseHandling = true;
+      this.DrawingMode = RubiksCubeLib.CubeModel.DrawingMode.ThreeDimensional;
       this.State = "Ready";
+      this.RotationSpeed = 250;
 
       InitColorPicker();
       ResetLayerRotation();
@@ -52,7 +54,6 @@ namespace RubiksCubeLib.CubeModel
       SetStyle(ControlStyles.SupportsTransparentBackColor, true);
       SetStyle(ControlStyles.UserPaint, true);
     }
-
 
 
     // *** PRIVATE FIELDS ***
@@ -82,13 +83,28 @@ namespace RubiksCubeLib.CubeModel
     [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
     public Queue<RotationInfo> Moves { get; private set; }
 
+    public List<RotationInfo> MovesList { get { return Moves.ToList(); } }
+
     /// <summary>
     /// Gets the information about the drawn Rubik's Cube
     /// </summary>
     [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
     public Rubik Rubik { get; private set; }
 
+    /// <summary>
+    /// Gets the current state of the rubik
+    /// </summary>
     public string State { get; private set; }
+
+    /// <summary>
+    /// Gets or sets the drawing mode of the rubik
+    /// </summary>
+    public DrawingMode DrawingMode { get; set; }
+
+    /// <summary>
+    /// Gets or sets how fast the layer rotations will be performed
+    /// </summary>
+    public int RotationSpeed { get; set; }
 
     // *** METHODS ***
 
@@ -112,6 +128,8 @@ namespace RubiksCubeLib.CubeModel
       this.Invalidate();
       base.OnSizeChanged(e);
     }
+
+    
 
     public void LoadPattern(string path)
     {
@@ -271,7 +289,9 @@ namespace RubiksCubeLib.CubeModel
     {
       if (_buffer[_currentBufferIndex] != null)
       {
-        PositionSpec selectedPos = Render(e.Graphics, _buffer[_currentBufferIndex], PointToClient(Cursor.Position));
+        bool threeD = this.DrawingMode == RubiksCubeLib.CubeModel.DrawingMode.ThreeDimensional;
+        PositionSpec selectedPos = threeD ? Render(e.Graphics,_buffer[_currentBufferIndex], PointToClient(Cursor.Position)) 
+          : Render2D(e.Graphics, _buffer[_currentBufferIndex], PointToClient(Cursor.Position));
 
         // disallow changes of current selection while color picker is visible
         if (!this.ContextMenuStrip.Visible && this.MouseHandling)
@@ -330,16 +350,136 @@ namespace RubiksCubeLib.CubeModel
           pos = facePos;
       }
 
-      g.FillRectangle(Brushes.White, 0, this.Height - 25, this.Width, 25);
-      g.DrawLine(Pens.Black, 0, this.Height - 25, this.Width, this.Height - 25);
+      g.DrawRectangle(Pens.Black, 0, this.Height - 25, this.Width - 1, 24);
+      //g.DrawLine(Pens.Black, 0, this.Height - 25, this.Width, this.Height - 25);
       g.DrawString(string.Format("[{0}] | {1}", _currentSelection.CubePosition, _currentSelection.FacePosition), this.Font, Brushes.Black, 5, this.Height - 20);
 
-      g.FillRectangle(Brushes.White, 0, this.Height - 50, this.Width, 25);
-      g.DrawLine(Pens.Black, 0, this.Height - 50, this.Width, this.Height - 50);
+      g.DrawRectangle(Pens.Black, 0, this.Height - 50, this.Width - 1, 25);
       g.DrawString(this.State, this.Font, Brushes.Black, 5, this.Height - 45);
 
-      //g.DrawString(string.Format("FPS: {0:f0}", this.Fps), this.Font, Brushes.Black, 5, 5);
-      //g.DrawString(string.Format("X: {0:f1} | Y: {1:f1} | Z: {2:f1}", this.Rotation[0], this.Rotation[1], this.Rotation[2]), this.Font, Brushes.Black, 5, 5);
+      g.DrawRectangle(Pens.Black, 0, 0, this.Width - 1, this.Height - 50);
+     
+      return pos;
+    }
+
+    public PositionSpec Render2D(Graphics g, IEnumerable<Face3D> frame, Point mousePos)
+    {
+      g.SmoothingMode = SmoothingMode.AntiAlias;
+      PositionSpec pos = PositionSpec.Default;
+
+      int square = 0, borderX = 5, borderY = 5;
+      if (((double)(this.Screen.Width - 10) / (double)(this.Screen.Height - 10)) > (4.0 / 3.0))
+      {
+        square = (int)(this.Screen.Height / 9.0);
+        borderX = (this.Screen.Width - 12 * square) / 2;
+      }
+      else
+      {
+        square = (int)(this.Screen.Width / 12.0);
+        borderY = (this.Screen.Height - 9 * square) / 2;
+      }
+
+      List<Face3D> faces = new List<Face3D>();
+      foreach (Cube c in this.Rubik.Cubes)
+        faces.AddRange(c.Faces.Where(f => c.Position.Flags.HasFlag(CubeFlagService.FromFacePosition(f.Position))).Select(f => new Face3D(null, f.Color, f.Position, c.Position.Flags)));
+      frame = faces;
+
+      foreach (Face3D face in frame)
+      {
+        #region CalculatePoints
+
+        int x = 0, y = 0;
+        int xOffs = borderX, yOffs = borderY;
+
+        if (face.Position.HasFlag(FacePosition.Front))
+        {
+          xOffs += 3 * square; yOffs += 3 * square;
+          CubePosition cubePos = new CubePosition(face.MasterPosition);
+          x = xOffs + (CubeFlagService.ToInt(cubePos.X) + 1) * square;
+          y = yOffs + (CubeFlagService.ToInt(cubePos.Y) * (-1) + 1) * square;
+        }
+
+        if (face.Position.HasFlag(FacePosition.Top))
+        {
+          xOffs += 3 * square;
+          CubePosition cubePos = new CubePosition(face.MasterPosition);
+          x = xOffs + (CubeFlagService.ToInt(cubePos.X) + 1) * square;
+          y = yOffs + (CubeFlagService.ToInt(cubePos.Z) + 1) * square;
+        }
+
+        if (face.Position.HasFlag(FacePosition.Bottom))
+        {
+          xOffs += 3 * square; yOffs += 6 * square;
+          CubePosition cubePos = new CubePosition(face.MasterPosition);
+          x = xOffs + (CubeFlagService.ToInt(cubePos.X) + 1) * square;
+          y = yOffs + (CubeFlagService.ToInt(cubePos.Z) * (-1) + 1) * square;
+        }
+
+        if (face.Position.HasFlag(FacePosition.Left))
+        {
+          yOffs += 3 * square;
+          CubePosition cubePos = new CubePosition(face.MasterPosition);
+          x = xOffs + (CubeFlagService.ToInt(cubePos.Z) + 1) * square;
+          y = yOffs + (CubeFlagService.ToInt(cubePos.Y) * (-1) + 1) * square;
+        }
+
+        if (face.Position.HasFlag(FacePosition.Right))
+        {
+          xOffs += 6 * square; yOffs += 3 * square;
+          CubePosition cubePos = new CubePosition(face.MasterPosition);
+          x = xOffs + (CubeFlagService.ToInt(cubePos.Z) * (-1) + 1) * square;
+          y = yOffs + (CubeFlagService.ToInt(cubePos.Y) * (-1) + 1) * square;
+        }
+
+        if (face.Position.HasFlag(FacePosition.Back))
+        {
+          xOffs += 9 * square; yOffs += 3 * square;
+          CubePosition cubePos = new CubePosition(face.MasterPosition);
+          x = xOffs + (CubeFlagService.ToInt(cubePos.X) * (-1) + 1) * square;
+          y = yOffs + (CubeFlagService.ToInt(cubePos.Y) * (-1) + 1) * square;
+        }
+        #endregion
+
+        Point[] parr = new Point[] { new Point(x, y), new Point(x, y + square), new Point(x + square, y + square), new Point(x + square, y)  };
+
+        Brush b = new SolidBrush(face.Color);
+        double factor = ((Math.Sin((double)Environment.TickCount / (double)200) + 1) / 4) + 0.75;
+        PositionSpec facePos = new PositionSpec() { FacePosition = face.Position, CubePosition = face.MasterPosition };
+
+        if (this.MouseHandling)
+        {
+          if (_selections[facePos].HasFlag(Selection.Second))
+            b = new HatchBrush(HatchStyle.Percent75, Color.Black, face.Color);
+          else if (_selections[facePos].HasFlag(Selection.NotPossible))
+            b = new SolidBrush(Color.FromArgb(face.Color.A, (int)(face.Color.R * 0.3), (int)(face.Color.G * 0.3), (int)(face.Color.B * 0.3)));
+          else if (_selections[facePos].HasFlag(Selection.First))
+            b = new HatchBrush(HatchStyle.Percent30, Color.Black, face.Color);
+          else if (_selections[facePos].HasFlag(Selection.Possible))
+            b = new SolidBrush(Color.FromArgb(face.Color.A, (int)(Math.Min(face.Color.R * factor, 255)), (int)(Math.Min(face.Color.G * factor, 255)), (int)(Math.Min(face.Color.B * factor, 255))));
+          else b = new SolidBrush(face.Color);
+        }
+        else
+          b = new SolidBrush(face.Color);
+
+        g.FillPolygon(b, parr);
+        g.DrawPolygon(new Pen(Color.Black, 1), parr);
+
+
+        GraphicsPath gp = new GraphicsPath();
+        gp.AddPolygon(parr);
+        if (gp.IsVisible(mousePos))
+          pos = facePos;
+      }
+
+      g.DrawRectangle(Pens.Black, 0, this.Height - 25, this.Width - 1, 24);
+      //g.DrawLine(Pens.Black, 0, this.Height - 25, this.Width, this.Height - 25);
+      g.DrawString(string.Format("[{0}] | {1}", _currentSelection.CubePosition, _currentSelection.FacePosition), this.Font, Brushes.Black, 5, this.Height - 20);
+
+      g.DrawRectangle(Pens.Black, 0, this.Height - 50, this.Width - 1, 25);
+      g.DrawString(this.State, this.Font, Brushes.Black, 5, this.Height - 45);
+
+      g.DrawRectangle(Pens.Black, 0, 0, this.Width - 1, this.Height - 50);
+
       return pos;
     }
 
@@ -408,7 +548,7 @@ namespace RubiksCubeLib.CubeModel
     /// <param name="direction">Direction of rotation</param>
     public void RotateLayerAnimated(CubeFlag layer, bool direction)
     {
-      RotateLayerAnimated(new LayerMove(layer, direction), 2000);
+      RotateLayerAnimated(new LayerMove(layer, direction), this.RotationSpeed);
     }
 
 
@@ -418,7 +558,7 @@ namespace RubiksCubeLib.CubeModel
     /// <param name="move">Movement that will be performed</param>
     public void RotateLayerAnimated(IMove move)
     {
-      RotateLayerAnimated(move, 2000);
+      RotateLayerAnimated(move, this.RotationSpeed);
     }
 
     /// <summary>
@@ -429,6 +569,10 @@ namespace RubiksCubeLib.CubeModel
     public void RotateLayerAnimated(IMove moves, int milliseconds)
     {
       this.MouseHandling = false;
+
+      if (this.DrawingMode == RubiksCubeLib.CubeModel.DrawingMode.TwoDimensional)
+        milliseconds = 0;
+
       this.Moves.Enqueue(new RotationInfo(moves, milliseconds));
       this.State = string.Format("Rotating {0}", Moves.Peek().Name);
     }

@@ -1,4 +1,5 @@
-﻿using System;
+﻿using RubiksCubeLib.RubiksCube;
+using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Drawing;
@@ -51,7 +52,6 @@ namespace RubiksCubeLib.CubeModel
 
       _frameTimes = new List<double>();
       this.IsRunning = false;
-
        this.MaxFps = 50;
 
       _updateHandle = new AutoResetEvent[2];
@@ -66,6 +66,7 @@ namespace RubiksCubeLib.CubeModel
       for (int i = 0; i < _buffer.Length; i++)
         _buffer[i] = new List<Face3D>();
     }
+
 
     /// <summary>
     /// Reset the rendering screen
@@ -199,7 +200,20 @@ namespace RubiksCubeLib.CubeModel
         if (RotationIsFinished(currentRotation.Moves))
           this.RotationFinished(this.Moves.Dequeue());
       }
-      _buffer[bufferIndex] = this.GenFacesProjected(this.Screen, this.Zoom);
+
+      if (this.DrawingMode == RubiksCubeLib.CubeModel.DrawingMode.ThreeDimensional)
+      {
+        _buffer[bufferIndex] = this.GenFacesProjected(this.Screen, this.Zoom);
+      }
+      else
+      {
+        List<Face3D> faces = new List<Face3D>();
+        foreach (Cube c in this.Rubik.Cubes)
+        faces.AddRange(c.Faces.Where(f => c.Position.Flags.HasFlag(CubeFlagService.FromFacePosition(f.Position))).Select(f => new Face3D(null, f.Color, f.Position, c.Position.Flags)));
+        _buffer[bufferIndex] = faces;
+      }
+       
+        
       _updateHandle[bufferIndex].Set();
     }
 
