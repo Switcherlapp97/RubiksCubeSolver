@@ -46,8 +46,6 @@ namespace RubiksCubeLib.CubeModel
       InitSelection();
       InitRenderer();
 
-      this.StartRender();
-
       InitializeComponent();
       SetStyle(ControlStyles.AllPaintingInWmPaint, true);
       SetStyle(ControlStyles.DoubleBuffer, true);
@@ -59,9 +57,6 @@ namespace RubiksCubeLib.CubeModel
     // *** PRIVATE FIELDS ***
 
     private SelectionCollection _selections;
-
-
-
 
 
     // *** PROPERTIES ***
@@ -83,7 +78,16 @@ namespace RubiksCubeLib.CubeModel
     [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
     public Queue<RotationInfo> Moves { get; private set; }
 
-    public List<RotationInfo> MovesList { get { return Moves.ToList(); } }
+    public BindingList<RotationInfo> MovesList
+    {
+      get
+      {
+        BindingList<RotationInfo> moves = new BindingList<RotationInfo>();
+        foreach (RotationInfo info in this.Moves)
+          moves.Add(info);
+        return moves;
+      }
+    }
 
     /// <summary>
     /// Gets the information about the drawn Rubik's Cube
@@ -567,13 +571,14 @@ namespace RubiksCubeLib.CubeModel
     /// <param name="moves">Collection of moves</param>
     /// <param name="milliseconds">Duration of animated rotation</param>
     public void RotateLayerAnimated(IMove moves, int milliseconds)
-    {
+    { 
       this.MouseHandling = false;
 
       if (this.DrawingMode == RubiksCubeLib.CubeModel.DrawingMode.TwoDimensional)
         milliseconds = 0;
 
       this.Moves.Enqueue(new RotationInfo(moves, milliseconds));
+      this.MovesList.Add(new RotationInfo(moves, milliseconds));
       this.State = string.Format("Rotating {0}", Moves.Peek().Name);
     }
 

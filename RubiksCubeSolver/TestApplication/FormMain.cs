@@ -17,14 +17,23 @@ namespace TestApplication
   public partial class FormMain : Form
   {
     PluginCollection<CubeSolver> solverPlugins = new PluginCollection<CubeSolver>();
+    BindingList<IMove> rotations = new BindingList<IMove>();
 
     public FormMain()
     {
       InitializeComponent();
-      //solverPlugins.AddFolder(@"C:\Users\Anwender\Desktop\RubiksCubeSolver\trunk\RubiksCubeSolver\FridrichSolver\bin\Debug");
+      cubeModel.StartRender();
+      solverPlugins.AddFolder(@"C:\Users\Anwender\Desktop\RubiksCubeSolver\trunk\RubiksCubeSolver\FridrichSolver\bin\Debug");
+      //solverPlugins.AddFolder(@"C:\Users\Anwender\Desktop\RubiksCubeSolver\trunk\RubiksCubeSolver\BeginnerSolver\bin\Debug");
       AddSolvingHandlers();
 
-      listBoxQueue.DataSource = cubeModel.MovesList;
+      foreach (CubeFlag flag in Enum.GetValues(typeof(CubeFlag)))
+      {
+        if (flag != CubeFlag.None && flag != CubeFlag.XFlags && flag != CubeFlag.YFlags && flag != CubeFlag.ZFlags)
+          comboBoxLayers.Items.Add(flag.ToString());
+      }
+
+      listBoxQueue.DataSource = rotations;
       listBoxQueue.DisplayMember = "Name";
     }
 
@@ -32,8 +41,8 @@ namespace TestApplication
     {
       foreach (CubeSolver solver in solverPlugins.GetAll())
       {
-        solver.OnSolutionFound -= ExecuteSolution;
-        solver.OnSolutionFound += ExecuteSolution;
+        solver.OnSolutionStepCompleted -= ExecuteSolution;
+        solver.OnSolutionStepCompleted += ExecuteSolution;
       }
     }
 
@@ -57,14 +66,12 @@ namespace TestApplication
       }
     }
 
-    private void ExecuteSolution(object sender, SolutionFoundEventArgs e)
+    private void ExecuteSolution(object sender, SolutionStepCompletedEventArgs e)
     {
-      if (e.Solvable)
-      {
-        MessageBox.Show(string.Format("Solution found with {0}: Moves count: {1}; Elapsed Milliseconds {2}", e.Solution.SolvingMethod,e.Solution.MovesCount,e.Milliseconds / 1000));
-        e.Solution.Algorithm.Moves.ForEach(m => cubeModel.RotateLayerAnimated(m));
-      }
-      else MessageBox.Show("Unsolvable");
+      //MessageBox.Show(string.Format("{0} completed with {1} moves in {2} milliseconds", e.Step, e.Algorithm.Moves.Count, e.Milliseconds));
+      //if (e.Finished)e.Algorithm.Moves.ForEach(m => cubeModel.RotateLayerAnimated(m));
+        //MessageBox.Show(string.Format("Solution found with {0}: Moves count: {1}; Elapsed Milliseconds {2}", e.Step, e.Algorithm.Moves.Count, e.Milliseconds));
+        // e.Algorithm.Moves.ForEach(m => cubeModel.RotateLayerAnimated(m));
     }
 
     private void resetToolStripMenuItem_Click(object sender, EventArgs e)
@@ -79,12 +86,17 @@ namespace TestApplication
 
     private void solveToolStripMenuItem1_Click(object sender, EventArgs e)
     {
-      solverPlugins.StandardPlugin.TrySolveAsync(cubeModel.Rubik);
+      DialogSolutionFinder dlg = new DialogSolutionFinder(solverPlugins.StandardPlugin, this.cubeModel.Rubik);
+      if (dlg.ShowDialog() == DialogResult.OK)
+      {
+        dlg.Algorithm.Moves.ForEach(m => rotations.Add(m));
+      }
     }
 
     private void cornerTestToolStripMenuItem_Click(object sender, EventArgs e)
     {
-      MessageBox.Show(Solvability.FullTest(cubeModel.Rubik) ? "Solvable" : "Unsolvable");
+      DialogParityCheckResult parityCheck = new DialogParityCheckResult(cubeModel.Rubik);
+      parityCheck.ShowDialog();
     }
 
     private void saveToolStripMenuItem_Click(object sender, EventArgs e)
@@ -109,6 +121,45 @@ namespace TestApplication
           cubeModel.LoadPattern(ofd.FileName);
         }
       }
+    }
+
+    private void btnRotate_Click(object sender, EventArgs e)
+    {
+      CubeFlag layer = (CubeFlag)Enum.Parse(typeof(CubeFlag), comboBoxLayers.SelectedItem.ToString());
+      cubeModel.RotateLayerAnimated(layer, checkBoxDirection.Checked);
+    }
+
+    private void btnClear_Click(object sender, EventArgs e)
+    {
+      this.rotations.Clear();
+    }
+
+    private void btnAddToQueue_Click(object sender, EventArgs e)
+    {
+      CubeFlag layer = (CubeFlag)Enum.Parse(typeof(CubeFlag), comboBoxLayers.SelectedItem.ToString());
+      this.rotations.Add(new LayerMove(layer, checkBoxDirection.Checked));
+    }
+
+    private void btnExecute_Click(object sender, EventArgs e)
+    {
+      foreach (IMove move in rotations)
+        cubeModel.RotateLayerAnimated(move);
+    }
+
+    private void newToolStripMenuItem_Click(object sender, EventArgs e)
+    {
+      
+    }
+
+    private void manageSolversToolStripMenuItem_Click(object sender, EventArgs e)
+    {
+
+    }
+
+    private void optionsToolStripMenuItem_Click(object sender, EventArgs e)
+    {
+      DialogSolutionFinder dlg = new DialogSolutionFinder(solverPlugins.StandardPlugin, this.cubeModel.Rubik);
+      dlg.ShowDialog();
     }
 
   }

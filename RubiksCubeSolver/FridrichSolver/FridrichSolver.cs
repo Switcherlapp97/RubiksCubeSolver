@@ -15,21 +15,19 @@ namespace FridrichSolver
     public override string Name { get { return "Fridrich"; } }
     public override string Description { get { return "Full Fridrich method without ELL and COLL"; } }
 
-    public FridrichSolver() { }
-
-    public FridrichSolver(Rubik cube)
+    public FridrichSolver()
     {
-      Rubik = cube.DeepClone();
-      Solution = new Solution(this, cube);
-      InitStandardCube();
+      AddSolutionSteps();
     }
 
-    public override void GetSolution()
+
+    protected override void AddSolutionSteps()
     {
-      SolveFirstCross();
-      CompleteF2L();
-      Oll();
-      Pll();
+      this.SolutionSteps = new Dictionary<string, Action>();
+      this.SolutionSteps.Add("Cross on bottom layer", SolveFirstCross);
+      this.SolutionSteps.Add("Complete first two layers", CompleteF2L);
+      this.SolutionSteps.Add("Orientation top layer", Oll);
+      this.SolutionSteps.Add("Permutation last layer", Pll);
     }
 
     private void SolveFirstCross()
@@ -171,7 +169,8 @@ namespace FridrichSolver
         unsolvedPairs = GetPairs(this.Rubik).ToList();
         if (unsolvedPairs.Count == count)
         {
-          throw new Exception("F2L error");
+          this.BroadcastOnSolutionError("Complete first two layers", "Wrong algorithm");
+          return;
         }
       }
     }

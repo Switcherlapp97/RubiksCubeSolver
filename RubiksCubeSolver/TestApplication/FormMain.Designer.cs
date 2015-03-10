@@ -40,8 +40,10 @@
       this.exitToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
       this.rubikToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
       this.scrambleToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+      this.toolStripSeparator2 = new System.Windows.Forms.ToolStripSeparator();
       this.solveToolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
       this.cornerTestToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+      this.toolStripSeparator3 = new System.Windows.Forms.ToolStripSeparator();
       this.resetToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
       this.toolsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
       this.optionsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -50,16 +52,16 @@
       this.aboutToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
       this.splitContainer1 = new System.Windows.Forms.SplitContainer();
       this.groupBox3D = new System.Windows.Forms.GroupBox();
+      this.cubeModel = new RubiksCubeLib.CubeModel.CubeModel();
       this.groupBox1 = new System.Windows.Forms.GroupBox();
       this.listBoxQueue = new System.Windows.Forms.ListBox();
+      this.btnClear = new System.Windows.Forms.Button();
+      this.btnExecute = new System.Windows.Forms.Button();
       this.groupBoxMoves = new System.Windows.Forms.GroupBox();
       this.btnAddToQueue = new System.Windows.Forms.Button();
       this.btnRotate = new System.Windows.Forms.Button();
       this.comboBoxLayers = new System.Windows.Forms.ComboBox();
       this.checkBoxDirection = new System.Windows.Forms.CheckBox();
-      this.toolStripSeparator2 = new System.Windows.Forms.ToolStripSeparator();
-      this.toolStripSeparator3 = new System.Windows.Forms.ToolStripSeparator();
-      this.cubeModel = new RubiksCubeLib.CubeModel.CubeModel();
       this.menuStrip1.SuspendLayout();
       ((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).BeginInit();
       this.splitContainer1.Panel1.SuspendLayout();
@@ -72,6 +74,7 @@
       // 
       // menuStrip1
       // 
+      this.menuStrip1.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
       this.menuStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.fileToolStripMenuItem,
             this.rubikToolStripMenuItem,
@@ -104,6 +107,7 @@
       this.newToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.N)));
       this.newToolStripMenuItem.Size = new System.Drawing.Size(146, 22);
       this.newToolStripMenuItem.Text = "&New";
+      this.newToolStripMenuItem.Click += new System.EventHandler(this.newToolStripMenuItem_Click);
       // 
       // openToolStripMenuItem1
       // 
@@ -155,28 +159,38 @@
       // scrambleToolStripMenuItem
       // 
       this.scrambleToolStripMenuItem.Name = "scrambleToolStripMenuItem";
-      this.scrambleToolStripMenuItem.Size = new System.Drawing.Size(129, 22);
+      this.scrambleToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
       this.scrambleToolStripMenuItem.Text = "&Scramble";
       this.scrambleToolStripMenuItem.Click += new System.EventHandler(this.scrambleToolStripMenuItem_Click);
+      // 
+      // toolStripSeparator2
+      // 
+      this.toolStripSeparator2.Name = "toolStripSeparator2";
+      this.toolStripSeparator2.Size = new System.Drawing.Size(149, 6);
       // 
       // solveToolStripMenuItem1
       // 
       this.solveToolStripMenuItem1.Name = "solveToolStripMenuItem1";
-      this.solveToolStripMenuItem1.Size = new System.Drawing.Size(129, 22);
+      this.solveToolStripMenuItem1.Size = new System.Drawing.Size(152, 22);
       this.solveToolStripMenuItem1.Text = "S&olve";
       this.solveToolStripMenuItem1.Click += new System.EventHandler(this.solveToolStripMenuItem1_Click);
       // 
       // cornerTestToolStripMenuItem
       // 
       this.cornerTestToolStripMenuItem.Name = "cornerTestToolStripMenuItem";
-      this.cornerTestToolStripMenuItem.Size = new System.Drawing.Size(129, 22);
+      this.cornerTestToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
       this.cornerTestToolStripMenuItem.Text = "&Parity Test";
       this.cornerTestToolStripMenuItem.Click += new System.EventHandler(this.cornerTestToolStripMenuItem_Click);
+      // 
+      // toolStripSeparator3
+      // 
+      this.toolStripSeparator3.Name = "toolStripSeparator3";
+      this.toolStripSeparator3.Size = new System.Drawing.Size(149, 6);
       // 
       // resetToolStripMenuItem
       // 
       this.resetToolStripMenuItem.Name = "resetToolStripMenuItem";
-      this.resetToolStripMenuItem.Size = new System.Drawing.Size(129, 22);
+      this.resetToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
       this.resetToolStripMenuItem.Text = "&Reset";
       this.resetToolStripMenuItem.Click += new System.EventHandler(this.resetToolStripMenuItem_Click);
       // 
@@ -194,12 +208,14 @@
       this.optionsToolStripMenuItem.Name = "optionsToolStripMenuItem";
       this.optionsToolStripMenuItem.Size = new System.Drawing.Size(166, 22);
       this.optionsToolStripMenuItem.Text = "&Options";
+      this.optionsToolStripMenuItem.Click += new System.EventHandler(this.optionsToolStripMenuItem_Click);
       // 
       // manageSolversToolStripMenuItem
       // 
       this.manageSolversToolStripMenuItem.Name = "manageSolversToolStripMenuItem";
       this.manageSolversToolStripMenuItem.Size = new System.Drawing.Size(166, 22);
       this.manageSolversToolStripMenuItem.Text = "&Manage Solvers...";
+      this.manageSolversToolStripMenuItem.Click += new System.EventHandler(this.manageSolversToolStripMenuItem_Click);
       // 
       // helpToolStripMenuItem
       // 
@@ -240,12 +256,28 @@
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
       this.groupBox3D.Controls.Add(this.cubeModel);
+      this.groupBox3D.Font = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
       this.groupBox3D.Location = new System.Drawing.Point(12, 3);
       this.groupBox3D.Name = "groupBox3D";
-      this.groupBox3D.Size = new System.Drawing.Size(409, 361);
+      this.groupBox3D.Size = new System.Drawing.Size(408, 361);
       this.groupBox3D.TabIndex = 4;
       this.groupBox3D.TabStop = false;
       this.groupBox3D.Text = "3D View";
+      // 
+      // cubeModel
+      // 
+      this.cubeModel.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+      this.cubeModel.DrawingMode = RubiksCubeLib.CubeModel.DrawingMode.ThreeDimensional;
+      this.cubeModel.Location = new System.Drawing.Point(6, 19);
+      this.cubeModel.MaxFps = 50D;
+      this.cubeModel.MouseHandling = true;
+      this.cubeModel.Name = "cubeModel";
+      this.cubeModel.RotationSpeed = 250;
+      this.cubeModel.Size = new System.Drawing.Size(396, 336);
+      this.cubeModel.TabIndex = 3;
+      this.cubeModel.Zoom = 2.52D;
       // 
       // groupBox1
       // 
@@ -253,9 +285,12 @@
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
       this.groupBox1.Controls.Add(this.listBoxQueue);
+      this.groupBox1.Controls.Add(this.btnClear);
+      this.groupBox1.Controls.Add(this.btnExecute);
+      this.groupBox1.Font = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
       this.groupBox1.Location = new System.Drawing.Point(3, 84);
       this.groupBox1.Name = "groupBox1";
-      this.groupBox1.Size = new System.Drawing.Size(225, 280);
+      this.groupBox1.Size = new System.Drawing.Size(224, 279);
       this.groupBox1.TabIndex = 1;
       this.groupBox1.TabStop = false;
       this.groupBox1.Text = "Queue";
@@ -268,8 +303,30 @@
       this.listBoxQueue.FormattingEnabled = true;
       this.listBoxQueue.Location = new System.Drawing.Point(6, 19);
       this.listBoxQueue.Name = "listBoxQueue";
-      this.listBoxQueue.Size = new System.Drawing.Size(213, 251);
+      this.listBoxQueue.Size = new System.Drawing.Size(213, 225);
       this.listBoxQueue.TabIndex = 0;
+      // 
+      // btnClear
+      // 
+      this.btnClear.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+      this.btnClear.Location = new System.Drawing.Point(116, 251);
+      this.btnClear.Name = "btnClear";
+      this.btnClear.Size = new System.Drawing.Size(102, 23);
+      this.btnClear.TabIndex = 2;
+      this.btnClear.Text = "Clear";
+      this.btnClear.UseVisualStyleBackColor = true;
+      this.btnClear.Click += new System.EventHandler(this.btnClear_Click);
+      // 
+      // btnExecute
+      // 
+      this.btnExecute.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+      this.btnExecute.Location = new System.Drawing.Point(6, 251);
+      this.btnExecute.Name = "btnExecute";
+      this.btnExecute.Size = new System.Drawing.Size(105, 23);
+      this.btnExecute.TabIndex = 2;
+      this.btnExecute.Text = "Execute";
+      this.btnExecute.UseVisualStyleBackColor = true;
+      this.btnExecute.Click += new System.EventHandler(this.btnExecute_Click);
       // 
       // groupBoxMoves
       // 
@@ -279,9 +336,10 @@
       this.groupBoxMoves.Controls.Add(this.btnRotate);
       this.groupBoxMoves.Controls.Add(this.comboBoxLayers);
       this.groupBoxMoves.Controls.Add(this.checkBoxDirection);
+      this.groupBoxMoves.Font = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
       this.groupBoxMoves.Location = new System.Drawing.Point(3, 3);
       this.groupBoxMoves.Name = "groupBoxMoves";
-      this.groupBoxMoves.Size = new System.Drawing.Size(225, 75);
+      this.groupBoxMoves.Size = new System.Drawing.Size(224, 75);
       this.groupBoxMoves.TabIndex = 0;
       this.groupBoxMoves.TabStop = false;
       this.groupBoxMoves.Text = "Control";
@@ -289,12 +347,13 @@
       // btnAddToQueue
       // 
       this.btnAddToQueue.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-      this.btnAddToQueue.Location = new System.Drawing.Point(117, 46);
+      this.btnAddToQueue.Location = new System.Drawing.Point(116, 46);
       this.btnAddToQueue.Name = "btnAddToQueue";
       this.btnAddToQueue.Size = new System.Drawing.Size(102, 23);
       this.btnAddToQueue.TabIndex = 2;
       this.btnAddToQueue.Text = "Add To Queue";
       this.btnAddToQueue.UseVisualStyleBackColor = true;
+      this.btnAddToQueue.Click += new System.EventHandler(this.btnAddToQueue_Click);
       // 
       // btnRotate
       // 
@@ -304,6 +363,7 @@
       this.btnRotate.TabIndex = 2;
       this.btnRotate.Text = "Rotate";
       this.btnRotate.UseVisualStyleBackColor = true;
+      this.btnRotate.Click += new System.EventHandler(this.btnRotate_Click);
       // 
       // comboBoxLayers
       // 
@@ -320,37 +380,12 @@
       this.checkBoxDirection.AutoSize = true;
       this.checkBoxDirection.Checked = true;
       this.checkBoxDirection.CheckState = System.Windows.Forms.CheckState.Checked;
-      this.checkBoxDirection.Location = new System.Drawing.Point(145, 21);
+      this.checkBoxDirection.Location = new System.Drawing.Point(142, 21);
       this.checkBoxDirection.Name = "checkBoxDirection";
-      this.checkBoxDirection.Size = new System.Drawing.Size(74, 17);
+      this.checkBoxDirection.Size = new System.Drawing.Size(77, 17);
       this.checkBoxDirection.TabIndex = 0;
       this.checkBoxDirection.Text = "Clockwise";
       this.checkBoxDirection.UseVisualStyleBackColor = true;
-      // 
-      // toolStripSeparator2
-      // 
-      this.toolStripSeparator2.Name = "toolStripSeparator2";
-      this.toolStripSeparator2.Size = new System.Drawing.Size(126, 6);
-      // 
-      // toolStripSeparator3
-      // 
-      this.toolStripSeparator3.Name = "toolStripSeparator3";
-      this.toolStripSeparator3.Size = new System.Drawing.Size(126, 6);
-      // 
-      // cubeModel
-      // 
-      this.cubeModel.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-      this.cubeModel.DrawingMode = RubiksCubeLib.CubeModel.DrawingMode.ThreeDimensional;
-      this.cubeModel.Location = new System.Drawing.Point(6, 19);
-      this.cubeModel.MaxFps = 50D;
-      this.cubeModel.MouseHandling = true;
-      this.cubeModel.Name = "cubeModel";
-      this.cubeModel.RotationSpeed = 250;
-      this.cubeModel.Size = new System.Drawing.Size(397, 336);
-      this.cubeModel.TabIndex = 3;
-      this.cubeModel.Zoom = 2.52D;
       // 
       // FormMain
       // 
@@ -359,10 +394,11 @@
       this.ClientSize = new System.Drawing.Size(668, 400);
       this.Controls.Add(this.splitContainer1);
       this.Controls.Add(this.menuStrip1);
+      this.Font = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
       this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
       this.MainMenuStrip = this.menuStrip1;
       this.Name = "FormMain";
-      this.Text = "RubiksCubeSolver";
+      this.Text = "Rubik\'s Cube Solver";
       this.menuStrip1.ResumeLayout(false);
       this.menuStrip1.PerformLayout();
       this.splitContainer1.Panel1.ResumeLayout(false);
@@ -410,6 +446,8 @@
     private System.Windows.Forms.ComboBox comboBoxLayers;
     private System.Windows.Forms.ToolStripSeparator toolStripSeparator2;
     private System.Windows.Forms.ToolStripSeparator toolStripSeparator3;
+    private System.Windows.Forms.Button btnClear;
+    private System.Windows.Forms.Button btnExecute;
 
 
   }

@@ -52,7 +52,7 @@ namespace RubiksCubeLib.CubeModel
 
       _frameTimes = new List<double>();
       this.IsRunning = false;
-       this.MaxFps = 50;
+       this.MaxFps = 30;
 
       _updateHandle = new AutoResetEvent[2];
       for (int i = 0; i < _updateHandle.Length; i++)
@@ -121,6 +121,8 @@ namespace RubiksCubeLib.CubeModel
       if (this.IsRunning)
       {
         this.IsRunning = false;
+        this.Fps = 0;
+        _frameTimes.Clear();
         _updateThread.Abort();
         _renderThread.Abort();
       }
@@ -138,8 +140,8 @@ namespace RubiksCubeLib.CubeModel
         Render(bufferIndex);
         bufferIndex ^= 0x1;
         
-        double start = _sw.Elapsed.TotalMilliseconds;
-        while (_sw.Elapsed.TotalMilliseconds < start + 20) { } // 20 ms timeout for rendering other UI controls
+        //double start = _sw.Elapsed.TotalMilliseconds;
+        //while (_sw.Elapsed.TotalMilliseconds < start + 20) { } // 20 ms timeout for rendering other UI controls
 
         double minTime = 1000.0 / this.MaxFps;
         while (_sw.Elapsed.TotalMilliseconds < minTime) { } // keep max fps

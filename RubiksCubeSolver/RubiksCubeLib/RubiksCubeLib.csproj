@@ -92,8 +92,8 @@
     <Compile Include="Solving\Pattern\PatternTable.cs" />
     <Compile Include="Solving\Pattern\PatternItem.cs" />
     <Compile Include="Solving\Pattern\Pattern.cs" />
-    <Compile Include="Solving\Solution.cs" />
-    <Compile Include="Solving\SolutionFoundEventArgs.cs" />
+    <Compile Include="Solving\SolutionErrorEventArgs.cs" />
+    <Compile Include="Solving\SolutionStepCompleted.cs" />
     <Compile Include="Solving\Solvability.cs" />
     <Compile Include="Solving\TestScenario.cs" />
   </ItemGroup>
@@ -106,6 +106,7 @@
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
+    <None Include="ClassDiagram1.cd" />
     <None Include="CubeModel\CubeModel.cd" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

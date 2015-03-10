@@ -21,7 +21,7 @@ namespace RubiksCubeLib.Solver
     /// <summary>
     /// The Rubik which will be used to solve the transferred Rubik
     /// </summary>
-    public Rubik Rubik { get; set; }
+    protected Rubik Rubik { get; set; }
 
     /// <summary>
     /// A solved Rubik
@@ -31,7 +31,7 @@ namespace RubiksCubeLib.Solver
     /// <summary>
     /// Returns the solution for this solver used for the Rubik
     /// </summary>
-    protected Solution Solution { get; set; }
+    protected Algorithm Algorithm { get; set; }
 
     /// <summary>
     /// The name of this solver
@@ -43,6 +43,22 @@ namespace RubiksCubeLib.Solver
     /// </summary>
     public abstract string Description { get; }
 
+    public Dictionary<string, Action> SolutionSteps { get; protected set; }
+
+    private List<IMove> _movesOfStep = new List<IMove>();
+    private Thread solvingThread;
+
+    public delegate void SolutionStepCompletedEventHandler(object sender, SolutionStepCompletedEventArgs e);
+    public event SolutionStepCompletedEventHandler OnSolutionStepCompleted;
+
+    public delegate void SolutionErrorEventHandler(object sender, SolutionErrorEventArgs e);
+    public event SolutionErrorEventHandler OnSolutionError;
+
+    protected void BroadcastOnSolutionError(string step, string message)
+    {
+      if (OnSolutionError != null) this.OnSolutionError(this, new SolutionErrorEventArgs(step, message));
+      solvingThread.Abort();
+    }
 
 
     // *** METHODS ***
@@ -51,54 +67,53 @@ namespace RubiksCubeLib.Solver
     /// Returns the solution for the transferred Rubik
     /// </summary>
     /// <param name="cube">Defines the Rubik to be solved</param>
-    private Solution Solve(Rubik cube)
+    private void Solve(Rubik cube)
     {
       Rubik = cube.DeepClone();
-      Solution = new Solution(this, cube);
+      Algorithm = new Algorithm();
       InitStandardCube();
 
       GetSolution();
       RemoveUnnecessaryMoves();
-      return Solution;
     }
 
-    public abstract void GetSolution();
-
-
-    /// <summary>
-    /// Returns true if the given Rubik is solvable
-    /// </summary>
-    /// <param name="rubik">Defines the Rubik to be solved</param>
-    /// <param name="solution">Defines the solution to be set if the solving process was successful</param>
-    /// <returns></returns>
-    public bool TrySolve(Rubik rubik, out Solution solution)
+    private void GetSolution()
     {
-      solution = this.Solution;
-      bool solvable = Solvability.FullTest(rubik);
-      if (solvable)
-        solution = Solve(rubik);
-      return solvable;
+      Stopwatch sw = new Stopwatch();
+      foreach (KeyValuePair<string,Action> step in this.SolutionSteps)
+      {
+        sw.Restart();
+        step.Value();
+        sw.Stop();
+        if (OnSolutionStepCompleted != null) OnSolutionStepCompleted(this, new SolutionStepCompletedEventArgs(step.Key, false, new Algorithm() { Moves = _movesOfStep }, (int)sw.ElapsedMilliseconds));
+        _movesOfStep.Clear();
+      }
     }
 
-    public delegate void SolutionFoundEventHandler(object sender, SolutionFoundEventArgs e);
-    public event SolutionFoundEventHandler OnSolutionFound;
+    protected abstract void AddSolutionSteps();
 
     public void TrySolveAsync(Rubik rubik)
     {
-      Thread t = new Thread(() => SolveAsync(rubik));
-      t.Start();
+      solvingThread = new Thread(() => SolveAsync(rubik));
+      solvingThread.Start();
     }
 
     private void SolveAsync(Rubik rubik)
     {
-      Stopwatch sw = new Stopwatch();
-      sw.Start();
       bool solvable = Solvability.FullTest(rubik);
-      Solution solution = null;
       if (solvable)
-        solution = Solve(rubik);
-      sw.Stop();
-      if (OnSolutionFound != null) OnSolutionFound(this, new SolutionFoundEventArgs(solvable, solution, (int)sw.ElapsedMilliseconds));
+      {
+        Stopwatch sw = new Stopwatch();
+        sw.Start();
+        Solve(rubik);
+        sw.Stop();
+        if (OnSolutionStepCompleted != null) OnSolutionStepCompleted(this, new SolutionStepCompletedEventArgs(this.Name, true, this.Algorithm, (int)sw.ElapsedMilliseconds));
+        solvingThread.Abort();
+      }
+      else
+      {
+        this.BroadcastOnSolutionError(this.Name, "Unsolvable cube");
+      }
     }
 
     /// <summary>
@@ -110,26 +125,27 @@ namespace RubiksCubeLib.Solver
       while (!finished)
       {
         finished = true;
-        for (int i = 0; i < Solution.Algorithm.Moves.Count; i++)
+        for (int i = 0; i < Algorithm.Moves.Count; i++)
         {
-          IMove currentMove = Solution.Algorithm.Moves[i];
-          if (i < Solution.Algorithm.Moves.Count - 1) if (currentMove.ReverseMove.Equals(Solution.Algorithm.Moves[i + 1]))
+          IMove currentMove = Algorithm.Moves[i];
+          if (i < Algorithm.Moves.Count - 1)
+            if (currentMove.ReverseMove.Equals(Algorithm.Moves[i + 1]))
             {
               finished = false;
-              Solution.Algorithm.Moves.RemoveAt(i + 1);
-              Solution.Algorithm.Moves.RemoveAt(i);
+              Algorithm.Moves.RemoveAt(i + 1);
+              Algorithm.Moves.RemoveAt(i);
               if (i != 0) i--;
             }
 
-          if (i < Solution.Algorithm.Moves.Count - 2) if (currentMove.Equals(Solution.Algorithm.Moves[i + 1]) && currentMove.Equals(Solution.Algorithm.Moves[i + 2]))
+          if (i < Algorithm.Moves.Count - 2)
+            if (currentMove.Equals(Algorithm.Moves[i + 1]) && currentMove.Equals(Algorithm.Moves[i + 2]))
             {
               finished = false;
-              IMove reverse = Solution.Algorithm.Moves[i + 2].ReverseMove;
-              Solution.Algorithm.Moves.RemoveAt(i + 1);
-              Solution.Algorithm.Moves.RemoveAt(i);
-              Solution.Algorithm.Moves[i] = reverse;
-              if (i != 0)
-                i--;
+              IMove reverse = Algorithm.Moves[i + 2].ReverseMove;
+              Algorithm.Moves.RemoveAt(i + 1);
+              Algorithm.Moves.RemoveAt(i);
+              Algorithm.Moves[i] = reverse;
+              if (i != 0) i--;
             }
         }
       }
@@ -161,7 +177,8 @@ namespace RubiksCubeLib.Solver
     protected void SolverMove(CubeFlag layer, bool direction)
     {
       Rubik.RotateLayer(layer, direction);
-      Solution.Algorithm.Moves.Add(new LayerMove(layer, direction));
+      Algorithm.Moves.Add(new LayerMove(layer, direction));
+      _movesOfStep.Add(new LayerMove(layer, direction));
     }
 
     /// <summary>
@@ -171,7 +188,8 @@ namespace RubiksCubeLib.Solver
     protected void SolverMove(IMove move)
     {
       Rubik.RotateLayer(move);
-      Solution.Algorithm.Moves.Add(move);
+      Algorithm.Moves.Add(move);
+      _movesOfStep.Add(move);
     }
 
     /// <summary>

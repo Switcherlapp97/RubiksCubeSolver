@@ -44,31 +44,59 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Dialogs\DialogOptions.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Dialogs\DialogOptions.Designer.cs">
+      <DependentUpon>DialogOptions.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Dialogs\DialogSolutionFinder.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Dialogs\DialogSolutionFinder.Designer.cs">
+      <DependentUpon>DialogSolutionFinder.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Dialogs\DialogParityCheckResult.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Dialogs\DialogParityCheckResult.Designer.cs">
+      <DependentUpon>DialogParityCheckResult.cs</DependentUpon>
+    </Compile>
     <Compile Include="FormMain.cs">
       <SubType>Form</SubType>
     </Compile>
     <Compile Include="FormMain.Designer.cs">
       <DependentUpon>FormMain.cs</DependentUpon>
     </Compile>
+    <Compile Include="Options.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <EmbeddedResource Include="Dialogs\DialogOptions.resx">
+      <DependentUpon>DialogOptions.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Dialogs\DialogSolutionFinder.resx">
+      <DependentUpon>DialogSolutionFinder.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Dialogs\DialogParityCheckResult.resx">
+      <DependentUpon>DialogParityCheckResult.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="FormMain.resx">
       <DependentUpon>FormMain.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
-      <LastGenOutput>Resources.Designer.cs</LastGenOutput>
       <SubType>Designer</SubType>
+      <LastGenOutput>Resources.Designer.cs</LastGenOutput>
     </EmbeddedResource>
-    <Compile Include="Properties\Resources.Designer.cs">
-      <AutoGen>True</AutoGen>
-      <DependentUpon>Resources.resx</DependentUpon>
-      <DesignTime>True</DesignTime>
-    </Compile>
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>
     </None>
+    <Compile Include="Properties\Resources.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Resources.resx</DependentUpon>
+    </Compile>
     <Compile Include="Properties\Settings.Designer.cs">
       <AutoGen>True</AutoGen>
       <DependentUpon>Settings.settings</DependentUpon>
@@ -82,10 +110,19 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
-    <None Include="images\solve.png" />
+    <None Include="images\ok.png" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="images\solve2.png" />
+    <None Include="images\cross_icon.jpg" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="images\questionmark.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\passed.bmp" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="images\refresh.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

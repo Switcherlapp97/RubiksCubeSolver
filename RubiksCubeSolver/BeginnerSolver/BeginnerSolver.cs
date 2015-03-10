@@ -14,22 +14,26 @@ namespace BeginnerSolver
     public override string Name { get { return "Beginner"; } }
     public override string Description { get { return "Easiest way to solve a rubiks cube. This algorithm requires between 100 and 150 moves"; } }
 
-    public BeginnerSolver() { }
+    public BeginnerSolver()
+    {
+      AddSolutionSteps();
+    }
 
     public BeginnerSolver(Rubik cube)
     {
       Rubik = cube.DeepClone();
-      Solution = new Solution(this, cube);
+      this.Algorithm = new Algorithm();
       InitStandardCube();
     }
 
-    public override void GetSolution()
+    protected override void AddSolutionSteps()
     {
-      SolveFirstCross();
-      CompleteFirstLayer();
-      CompleteMiddleLayer();
-      SolveCrossTopLayer();
-      CompleteLastLayer();
+      this.SolutionSteps = new Dictionary<string, Action>();
+      this.SolutionSteps.Add("Cross on bottom layer", SolveFirstCross);
+      this.SolutionSteps.Add("Complete bottom layer", CompleteFirstLayer);
+      this.SolutionSteps.Add("Complete middle layer", CompleteMiddleLayer);
+      this.SolutionSteps.Add("Cross on top layer", SolveCrossTopLayer);
+      this.SolutionSteps.Add("Complete top layer", CompleteLastLayer);
     }
 
     private void SolveFirstCross()
