@@ -122,6 +122,7 @@ namespace RubiksCubeLib.CubeModel
       this.Moves = new Queue<RotationInfo>();
       this.MouseHandling = true;
       this.State = "Ready";
+      this.Zoom = 1.0;
       ResetLayerRotation();
       InitSelection();
     }
@@ -347,17 +348,17 @@ namespace RubiksCubeLib.CubeModel
         g.FillPolygon(b, parr);
         g.DrawPolygon(new Pen(Color.Black, 1), parr);
 
-
         GraphicsPath gp = new GraphicsPath();
         gp.AddPolygon(parr);
         if (gp.IsVisible(mousePos))
           pos = facePos;
       }
 
+      g.FillRectangle(new SolidBrush(this.BackColor), 0, this.Height - 25, this.Width - 1, 24);
       g.DrawRectangle(Pens.Black, 0, this.Height - 25, this.Width - 1, 24);
-      //g.DrawLine(Pens.Black, 0, this.Height - 25, this.Width, this.Height - 25);
       g.DrawString(string.Format("[{0}] | {1}", _currentSelection.CubePosition, _currentSelection.FacePosition), this.Font, Brushes.Black, 5, this.Height - 20);
 
+      g.FillRectangle(new SolidBrush(this.BackColor), 0, this.Height - 50, this.Width - 1, 25);
       g.DrawRectangle(Pens.Black, 0, this.Height - 50, this.Width - 1, 25);
       g.DrawString(this.State, this.Font, Brushes.Black, 5, this.Height - 45);
 

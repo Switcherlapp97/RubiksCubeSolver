@@ -48,5 +48,21 @@ namespace RubiksCubeLib
 			}
 			return cnt.Values.All(c => c == 0);
 		}
+
+    public static Dictionary<TKey, TValue> TwoListsToDict<TKey, TValue>(IEnumerable<TKey> keys, IEnumerable<TValue> values)
+    {
+      Dictionary<TKey, TValue> newDict = new Dictionary<TKey, TValue>();
+      List<TKey> lstKeys = keys.ToList();
+      List<TValue> lstValues = values.ToList();
+
+      if (lstKeys.Count != lstValues.Count) throw new Exception("The two collections don't have the same number of items!");
+
+      for (int i = 0; i < lstKeys.Count; i++)
+      {
+        newDict.Add(lstKeys[i], lstValues[i]);
+      }
+
+      return newDict;
+    }
 	}
 }

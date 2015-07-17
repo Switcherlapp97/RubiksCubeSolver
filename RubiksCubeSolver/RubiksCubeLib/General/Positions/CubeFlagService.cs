@@ -351,31 +351,21 @@ namespace RubiksCubeLib
     /// <summary>
     /// Converts the given CubeFlag into a notation string
     /// </summary>
-    public static string ToString(CubeFlag flag)
+    public static string ToNotationString(CubeFlag flag)
     {
-      switch (flag)
-      {
-        case CubeFlag.TopLayer:
-          return "U";
-        case CubeFlag.MiddleLayer:
-          return "E";
-        case CubeFlag.BottomLayer:
-          return "D";
-        case CubeFlag.FrontSlice:
-          return "F";
-        case CubeFlag.MiddleSlice:
-          return "S";
-        case CubeFlag.BackSlice:
-          return "B";
-        case CubeFlag.LeftSlice:
-          return "L";
-        case CubeFlag.MiddleSliceSides:
-          return "M";
-        case CubeFlag.RightSlice:
-          return "R";
-        default:
-          return string.Empty;
-      }
+      string notation = string.Empty;
+
+      if (flag.HasFlag(CubeFlag.TopLayer)) notation += "U";
+      if (flag.HasFlag(CubeFlag.BottomLayer)) notation += "D";
+      if (flag.HasFlag(CubeFlag.FrontSlice)) notation += "F";
+      if (flag.HasFlag(CubeFlag.RightSlice)) notation += "R";
+      if (flag.HasFlag(CubeFlag.BackSlice)) notation += "B";
+      if (flag.HasFlag(CubeFlag.LeftSlice)) notation += "L";
+      if (flag.HasFlag(CubeFlag.MiddleSlice)) notation += "S";
+      if (flag.HasFlag(CubeFlag.MiddleSliceSides)) notation += "M";
+      if (flag.HasFlag(CubeFlag.MiddleLayer)) notation += "E";
+
+      return notation;
     }
 
     /// <summary>

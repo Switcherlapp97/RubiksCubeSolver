@@ -21,7 +21,20 @@ namespace RubiksCubeLib.CubeModel
     /// <summary>
     /// Gets or sets the zoom
     /// </summary>
-    public double Zoom { get; set; }
+    private double zoom;
+    public double Zoom
+    {
+      get
+      {
+        int min = Math.Min(this.Screen.Height, this.Screen.Width);
+        return zoom / (3 * ((double)min / (double)400));
+      }
+      set
+      {
+        int min = Math.Min(this.Screen.Height, this.Screen.Width);
+        this.zoom = 3 * ((double)min / (double)400) * value;
+      }
+    }
 
     /// <summary>
     /// Gets or sets the screen the renderer projects on
@@ -52,7 +65,7 @@ namespace RubiksCubeLib.CubeModel
 
       _frameTimes = new List<double>();
       this.IsRunning = false;
-       this.MaxFps = 30;
+      this.MaxFps = 30;
 
       _updateHandle = new AutoResetEvent[2];
       for (int i = 0; i < _updateHandle.Length; i++)
@@ -75,8 +88,7 @@ namespace RubiksCubeLib.CubeModel
     public void SetDrawingArea(Rectangle screen)
     {
       this.Screen = new Rectangle(screen.X, screen.Y, screen.Width, screen.Height - 50);
-      int min = Math.Min(screen.Height, screen.Width);
-      this.Zoom = 3 * ((double)min / (double)400);
+      this.Zoom = 1;
       if (screen.Width > screen.Height)
         screen.X = (screen.Width - screen.Height) / 2;
       else if (screen.Height > screen.Width)
@@ -139,7 +151,7 @@ namespace RubiksCubeLib.CubeModel
         _sw.Restart();
         Render(bufferIndex);
         bufferIndex ^= 0x1;
-        
+
         //double start = _sw.Elapsed.TotalMilliseconds;
         //while (_sw.Elapsed.TotalMilliseconds < start + 20) { } // 20 ms timeout for rendering other UI controls
 
@@ -205,17 +217,17 @@ namespace RubiksCubeLib.CubeModel
 
       if (this.DrawingMode == RubiksCubeLib.CubeModel.DrawingMode.ThreeDimensional)
       {
-        _buffer[bufferIndex] = this.GenFacesProjected(this.Screen, this.Zoom);
+        _buffer[bufferIndex] = this.GenFacesProjected(this.Screen, this.zoom);
       }
       else
       {
         List<Face3D> faces = new List<Face3D>();
         foreach (Cube c in this.Rubik.Cubes)
-        faces.AddRange(c.Faces.Where(f => c.Position.Flags.HasFlag(CubeFlagService.FromFacePosition(f.Position))).Select(f => new Face3D(null, f.Color, f.Position, c.Position.Flags)));
+          faces.AddRange(c.Faces.Where(f => c.Position.Flags.HasFlag(CubeFlagService.FromFacePosition(f.Position))).Select(f => new Face3D(null, f.Color, f.Position, c.Position.Flags)));
         _buffer[bufferIndex] = faces;
       }
-       
-        
+
+
       _updateHandle[bufferIndex].Set();
     }
 

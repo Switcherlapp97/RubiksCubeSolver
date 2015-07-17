@@ -11,6 +11,7 @@ using System.Drawing;
 using System.Linq;
 using System.Text;
 using System.Windows.Forms;
+using TwoPhaseAlgorithmSolver;
 
 namespace TestApplication
 {
@@ -22,10 +23,13 @@ namespace TestApplication
     public FormMain()
     {
       InitializeComponent();
+
+      //foreach (string path in Properties.Settings.Default.PluginPaths)
+      //{
+      //  solverPlugins.AddDll(path);
+      //}
+
       cubeModel.StartRender();
-      solverPlugins.AddFolder(@"C:\Users\Anwender\Desktop\RubiksCubeSolver\trunk\RubiksCubeSolver\FridrichSolver\bin\Debug");
-      //solverPlugins.AddFolder(@"C:\Users\Anwender\Desktop\RubiksCubeSolver\trunk\RubiksCubeSolver\BeginnerSolver\bin\Debug");
-      AddSolvingHandlers();
 
       foreach (CubeFlag flag in Enum.GetValues(typeof(CubeFlag)))
       {
@@ -37,14 +41,6 @@ namespace TestApplication
       listBoxQueue.DisplayMember = "Name";
     }
 
-    private void AddSolvingHandlers()
-    {
-      foreach (CubeSolver solver in solverPlugins.GetAll())
-      {
-        solver.OnSolutionStepCompleted -= ExecuteSolution;
-        solver.OnSolutionStepCompleted += ExecuteSolution;
-      }
-    }
 
     private void loadToolStripMenuItem_Click(object sender, EventArgs e)
     {
@@ -52,26 +48,7 @@ namespace TestApplication
       if (fbd.ShowDialog() == System.Windows.Forms.DialogResult.OK)
       {
         solverPlugins.AddFolder(fbd.SelectedPath);
-        AddSolvingHandlers();
       }
-    }
-
-    private void solveToolStripMenuItem_Click(object sender, EventArgs e)
-    {
-      PluginSelectorDialog<CubeSolver> dlg = new PluginSelectorDialog<CubeSolver>(solverPlugins);
-      if (dlg.ShowDialog() == System.Windows.Forms.DialogResult.OK)
-      {
-        cubeModel.MouseHandling = false;
-        solverPlugins.StandardPlugin.TrySolveAsync(cubeModel.Rubik);
-      }
-    }
-
-    private void ExecuteSolution(object sender, SolutionStepCompletedEventArgs e)
-    {
-      //MessageBox.Show(string.Format("{0} completed with {1} moves in {2} milliseconds", e.Step, e.Algorithm.Moves.Count, e.Milliseconds));
-      //if (e.Finished)e.Algorithm.Moves.ForEach(m => cubeModel.RotateLayerAnimated(m));
-        //MessageBox.Show(string.Format("Solution found with {0}: Moves count: {1}; Elapsed Milliseconds {2}", e.Step, e.Algorithm.Moves.Count, e.Milliseconds));
-        // e.Algorithm.Moves.ForEach(m => cubeModel.RotateLayerAnimated(m));
     }
 
     private void resetToolStripMenuItem_Click(object sender, EventArgs e)
@@ -93,7 +70,7 @@ namespace TestApplication
       }
     }
 
-    private void cornerTestToolStripMenuItem_Click(object sender, EventArgs e)
+    private void parityTestToolStripMenuItem_Click(object sender, EventArgs e)
     {
       DialogParityCheckResult parityCheck = new DialogParityCheckResult(cubeModel.Rubik);
       parityCheck.ShowDialog();
@@ -146,11 +123,6 @@ namespace TestApplication
         cubeModel.RotateLayerAnimated(move);
     }
 
-    private void newToolStripMenuItem_Click(object sender, EventArgs e)
-    {
-      
-    }
-
     private void manageSolversToolStripMenuItem_Click(object sender, EventArgs e)
     {
 
@@ -158,8 +130,44 @@ namespace TestApplication
 
     private void optionsToolStripMenuItem_Click(object sender, EventArgs e)
     {
-      DialogSolutionFinder dlg = new DialogSolutionFinder(solverPlugins.StandardPlugin, this.cubeModel.Rubik);
-      dlg.ShowDialog();
+
+    }
+
+    private void exitToolStripMenuItem_Click(object sender, EventArgs e)
+    {
+      Application.Exit();
+    }
+
+    private void aboutToolStripMenuItem_Click(object sender, EventArgs e)
+    {
+      FormAbout frmAbout = new FormAbout();
+      frmAbout.ShowDialog();
+    }
+
+
+
+
+   private void button1_Click(object sender, EventArgs e)
+    {
+      TwoPhaseAlgorithm t = new TwoPhaseAlgorithm();
+      CoordCube c = new CoordCube();
+      c.Flip = 312;
+      c.Twist = 1423;
+      c.URFtoDRB = 24213;
+      c.URtoBR = 931252;
+      t.Solution(c, 30, 1000);
+      //byte b = coord.GetPruning(coord.sliceTwistPrun, 32543);
+      //MessageBox.Show(CoordinateMove.IntToOrientation(1494, 3, 8).ToString());
+
+      //"URF;1,DFR;2,DLF;1,UFL;2,UBR;2,DRB;1,DBL;2,ULB;1";
+
+      //test.GenBasicMoves();
+      //test.InitMoveTables();
+      //test.InitPruningTable();
+      //test.solve(new int[] { 4, 4 });
+
+      //MessageBox.Show(sw.ElapsedMilliseconds.ToString() + "ms");
+      //MessageBox.Show(string.Join(",",test.InverseCoordinatePermutation(new byte[8] { 0, 0, 1, 1, 4, 1, 0, 0 })));
     }
 
   }

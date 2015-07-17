@@ -79,7 +79,7 @@ namespace RubiksCubeLib.CubeModel
 
           this.Rotation[1] -= (dx / scale) % 360;
           this.Rotation[0] += (dy / scale) % 360;
-    
+
         }
         else
           this.Cursor = Cursors.Arrow;
@@ -224,7 +224,7 @@ namespace RubiksCubeLib.CubeModel
                 }
                 else
                 {
-                 this.State = "Error: Invalid second selection, must not be a center";
+                  this.State = "Error: Invalid second selection, must not be a center";
                 }
               }
               else
@@ -240,6 +240,12 @@ namespace RubiksCubeLib.CubeModel
       }
 
       base.OnMouseClick(e);
+    }
+
+    protected override void OnMouseWheel(MouseEventArgs e)
+    {
+      zoom = Math.Min(Math.Max(0.2, zoom + e.Delta / 100.0), 10.0);
+      base.OnMouseWheel(e);
     }
   }
 }

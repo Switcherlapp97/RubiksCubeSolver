@@ -148,7 +148,7 @@ namespace BeginnerSolver
               leftSlice = CubeFlagService.FromFacePosition(leftFace.Position);
               SolverMove(leftSlice, false);
             }
-            SolverAlgorithm("U' {0} U", CubeFlagService.ToString(leftSlice));
+            SolverAlgorithm("U' {0} U", CubeFlagService.ToNotationString(leftSlice));
           }
 
           // Rotate over target position
@@ -175,7 +175,7 @@ namespace BeginnerSolver
         {
           if (c.Faces.First(f => f.Color == Rubik.BottomColor).Position == FacePosition.Top)
           {
-            SolverAlgorithm("{0}' U U {0} U", CubeFlagService.ToString(leftSlic));
+            SolverAlgorithm("{0}' U U {0} U", CubeFlagService.ToNotationString(leftSlic));
           }
           else
           {
@@ -184,9 +184,9 @@ namespace BeginnerSolver
 
             if (c.Faces.First(f => f.Color == Rubik.BottomColor).Position == frontFac.Position && !c.Position.HasFlag(CubeFlag.BottomLayer))
             {
-              SolverAlgorithm("U' {0}' U {0}", CubeFlagService.ToString(leftSlic));
+              SolverAlgorithm("U' {0}' U {0}", CubeFlagService.ToNotationString(leftSlic));
             }
-            else SolverAlgorithm("{0}' U' {0} U", CubeFlagService.ToString(leftSlic));
+            else SolverAlgorithm("{0}' U' {0} U", CubeFlagService.ToNotationString(leftSlic));
           }
         }
         solvedBottomCorners = bottomCorners.Where(bC => bC.Position.Flags == GetTargetFlags(bC) && bC.Faces.First(f => f.Color == Rubik.BottomColor).Position == FacePosition.Bottom);
@@ -220,12 +220,12 @@ namespace BeginnerSolver
           if (new TestScenario(Rubik, new LayerMove(slice, true)).TestCubePosition(c, CubeFlag.TopLayer))
           {
             // Algorithm to the right: U R Ui Ri Ui Fi U F
-            SolverAlgorithm("U {0} U' {0}' U' {1}' U {1}", CubeFlagService.ToString(slice), CubeFlagService.ToString(frontSlice));
+            SolverAlgorithm("U {0} U' {0}' U' {1}' U {1}", CubeFlagService.ToNotationString(slice), CubeFlagService.ToNotationString(frontSlice));
           }
           else
           {
             // Algorithm to the left: Ui Li U L U F Ui Fi
-            SolverAlgorithm("U' {0}' U {0} U {1} U' {1}'", CubeFlagService.ToString(slice), CubeFlagService.ToString(frontSlice));
+            SolverAlgorithm("U' {0}' U {0} U {1} U' {1}'", CubeFlagService.ToNotationString(slice), CubeFlagService.ToNotationString(frontSlice));
           }
         }
 
@@ -252,12 +252,12 @@ namespace BeginnerSolver
         if (!new TestScenario(Rubik, new LayerMove(CubeFlag.TopLayer, true)).TestCubePosition(c, slic))
         {
           // Algorithm to the right: U R Ui Ri Ui Fi U F
-          SolverAlgorithm("U {0} U' {0}' U' {1}' U {1}", CubeFlagService.ToString(slic), CubeFlagService.ToString(frontSlic));
+          SolverAlgorithm("U {0} U' {0}' U' {1}' U {1}", CubeFlagService.ToNotationString(slic), CubeFlagService.ToNotationString(frontSlic));
         }
         else
         {
           // Algorithm to the left: Ui Li U L U F Ui Fi
-          SolverAlgorithm("U' {0}' U {0} U {1} U' {1}'", CubeFlagService.ToString(slic), CubeFlagService.ToString(frontSlic));
+          SolverAlgorithm("U' {0}' U {0} U {1} U' {1}'", CubeFlagService.ToNotationString(slic), CubeFlagService.ToNotationString(frontSlic));
         }
         solvedMiddleEdges = middleEdges.Where(mE => mE.Faces.Count(f => coloredFaces.Count(cf => cf.Color == f.Color && cf.Position == f.Position) == 1) == 2);
       }
@@ -329,7 +329,7 @@ namespace BeginnerSolver
         }
 
         // Algorithm: R U Ri U R U U Ri
-        SolverAlgorithm("{0} U {0}' U {0} U U {0}'", CubeFlagService.ToString(rightSlice));
+        SolverAlgorithm("{0} U {0}' U {0} U U {0}'", CubeFlagService.ToNotationString(rightSlice));
 
         while (CorrectEdges.Count() < 2) SolverMove(CubeFlag.TopLayer, true);
       }
@@ -358,7 +358,7 @@ namespace BeginnerSolver
         }
         else rightSlice = CubeFlag.RightSlice;
 
-        SolverAlgorithm("U {0} U' {1}' U {0}' U' {1}", CubeFlagService.ToString(rightSlice), CubeFlagService.ToString(CubeFlagService.GetOppositeFlag(rightSlice)));
+        SolverAlgorithm("U {0} U' {1}' U {0}' U' {1}", CubeFlagService.ToNotationString(rightSlice), CubeFlagService.ToNotationString(CubeFlagService.GetOppositeFlag(rightSlice)));
       }
 
       // Step 3: Orientation of the corners on the top layer
@@ -374,7 +374,7 @@ namespace BeginnerSolver
         if (!new TestScenario(Rubik, new LayerMove(rightSlic, true)).TestCubePosition(c, CubeFlag.TopLayer)) SolverMove(CubeFlag.TopLayer, true);
 
         // Algorithm: Ri Di R D
-        while (c.Faces.First(f => f.Position == FacePosition.Top).Color != Rubik.TopColor) SolverAlgorithm("{0}' D' {0} D", CubeFlagService.ToString(rightSlic));
+        while (c.Faces.First(f => f.Position == FacePosition.Top).Color != Rubik.TopColor) SolverAlgorithm("{0}' D' {0} D", CubeFlagService.ToNotationString(rightSlic));
       }
       while (topCorners.Count(tC => tC.Position.Flags == GetTargetFlags(tC)) != 4) SolverMove(CubeFlag.TopLayer, true);
     }

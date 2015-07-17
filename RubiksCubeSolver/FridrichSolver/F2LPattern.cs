@@ -44,7 +44,7 @@ namespace FridrichSolver
               new PatternItem(new CubePosition(CubeFlag.TopLayer | f | (rIsX ? CubeFlag.MiddleSliceSides : CubeFlag.MiddleSlice)), correct, EdgeTargetPos),
               new PatternItem(new CubePosition(CornerTargetPos), Orientation.Correct, CornerTargetPos)
             }),
-          new Algorithm("U {0} U {0}' U' {1}' U' {1}",CubeFlagService.ToString(r), CubeFlagService.ToString(f))
+          new Algorithm("U {0} U {0}' U' {1}' U' {1}",CubeFlagService.ToNotationString(r), CubeFlagService.ToNotationString(f))
         },
         {
           new Pattern(new List<PatternItem>()
@@ -52,7 +52,7 @@ namespace FridrichSolver
               new PatternItem(new CubePosition(CubeFlag.TopLayer | r | (!rIsX ? CubeFlag.MiddleSliceSides : CubeFlag.MiddleSlice)), clockwise, EdgeTargetPos),
               new PatternItem(new CubePosition(CornerTargetPos), Orientation.Correct, CornerTargetPos)
             }),
-          new Algorithm("U' {1}' U' {1} U {0} U {0}'",CubeFlagService.ToString(r), CubeFlagService.ToString(f))
+          new Algorithm("U' {1}' U' {1} U {0} U {0}'",CubeFlagService.ToNotationString(r), CubeFlagService.ToNotationString(f))
         },
         {
           new Pattern(new List<PatternItem>()
@@ -60,7 +60,7 @@ namespace FridrichSolver
               new PatternItem(new CubePosition(EdgeTargetPos), Orientation.Clockwise, EdgeTargetPos),
               new PatternItem(new CubePosition(CornerTargetPos), Orientation.Correct, CornerTargetPos)
             }),
-          new Algorithm("{0}2 U2 {1} {0}2 {1}' U2 {0}' U {0}'",CubeFlagService.ToString(r), CubeFlagService.ToString(f))
+          new Algorithm("{0}2 U2 {1} {0}2 {1}' U2 {0}' U {0}'",CubeFlagService.ToNotationString(r), CubeFlagService.ToNotationString(f))
         },
         #endregion
 
@@ -71,7 +71,7 @@ namespace FridrichSolver
               new PatternItem(new CubePosition(CubeFlag.TopLayer | f | (rIsX ? CubeFlag.MiddleSliceSides : CubeFlag.MiddleSlice)), correct, EdgeTargetPos),
               new PatternItem(new CubePosition(CornerTargetPos), Orientation.CounterClockwise, CornerTargetPos)
             }),
-          new Algorithm("{0}' U {0} U' {0}' U {0}",CubeFlagService.ToString(f))
+          new Algorithm("{0}' U {0} U' {0}' U {0}",CubeFlagService.ToNotationString(f))
         },
         {
           new Pattern(new List<PatternItem>()
@@ -79,7 +79,7 @@ namespace FridrichSolver
               new PatternItem(new CubePosition(CubeFlag.TopLayer | r | (!rIsX ? CubeFlag.MiddleSliceSides : CubeFlag.MiddleSlice)), clockwise, EdgeTargetPos),
               new PatternItem(new CubePosition(CornerTargetPos), Orientation.CounterClockwise, CornerTargetPos)
             }),
-          new Algorithm("{0} U {0}' U' {0} U {0}'",CubeFlagService.ToString(r))
+          new Algorithm("{0} U {0}' U' {0} U {0}'",CubeFlagService.ToNotationString(r))
         },
         {
           new Pattern(new List<PatternItem>()
@@ -87,7 +87,7 @@ namespace FridrichSolver
               new PatternItem(new CubePosition(EdgeTargetPos), Orientation.Correct, EdgeTargetPos),
               new PatternItem(new CubePosition(CornerTargetPos), Orientation.CounterClockwise, CornerTargetPos)
             }),
-          new Algorithm("{0} U2 {0} U {0}' U {0} U2 {0}2",CubeFlagService.ToString(r))
+          new Algorithm("{0} U2 {0} U {0}' U {0} U2 {0}2",CubeFlagService.ToNotationString(r))
         },
         {
           new Pattern(new List<PatternItem>()
@@ -95,7 +95,7 @@ namespace FridrichSolver
               new PatternItem(new CubePosition(EdgeTargetPos), Orientation.Clockwise, EdgeTargetPos),
               new PatternItem(new CubePosition(CornerTargetPos), Orientation.CounterClockwise, CornerTargetPos)
             }),
-          new Algorithm("{0} U {0}' U' {0} U' {0}' U2 {1}' U' {1}",CubeFlagService.ToString(r), CubeFlagService.ToString(f))
+          new Algorithm("{0} U {0}' U' {0} U' {0}' U2 {1}' U' {1}",CubeFlagService.ToNotationString(r), CubeFlagService.ToNotationString(f))
         },
         #endregion
 
@@ -106,7 +106,7 @@ namespace FridrichSolver
               new PatternItem(new CubePosition(CubeFlag.TopLayer | f | (rIsX ? CubeFlag.MiddleSliceSides : CubeFlag.MiddleSlice)), correct, EdgeTargetPos),
               new PatternItem(new CubePosition(CornerTargetPos), Orientation.Clockwise, CornerTargetPos)
             }),
-          new Algorithm("{0}' U' {0} U {0}' U' {0}",CubeFlagService.ToString(f))
+          new Algorithm("{0}' U' {0} U {0}' U' {0}",CubeFlagService.ToNotationString(f))
         },
         {
           new Pattern(new List<PatternItem>()
@@ -114,7 +114,7 @@ namespace FridrichSolver
               new PatternItem(new CubePosition(CubeFlag.TopLayer | r | (!rIsX ? CubeFlag.MiddleSliceSides : CubeFlag.MiddleSlice)), clockwise, EdgeTargetPos),
               new PatternItem(new CubePosition(CornerTargetPos), Orientation.Clockwise, CornerTargetPos)
             }),
-          new Algorithm("{0} U' {0}' U {0} U' {0}'",CubeFlagService.ToString(r))
+          new Algorithm("{0} U' {0}' U {0} U' {0}'",CubeFlagService.ToNotationString(r))
         },
         {
           new Pattern(new List<PatternItem>()
@@ -122,7 +122,7 @@ namespace FridrichSolver
               new PatternItem(new CubePosition(EdgeTargetPos), Orientation.Correct, EdgeTargetPos),
               new PatternItem(new CubePosition(CornerTargetPos), Orientation.Clockwise, CornerTargetPos)
             }),
-          new Algorithm("{0}' U' {0} U2 {0}' U {0} U' {0}' U' {0}",CubeFlagService.ToString(f))
+          new Algorithm("{0}' U' {0} U2 {0}' U {0} U' {0}' U' {0}",CubeFlagService.ToNotationString(f))
         },
         {
           new Pattern(new List<PatternItem>()
@@ -130,7 +130,7 @@ namespace FridrichSolver
               new PatternItem(new CubePosition(EdgeTargetPos), Orientation.Clockwise, EdgeTargetPos),
               new PatternItem(new CubePosition(CornerTargetPos), Orientation.Clockwise, CornerTargetPos)
             }),
-          new Algorithm("{1}' U' {1} U {1}' U {1} U2 {0} U {0}'",CubeFlagService.ToString(r), CubeFlagService.ToString(f))
+          new Algorithm("{1}' U' {1} U {1}' U {1} U2 {0} U {0}'",CubeFlagService.ToNotationString(r), CubeFlagService.ToNotationString(f))
         },
         #endregion
 
@@ -141,7 +141,7 @@ namespace FridrichSolver
               new PatternItem(new CubePosition(EdgeTargetPos), Orientation.Correct, EdgeTargetPos),
               new PatternItem(new CubePosition(CornerTargetPos &~ CubeFlag.BottomLayer | CubeFlag.TopLayer), Orientation.Correct, CornerTargetPos)
             }),
-          new Algorithm("{0} U {0}' U' {0} U {0}' U' {0} U {0}'",CubeFlagService.ToString(r))
+          new Algorithm("{0} U {0}' U' {0} U {0}' U' {0} U {0}'",CubeFlagService.ToNotationString(r))
         },
         {
           new Pattern(new List<PatternItem>()
@@ -149,7 +149,7 @@ namespace FridrichSolver
               new PatternItem(new CubePosition(EdgeTargetPos), Orientation.Clockwise, EdgeTargetPos),
               new PatternItem(new CubePosition(CornerTargetPos &~ CubeFlag.BottomLayer | CubeFlag.TopLayer), Orientation.Correct, CornerTargetPos)
             }),
-          new Algorithm("{0} U' {0}' U {1}' U {1}",CubeFlagService.ToString(r), CubeFlagService.ToString(f))
+          new Algorithm("{0} U' {0}' U {1}' U {1}",CubeFlagService.ToNotationString(r), CubeFlagService.ToNotationString(f))
         },
         {
           new Pattern(new List<PatternItem>()
@@ -157,7 +157,7 @@ namespace FridrichSolver
               new PatternItem(new CubePosition(CubeFlag.TopLayer | (rIsX ? CubeFlag.MiddleSliceSides : CubeFlag.MiddleSlice) | b), clockwise, EdgeTargetPos),
               new PatternItem(new CubePosition(CornerTargetPos &~ CubeFlag.BottomLayer | CubeFlag.TopLayer), Orientation.Correct, CornerTargetPos)
             }),
-          new Algorithm("U {0} U2 {0}' U {0} U' {0}'",CubeFlagService.ToString(r))
+          new Algorithm("U {0} U2 {0}' U {0} U' {0}'",CubeFlagService.ToNotationString(r))
         },
         {
           new Pattern(new List<PatternItem>()
@@ -165,7 +165,7 @@ namespace FridrichSolver
               new PatternItem(new CubePosition(CubeFlag.TopLayer | (rIsX ? CubeFlag.MiddleSliceSides : CubeFlag.MiddleSlice) | b), correct, EdgeTargetPos),
               new PatternItem(new CubePosition(CornerTargetPos &~ CubeFlag.BottomLayer | CubeFlag.TopLayer), Orientation.Correct, CornerTargetPos)
             }),
-          new Algorithm("{0}' U {0} U2 {0}' U' {0}",CubeFlagService.ToString(f))
+          new Algorithm("{0}' U {0} U2 {0}' U' {0}",CubeFlagService.ToNotationString(f))
         },
         {
           new Pattern(new List<PatternItem>()
@@ -173,7 +173,7 @@ namespace FridrichSolver
               new PatternItem(new CubePosition(CubeFlag.TopLayer | (!rIsX ? CubeFlag.MiddleSliceSides : CubeFlag.MiddleSlice) | l), clockwise, EdgeTargetPos),
               new PatternItem(new CubePosition(CornerTargetPos &~ CubeFlag.BottomLayer | CubeFlag.TopLayer), Orientation.Correct, CornerTargetPos)
             }),
-          new Algorithm("{0} U' {0}' U2 {0} U {0}'",CubeFlagService.ToString(r))
+          new Algorithm("{0} U' {0}' U2 {0} U {0}'",CubeFlagService.ToNotationString(r))
         },
         {
           new Pattern(new List<PatternItem>()
@@ -181,7 +181,7 @@ namespace FridrichSolver
               new PatternItem(new CubePosition(CubeFlag.TopLayer | (!rIsX ? CubeFlag.MiddleSliceSides : CubeFlag.MiddleSlice) | l), correct, EdgeTargetPos),
               new PatternItem(new CubePosition(CornerTargetPos &~ CubeFlag.BottomLayer | CubeFlag.TopLayer), Orientation.Correct, CornerTargetPos)
             }),
-          new Algorithm("U' {0}' U2 {0} U' {0}' U {0}",CubeFlagService.ToString(f))
+          new Algorithm("U' {0}' U2 {0} U' {0}' U {0}",CubeFlagService.ToNotationString(f))
         },
         {
           new Pattern(new List<PatternItem>()
@@ -189,7 +189,7 @@ namespace FridrichSolver
               new PatternItem(new CubePosition(CubeFlag.TopLayer | (rIsX ? CubeFlag.MiddleSliceSides : CubeFlag.MiddleSlice) | f), correct, EdgeTargetPos),
               new PatternItem(new CubePosition(CornerTargetPos &~ CubeFlag.BottomLayer | CubeFlag.TopLayer), Orientation.Correct, CornerTargetPos)
             }),
-          new Algorithm("{0}' U2 {0} U {0}' U' {0}",CubeFlagService.ToString(f))
+          new Algorithm("{0}' U2 {0} U {0}' U' {0}",CubeFlagService.ToNotationString(f))
         },
         {
           new Pattern(new List<PatternItem>()
@@ -197,7 +197,7 @@ namespace FridrichSolver
               new PatternItem(new CubePosition(CubeFlag.TopLayer | (rIsX ? CubeFlag.MiddleSliceSides : CubeFlag.MiddleSlice) | f), clockwise, EdgeTargetPos),
               new PatternItem(new CubePosition(CornerTargetPos &~ CubeFlag.BottomLayer | CubeFlag.TopLayer), Orientation.Correct, CornerTargetPos)
             }),
-          new Algorithm("{0}' U' {1}' U {1} {0} {1}' U {1}",CubeFlagService.ToString(r), CubeFlagService.ToString(f))
+          new Algorithm("{0}' U' {1}' U {1} {0} {1}' U {1}",CubeFlagService.ToNotationString(r), CubeFlagService.ToNotationString(f))
         },
         {
           new Pattern(new List<PatternItem>()
@@ -205,7 +205,7 @@ namespace FridrichSolver
               new PatternItem(new CubePosition(CubeFlag.TopLayer | (!rIsX ? CubeFlag.MiddleSliceSides : CubeFlag.MiddleSlice) | r), correct, EdgeTargetPos),
               new PatternItem(new CubePosition(CornerTargetPos &~ CubeFlag.BottomLayer | CubeFlag.TopLayer), Orientation.Correct, CornerTargetPos)
             }),
-          new Algorithm("{0} U2 {0}' U' {0} U {0}'",CubeFlagService.ToString(r))
+          new Algorithm("{0} U2 {0}' U' {0} U {0}'",CubeFlagService.ToNotationString(r))
         },
         {
           new Pattern(new List<PatternItem>()
@@ -213,7 +213,7 @@ namespace FridrichSolver
               new PatternItem(new CubePosition(CubeFlag.TopLayer | (!rIsX ? CubeFlag.MiddleSliceSides : CubeFlag.MiddleSlice) | r), clockwise, EdgeTargetPos),
               new PatternItem(new CubePosition(CornerTargetPos &~ CubeFlag.BottomLayer | CubeFlag.TopLayer), Orientation.Correct, CornerTargetPos)
             }),
-          new Algorithm("{0} U {1} U' {1}' {0}' {1} U' {1}'",CubeFlagService.ToString(f), CubeFlagService.ToString(r))
+          new Algorithm("{0} U {1} U' {1}' {0}' {1} U' {1}'",CubeFlagService.ToNotationString(f), CubeFlagService.ToNotationString(r))
         },
         #endregion
 
@@ -224,7 +224,7 @@ namespace FridrichSolver
               new PatternItem(new CubePosition(EdgeTargetPos), Orientation.Correct, EdgeTargetPos),
               new PatternItem(new CubePosition(CornerTargetPos &~ CubeFlag.BottomLayer | CubeFlag.TopLayer), Orientation.CounterClockwise, CornerTargetPos)
             }),
-          new Algorithm("U' {0} U' {0}' U2 {0} U' {0}'",CubeFlagService.ToString(r))
+          new Algorithm("U' {0} U' {0}' U2 {0} U' {0}'",CubeFlagService.ToNotationString(r))
         },
         {
           new Pattern(new List<PatternItem>()
@@ -232,7 +232,7 @@ namespace FridrichSolver
               new PatternItem(new CubePosition(EdgeTargetPos), Orientation.Clockwise, EdgeTargetPos),
               new PatternItem(new CubePosition(CornerTargetPos &~ CubeFlag.BottomLayer | CubeFlag.TopLayer), Orientation.CounterClockwise, CornerTargetPos)
             }),
-          new Algorithm("U' {0} U {0}' U {1}' U' {1}",CubeFlagService.ToString(r), CubeFlagService.ToString(f))
+          new Algorithm("U' {0} U {0}' U {1}' U' {1}",CubeFlagService.ToNotationString(r), CubeFlagService.ToNotationString(f))
         },
         {
           new Pattern(new List<PatternItem>()
@@ -240,7 +240,7 @@ namespace FridrichSolver
               new PatternItem(new CubePosition(CubeFlag.TopLayer | (!rIsX ? CubeFlag.MiddleSliceSides : CubeFlag.MiddleSlice) | r), clockwise, EdgeTargetPos),
               new PatternItem(new CubePosition(CornerTargetPos &~ CubeFlag.BottomLayer | CubeFlag.TopLayer), Orientation.CounterClockwise, CornerTargetPos)
             }),
-          new Algorithm("U {0} U' {0}'",CubeFlagService.ToString(r))
+          new Algorithm("U {0} U' {0}'",CubeFlagService.ToNotationString(r))
         },
         {
           new Pattern(new List<PatternItem>()
@@ -248,7 +248,7 @@ namespace FridrichSolver
               new PatternItem(new CubePosition(CubeFlag.TopLayer | (!rIsX ? CubeFlag.MiddleSliceSides : CubeFlag.MiddleSlice) | r), correct, EdgeTargetPos),
               new PatternItem(new CubePosition(CornerTargetPos &~ CubeFlag.BottomLayer | CubeFlag.TopLayer), Orientation.CounterClockwise, CornerTargetPos)
             }),
-          new Algorithm("{0} U2 {0}2 U' {0}2 U' {0}'",CubeFlagService.ToString(f))
+          new Algorithm("{0} U2 {0}2 U' {0}2 U' {0}'",CubeFlagService.ToNotationString(f))
         },
         {
           new Pattern(new List<PatternItem>()
@@ -256,7 +256,7 @@ namespace FridrichSolver
               new PatternItem(new CubePosition(CubeFlag.TopLayer | (rIsX ? CubeFlag.MiddleSliceSides : CubeFlag.MiddleSlice) | b), clockwise, EdgeTargetPos),
               new PatternItem(new CubePosition(CornerTargetPos &~ CubeFlag.BottomLayer | CubeFlag.TopLayer), Orientation.CounterClockwise, CornerTargetPos)
             }),
-          new Algorithm("U' {0} U {0}' U2 {0} U' {0}'",CubeFlagService.ToString(r))
+          new Algorithm("U' {0} U {0}' U2 {0} U' {0}'",CubeFlagService.ToNotationString(r))
         },
         {
           new Pattern(new List<PatternItem>()
@@ -264,7 +264,7 @@ namespace FridrichSolver
               new PatternItem(new CubePosition(CubeFlag.TopLayer | (rIsX ? CubeFlag.MiddleSliceSides : CubeFlag.MiddleSlice) | b), correct, EdgeTargetPos),
               new PatternItem(new CubePosition(CornerTargetPos &~ CubeFlag.BottomLayer | CubeFlag.TopLayer), Orientation.CounterClockwise, CornerTargetPos)
             }),
-          new Algorithm("U' {0} U' {0}' U {1}' U' {1}",CubeFlagService.ToString(r), CubeFlagService.ToString(f))
+          new Algorithm("U' {0} U' {0}' U {1}' U' {1}",CubeFlagService.ToNotationString(r), CubeFlagService.ToNotationString(f))
         },
         {
           new Pattern(new List<PatternItem>()
@@ -272,7 +272,7 @@ namespace FridrichSolver
               new PatternItem(new CubePosition(CubeFlag.TopLayer | (!rIsX ? CubeFlag.MiddleSliceSides : CubeFlag.MiddleSlice) | l), correct, EdgeTargetPos),
               new PatternItem(new CubePosition(CornerTargetPos &~ CubeFlag.BottomLayer | CubeFlag.TopLayer), Orientation.CounterClockwise, CornerTargetPos)
             }),
-          new Algorithm("{0}' U' {0}",CubeFlagService.ToString(f))
+          new Algorithm("{0}' U' {0}",CubeFlagService.ToNotationString(f))
         },
         {
           new Pattern(new List<PatternItem>()
@@ -280,7 +280,7 @@ namespace FridrichSolver
               new PatternItem(new CubePosition(CubeFlag.TopLayer | (!rIsX ? CubeFlag.MiddleSliceSides : CubeFlag.MiddleSlice) | l), clockwise, EdgeTargetPos),
               new PatternItem(new CubePosition(CornerTargetPos &~ CubeFlag.BottomLayer | CubeFlag.TopLayer), Orientation.CounterClockwise, CornerTargetPos)
             }),
-          new Algorithm("U' {0} U2 {0}' U2 {0} U' {0}'",CubeFlagService.ToString(r))
+          new Algorithm("U' {0} U2 {0}' U2 {0} U' {0}'",CubeFlagService.ToNotationString(r))
         },
         {
           new Pattern(new List<PatternItem>()
@@ -288,7 +288,7 @@ namespace FridrichSolver
               new PatternItem(new CubePosition(CubeFlag.TopLayer | (rIsX ? CubeFlag.MiddleSliceSides : CubeFlag.MiddleSlice) | f), correct, EdgeTargetPos),
               new PatternItem(new CubePosition(CornerTargetPos &~ CubeFlag.BottomLayer | CubeFlag.TopLayer), Orientation.CounterClockwise, CornerTargetPos)
             }),
-          new Algorithm("d {0}' U {0} U' {0}' U' {0}",CubeFlagService.ToString(r))
+          new Algorithm("d {0}' U {0} U' {0}' U' {0}",CubeFlagService.ToNotationString(r))
         },
         {
           new Pattern(new List<PatternItem>()
@@ -296,7 +296,7 @@ namespace FridrichSolver
               new PatternItem(new CubePosition(CubeFlag.TopLayer | (rIsX ? CubeFlag.MiddleSliceSides : CubeFlag.MiddleSlice) | f), clockwise, EdgeTargetPos),
               new PatternItem(new CubePosition(CornerTargetPos &~ CubeFlag.BottomLayer | CubeFlag.TopLayer), Orientation.CounterClockwise, CornerTargetPos)
             }),
-          new Algorithm("{0}' U {0} U2 {1} U {1}'",CubeFlagService.ToString(f), CubeFlagService.ToString(r))
+          new Algorithm("{0}' U {0} U2 {1} U {1}'",CubeFlagService.ToNotationString(f), CubeFlagService.ToNotationString(r))
         },
         #endregion
 
@@ -307,7 +307,7 @@ namespace FridrichSolver
               new PatternItem(new CubePosition(EdgeTargetPos), Orientation.Correct, EdgeTargetPos),
               new PatternItem(new CubePosition(CornerTargetPos &~ CubeFlag.BottomLayer | CubeFlag.TopLayer), Orientation.Clockwise, CornerTargetPos)
             }),
-          new Algorithm("U {0} U {0}' U2 {0} U {0}'",CubeFlagService.ToString(r))
+          new Algorithm("U {0} U {0}' U2 {0} U {0}'",CubeFlagService.ToNotationString(r))
         },
         {
           new Pattern(new List<PatternItem>()
@@ -315,7 +315,7 @@ namespace FridrichSolver
               new PatternItem(new CubePosition(EdgeTargetPos), Orientation.Clockwise, EdgeTargetPos),
               new PatternItem(new CubePosition(CornerTargetPos &~ CubeFlag.BottomLayer | CubeFlag.TopLayer), Orientation.Clockwise, CornerTargetPos)
             }),
-          new Algorithm("U2 {1}' U {1} U {0} U {0}'",CubeFlagService.ToString(r), CubeFlagService.ToString(f))
+          new Algorithm("U2 {1}' U {1} U {0} U {0}'",CubeFlagService.ToNotationString(r), CubeFlagService.ToNotationString(f))
         },
         {
           new Pattern(new List<PatternItem>()
@@ -323,7 +323,7 @@ namespace FridrichSolver
               new PatternItem(new CubePosition(CubeFlag.TopLayer | (!rIsX ? CubeFlag.MiddleSliceSides : CubeFlag.MiddleSlice) | r), clockwise, EdgeTargetPos),
               new PatternItem(new CubePosition(CornerTargetPos &~ CubeFlag.BottomLayer | CubeFlag.TopLayer), Orientation.Clockwise, CornerTargetPos)
             }),
-          new Algorithm("U' {0} U' {0}' U {0} U {0}'",CubeFlagService.ToString(r))
+          new Algorithm("U' {0} U' {0}' U {0} U {0}'",CubeFlagService.ToNotationString(r))
         },
         {
           new Pattern(new List<PatternItem>()
@@ -331,7 +331,7 @@ namespace FridrichSolver
               new PatternItem(new CubePosition(CubeFlag.TopLayer | (!rIsX ? CubeFlag.MiddleSliceSides : CubeFlag.MiddleSlice) | r), correct, EdgeTargetPos),
               new PatternItem(new CubePosition(CornerTargetPos &~ CubeFlag.BottomLayer | CubeFlag.TopLayer), Orientation.Clockwise, CornerTargetPos)
             }),
-          new Algorithm("{1} U' {1}' U2 {0}' U' {0}",CubeFlagService.ToString(f), CubeFlagService.ToString(r))
+          new Algorithm("{1} U' {1}' U2 {0}' U' {0}",CubeFlagService.ToNotationString(f), CubeFlagService.ToNotationString(r))
         },
         {
           new Pattern(new List<PatternItem>()
@@ -339,7 +339,7 @@ namespace FridrichSolver
               new PatternItem(new CubePosition(CubeFlag.TopLayer | (rIsX ? CubeFlag.MiddleSliceSides : CubeFlag.MiddleSlice) | b), correct, EdgeTargetPos),
               new PatternItem(new CubePosition(CornerTargetPos &~ CubeFlag.BottomLayer | CubeFlag.TopLayer), Orientation.Clockwise, CornerTargetPos)
             }),
-          new Algorithm("d {0}' U2 {0} U2 {0}' U {0}",CubeFlagService.ToString(r))
+          new Algorithm("d {0}' U2 {0} U2 {0}' U {0}",CubeFlagService.ToNotationString(r))
         },
         {
           new Pattern(new List<PatternItem>()
@@ -347,7 +347,7 @@ namespace FridrichSolver
               new PatternItem(new CubePosition(CubeFlag.TopLayer | (rIsX ? CubeFlag.MiddleSliceSides : CubeFlag.MiddleSlice) | b), clockwise, EdgeTargetPos),
               new PatternItem(new CubePosition(CornerTargetPos &~ CubeFlag.BottomLayer | CubeFlag.TopLayer), Orientation.Clockwise, CornerTargetPos)
             }),
-          new Algorithm("{0} U {0}'",CubeFlagService.ToString(r))
+          new Algorithm("{0} U {0}'",CubeFlagService.ToNotationString(r))
         },
         {
           new Pattern(new List<PatternItem>()
@@ -355,7 +355,7 @@ namespace FridrichSolver
               new PatternItem(new CubePosition(CubeFlag.TopLayer | (!rIsX ? CubeFlag.MiddleSliceSides : CubeFlag.MiddleSlice) | l), correct, EdgeTargetPos),
               new PatternItem(new CubePosition(CornerTargetPos &~ CubeFlag.BottomLayer | CubeFlag.TopLayer), Orientation.Clockwise, CornerTargetPos)
             }),
-          new Algorithm("d {0}' U' {0} U2 {0}' U {0}",CubeFlagService.ToString(r))
+          new Algorithm("d {0}' U' {0} U2 {0}' U {0}",CubeFlagService.ToNotationString(r))
         },
         {
           new Pattern(new List<PatternItem>()
@@ -363,7 +363,7 @@ namespace FridrichSolver
               new PatternItem(new CubePosition(CubeFlag.TopLayer | (!rIsX ? CubeFlag.MiddleSliceSides : CubeFlag.MiddleSlice) | l), clockwise, EdgeTargetPos),
               new PatternItem(new CubePosition(CornerTargetPos &~ CubeFlag.BottomLayer | CubeFlag.TopLayer), Orientation.Clockwise, CornerTargetPos)
             }),
-          new Algorithm("d {0}' U {0} d' {0} U {0}'",CubeFlagService.ToString(r))
+          new Algorithm("d {0}' U {0} d' {0} U {0}'",CubeFlagService.ToNotationString(r))
         },
         {
           new Pattern(new List<PatternItem>()
@@ -371,7 +371,7 @@ namespace FridrichSolver
               new PatternItem(new CubePosition(CubeFlag.TopLayer | (rIsX ? CubeFlag.MiddleSliceSides : CubeFlag.MiddleSlice) | f), clockwise, EdgeTargetPos),
               new PatternItem(new CubePosition(CornerTargetPos &~ CubeFlag.BottomLayer | CubeFlag.TopLayer), Orientation.Clockwise, CornerTargetPos)
             }),
-          new Algorithm("{0}' U2 {0}2 U {0}2 U {0}",CubeFlagService.ToString(r))
+          new Algorithm("{0}' U2 {0}2 U {0}2 U {0}",CubeFlagService.ToNotationString(r))
         },
         {
           new Pattern(new List<PatternItem>()
@@ -379,7 +379,7 @@ namespace FridrichSolver
               new PatternItem(new CubePosition(CubeFlag.TopLayer | (rIsX ? CubeFlag.MiddleSliceSides : CubeFlag.MiddleSlice) | f), correct, EdgeTargetPos),
               new PatternItem(new CubePosition(CornerTargetPos &~ CubeFlag.BottomLayer | CubeFlag.TopLayer), Orientation.Clockwise, CornerTargetPos)
             }),
-          new Algorithm("U' {0}' U {0}",CubeFlagService.ToString(f))
+          new Algorithm("U' {0}' U {0}",CubeFlagService.ToNotationString(f))
         }
         #endregion
       };

@@ -44,12 +44,6 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Dialogs\DialogOptions.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="Dialogs\DialogOptions.Designer.cs">
-      <DependentUpon>DialogOptions.cs</DependentUpon>
-    </Compile>
     <Compile Include="Dialogs\DialogSolutionFinder.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -62,23 +56,28 @@
     <Compile Include="Dialogs\DialogParityCheckResult.Designer.cs">
       <DependentUpon>DialogParityCheckResult.cs</DependentUpon>
     </Compile>
+    <Compile Include="FormAbout.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="FormAbout.Designer.cs">
+      <DependentUpon>FormAbout.cs</DependentUpon>
+    </Compile>
     <Compile Include="FormMain.cs">
       <SubType>Form</SubType>
     </Compile>
     <Compile Include="FormMain.Designer.cs">
       <DependentUpon>FormMain.cs</DependentUpon>
     </Compile>
-    <Compile Include="Options.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <EmbeddedResource Include="Dialogs\DialogOptions.resx">
-      <DependentUpon>DialogOptions.cs</DependentUpon>
-    </EmbeddedResource>
     <EmbeddedResource Include="Dialogs\DialogSolutionFinder.resx">
       <DependentUpon>DialogSolutionFinder.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Dialogs\DialogParityCheckResult.resx">
       <DependentUpon>DialogParityCheckResult.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="FormAbout.resx">
+      <DependentUpon>FormAbout.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="FormMain.resx">
       <DependentUpon>FormMain.cs</DependentUpon>
@@ -88,6 +87,7 @@
       <SubType>Designer</SubType>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
     </EmbeddedResource>
+    <None Include="app.config" />
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>
@@ -108,6 +108,10 @@
       <Project>{294fecaf-d3d2-4920-91b0-35aacdbe9f16}</Project>
       <Name>RubiksCubeLib</Name>
     </ProjectReference>
+    <ProjectReference Include="..\TwoPhaseAlgorithmSolver\TwoPhaseAlgorithmSolver.csproj">
+      <Project>{bcfe7b3b-a227-46cf-85cb-020c5721f9b0}</Project>
+      <Name>TwoPhaseAlgorithmSolver</Name>
+    </ProjectReference>
   </ItemGroup>
   <ItemGroup>
     <None Include="images\ok.png" />
@@ -123,6 +127,9 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="images\refresh.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="images\logo.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
