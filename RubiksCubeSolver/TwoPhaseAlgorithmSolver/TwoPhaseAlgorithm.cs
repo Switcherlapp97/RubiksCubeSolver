@@ -247,9 +247,7 @@ namespace TwoPhaseAlgorithmSolver
           urfdlf[n + 1] = URFtoDLF_Move[urfdlf[n], mv];
           frbr[n + 1] = FRtoBR_Move[frbr[n], mv];
           parity[n + 1] = parityMove[parity[n], mv];
-          if (urdf[n] < 0 || urdf[n] >= 2016)
           urdf[n + 1] = URtoDF_Move[urdf[n], mv];
-          if (urdf[n + 1] < 0 || urdf[n + 1] >= 20160) continue;
 
           minDistPhase2[n + 1] = Math.Max(GetPruning(sliceURtoDF_Prun, (N_SLICE2
               * urdf[n + 1] + frbr[n + 1])

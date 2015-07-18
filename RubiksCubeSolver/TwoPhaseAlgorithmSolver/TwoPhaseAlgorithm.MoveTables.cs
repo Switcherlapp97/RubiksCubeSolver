@@ -40,38 +40,38 @@ namespace TwoPhaseAlgorithmSolver
         new byte[N_CORNER] { 0, 0, 0, 0, 0, 0, 0, 0 },
         new byte[N_EDGE] { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 });
 
-      moves[1] = new CoordCube(CoordCube.FromInversions(new byte[N_CORNER] { 0, 1, 1, 3, 0, 1, 1, 4 }),
+      moves[3] = new CoordCube(CoordCube.FromInversions(new byte[N_CORNER] { 0, 1, 1, 3, 0, 1, 1, 4 }),
         CoordCube.FromInversions(new byte[N_EDGE] { 0, 1, 1, 1, 0, 2, 2, 2, 5, 1, 1, 11 }),
         new byte[N_CORNER] { 2, 0, 0, 1, 1, 0, 0, 2 },
         new byte[N_EDGE] { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 });
 
-      moves[2] = new CoordCube(CoordCube.FromInversions(new byte[N_CORNER] { 0, 0, 1, 1, 4, 1, 0, 0 }),
+      moves[6] = new CoordCube(CoordCube.FromInversions(new byte[N_CORNER] { 0, 0, 1, 1, 4, 1, 0, 0 }),
         CoordCube.FromInversions(new byte[N_EDGE] { 0, 0, 1, 1, 1, 1, 2, 2, 7, 4, 0, 0 }),
         new byte[N_CORNER] { 1, 2, 0, 0, 2, 1, 0, 0 },
         new byte[N_EDGE] { 0, 1, 0, 0, 0, 1, 0, 0, 1, 1, 0, 0 });
 
-      moves[3] = new CoordCube(CoordCube.FromInversions(new byte[N_CORNER] { 0, 0, 0, 0, 0, 0, 0, 3 }),
+      moves[9] = new CoordCube(CoordCube.FromInversions(new byte[N_CORNER] { 0, 0, 0, 0, 0, 0, 0, 3 }),
         CoordCube.FromInversions(new byte[N_EDGE] { 0, 0, 0, 0, 0, 0, 0, 3, 0, 0, 0, 0 }),
         new byte[N_CORNER] { 0, 0, 0, 0, 0, 0, 0, 0 },
         new byte[N_EDGE] { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 });
 
-      moves[4] = new CoordCube(CoordCube.FromInversions(new byte[N_CORNER] { 0, 0, 0, 1, 1, 4, 1, 0 }),
+      moves[12] = new CoordCube(CoordCube.FromInversions(new byte[N_CORNER] { 0, 0, 0, 1, 1, 4, 1, 0 }),
         CoordCube.FromInversions(new byte[N_EDGE] { 0, 0, 0, 1, 1, 1, 1, 2, 2, 7, 4, 0 }),
         new byte[N_CORNER] { 0, 1, 2, 0, 0, 2, 1, 0 },
         new byte[N_EDGE] { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 });
 
-      moves[5] = new CoordCube(CoordCube.FromInversions(new byte[N_CORNER] { 0, 0, 0, 0, 1, 1, 4, 1 }),
+      moves[15] = new CoordCube(CoordCube.FromInversions(new byte[N_CORNER] { 0, 0, 0, 0, 1, 1, 4, 1 }),
         CoordCube.FromInversions(new byte[N_EDGE] { 0, 0, 0, 0, 1, 1, 1, 1, 2, 2, 7, 4 }),
         new byte[N_CORNER] { 0, 1, 2, 0, 0, 2, 1, 0 },
         new byte[N_EDGE] { 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 1, 1 });
 
-      for (int i = 0; i < N_MOVE / 3; i++)
+      for (int i = 0; i < N_MOVE ; i+=3)
       {
         CoordCube move = moves[i].DeepClone();
         for (int j = 1; j < 3; j++)
         {
           move.Multiply(moves[i]);
-          moves[6 * j + i] = move.DeepClone();
+          moves[i + j] = move.DeepClone();
         }
       }
     }

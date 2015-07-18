@@ -130,7 +130,7 @@ namespace TwoPhaseAlgorithmSolver
       int done = 1;
       while (done != N_SLICE2 * N_URtoDF * N_PARITY)
       {
-        int[] matches = new int[] { 3, 5, 6, 8, 12, 14, 15, 17 };
+        int[] forbidden = new int[] { 3, 5, 6, 8, 12, 14, 15, 17 };
         for (int i = 0; i < N_SLICE2 * N_URtoDF * N_PARITY; i++)
         {
           int parity = i % 2;
@@ -140,11 +140,10 @@ namespace TwoPhaseAlgorithmSolver
           {
             for (int j = 0; j < 18; j++)
             {
-              if (!matches.Contains(j))
+              if (!forbidden.Contains(j))
               {
                 int newSlice = FRtoBR_Move[slice, j] % 24;
                 int newURtoDF = URtoDF_Move[URtoDF, j];
-                if (newURtoDF < 0 || newURtoDF >= 20160) continue;
                 int newParity = parityMove[parity, j];
                 if (GetPruning(sliceURtoDF_Prun, (N_SLICE2 * newURtoDF + newSlice) * 2 + newParity) == 0x0F)
                 {
