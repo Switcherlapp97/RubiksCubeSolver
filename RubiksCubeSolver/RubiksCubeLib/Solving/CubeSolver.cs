@@ -67,7 +67,7 @@ namespace RubiksCubeLib.Solver
     /// Returns the solution for the transferred Rubik
     /// </summary>
     /// <param name="cube">Defines the Rubik to be solved</param>
-    private void Solve(Rubik cube)
+    protected virtual void Solve(Rubik cube)
     {
       Rubik = cube.DeepClone();
       Algorithm = new Algorithm();
@@ -77,7 +77,7 @@ namespace RubiksCubeLib.Solver
       RemoveUnnecessaryMoves();
     }
 
-    private void GetSolution()
+    protected void GetSolution()
     {
       Stopwatch sw = new Stopwatch();
       foreach (KeyValuePair<string,Action> step in this.SolutionSteps)

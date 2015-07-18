@@ -37,7 +37,7 @@ namespace RubiksCubeLib
     /// <summary>
     /// Returns the name (the notation) of this LayerMove
     /// </summary>
-    public string Name { get { return string.Format("{0} {1}", this.Layer, this.Direction ? "Clockwise" : "Counter-Clockwise"); } }
+    public string Name { get { return string.Format("{0} {1}", this.Layer, this.Twice ? "x2" : this.Direction ? "Clockwise" : "Counter-Clockwise"); } }
 
     /// <summary>
     /// Describes the layer of this LayerMove

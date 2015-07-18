@@ -63,7 +63,7 @@ namespace TestApplication
 
     private void solveToolStripMenuItem1_Click(object sender, EventArgs e)
     {
-      DialogSolutionFinder dlg = new DialogSolutionFinder(solverPlugins.StandardPlugin, this.cubeModel.Rubik);
+      DialogSolutionFinder dlg = new DialogSolutionFinder(new TwoPhaseAlgorithm(), this.cubeModel.Rubik);
       if (dlg.ShowDialog() == DialogResult.OK)
       {
         dlg.Algorithm.Moves.ForEach(m => rotations.Add(m));
@@ -143,32 +143,5 @@ namespace TestApplication
       FormAbout frmAbout = new FormAbout();
       frmAbout.ShowDialog();
     }
-
-
-
-
-   private void button1_Click(object sender, EventArgs e)
-    {
-      TwoPhaseAlgorithm t = new TwoPhaseAlgorithm();
-      CoordCube c = new CoordCube();
-      c.Flip = 312;
-      c.Twist = 1423;
-      c.URFtoDRB = 24213;
-      c.URtoBR = 931252;
-      t.Solution(c, 30, 1000);
-      //byte b = coord.GetPruning(coord.sliceTwistPrun, 32543);
-      //MessageBox.Show(CoordinateMove.IntToOrientation(1494, 3, 8).ToString());
-
-      //"URF;1,DFR;2,DLF;1,UFL;2,UBR;2,DRB;1,DBL;2,ULB;1";
-
-      //test.GenBasicMoves();
-      //test.InitMoveTables();
-      //test.InitPruningTable();
-      //test.solve(new int[] { 4, 4 });
-
-      //MessageBox.Show(sw.ElapsedMilliseconds.ToString() + "ms");
-      //MessageBox.Show(string.Join(",",test.InverseCoordinatePermutation(new byte[8] { 0, 0, 1, 1, 4, 1, 0, 0 })));
-    }
-
   }
 }

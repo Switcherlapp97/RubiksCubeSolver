@@ -62,7 +62,7 @@ namespace TwoPhaseAlgorithmSolver
 
       moves[15] = new CoordCube(CoordCube.FromInversions(new byte[N_CORNER] { 0, 0, 0, 0, 1, 1, 4, 1 }),
         CoordCube.FromInversions(new byte[N_EDGE] { 0, 0, 0, 0, 1, 1, 1, 1, 2, 2, 7, 4 }),
-        new byte[N_CORNER] { 0, 1, 2, 0, 0, 2, 1, 0 },
+        new byte[N_CORNER] { 0, 0, 1, 2, 0, 0, 2, 1 },
         new byte[N_EDGE] { 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 1, 1 });
 
       for (int i = 0; i < N_MOVE ; i+=3)

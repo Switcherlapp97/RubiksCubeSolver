@@ -1,4 +1,6 @@
-﻿using RubiksCubeLib.Solver;
+﻿using RubiksCubeLib;
+using RubiksCubeLib.RubiksCube;
+using RubiksCubeLib.Solver;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -6,8 +8,9 @@ using System.Text;
 
 namespace TwoPhaseAlgorithmSolver
 {
-    public partial class TwoPhaseAlgorithm
+    public partial class TwoPhaseAlgorithm : CubeSolver
     {
+      #region constants
       // phase 1 coordinates
       public const short N_TWIST = 2187; // 3^7 possible corner orientations
       public const short N_FLIP = 2048; // 2^11 possible edge flips
@@ -28,11 +31,58 @@ namespace TwoPhaseAlgorithmSolver
       public const short N_MOVE = 18;
       public const short N_CORNER = 8;
       public const short N_EDGE = 12;
+      #endregion
+
+      public override string Name
+      {
+        get { return "Two Phase Algorithm"; }
+      }
+
+      public override string Description
+      {
+        get { return "An Algorithm from Kociemba for solving Rubik's Cube with a little amount of moves. The program uses a search algorithm which is called iterative deepening A* with a lowerbound heuristic function (IDA*)"; }
+      }
+
+      protected override void AddSolutionSteps()
+      {
+        this.SolutionSteps = new Dictionary<string, Action>();
+        this.SolutionSteps.Add("Init move tables", InitMoveTables);
+        this.SolutionSteps.Add("Init pruning tables", InitPruningTables);
+        this.SolutionSteps.Add("IDA* search for solution", Solution);
+      }
+
+      public int MaxDepth { get; set; }
+      public long TimeOut { get; set; }
+      private CoordCube _coordCube;
 
       public TwoPhaseAlgorithm()
       {
-        this.InitMoveTables();
-        this.InitPruningTables();
+        AddSolutionSteps();
+      }
+
+      public TwoPhaseAlgorithm(Rubik cube) : this(cube, 30, 10000) { }
+
+      public TwoPhaseAlgorithm(Rubik cube, int maxDepth, long timeOut)
+      {
+        Rubik = cube.DeepClone();
+        _coordCube = ToCoordCube(cube);
+        this.MaxDepth = maxDepth;
+        this.TimeOut = timeOut;
+        this.Algorithm = new Algorithm();
+        InitStandardCube();
+      }
+
+      protected override void Solve(Rubik cube)
+      {
+        Rubik = cube.DeepClone();
+        _coordCube = ToCoordCube(cube);
+        this.MaxDepth = 30;
+        this.TimeOut = 10000;
+        Algorithm = new Algorithm();
+        InitStandardCube();
+
+        GetSolution();
+        RemoveUnnecessaryMoves();
       }
 
       #region solving logic
@@ -53,20 +103,20 @@ namespace TwoPhaseAlgorithmSolver
       private int[] minDistPhase1 = new int[31]; // IDA* distance do goal estimations
       private int[] minDistPhase2 = new int[31];
 
-      public string Solution(CoordCube cube, int maxDepth, long timeOut)
+      public void Solution()
       {
         int s = 0;
 
         po[0] = 0;
         ax[0] = 0;
-        flip[0] = cube.Flip;
-        twist[0] = cube.Twist;
-        parity[0] = cube.Parity;
-        slice[0] = cube.FRtoBR / 24;
-        urfdlf[0] = cube.URFtoDLF;
-        frbr[0] = cube.FRtoBR;
-        urul[0] = cube.URtoUL;
-        ubdf[0] = cube.UBtoDF;
+        flip[0] = this._coordCube.Flip;
+        twist[0] = this._coordCube.Twist;
+        parity[0] = this._coordCube.Parity;
+        slice[0] = this._coordCube.FRtoBR / 24;
+        urfdlf[0] = this._coordCube.URFtoDLF;
+        frbr[0] = this._coordCube.FRtoBR;
+        urul[0] = this._coordCube.URtoUL;
+        ubdf[0] = this._coordCube.UBtoDF;
 
         minDistPhase1[1] = 1;
         int mv = 0, n = 0;
@@ -92,10 +142,10 @@ namespace TwoPhaseAlgorithmSolver
                 // increment axis
                 if (++ax[n] > 5)
                 {
-                  if (DateTime.Now.Millisecond - tStart > timeOut << 10) return "Error 8";
+                  if (DateTime.Now.Millisecond - tStart > this.TimeOut << 10) return; // Error: Timeout, no solution within given time
                   if (n == 0)
                   {
-                    if (depthPhase1 >= maxDepth) return "Error 7";
+                    if (depthPhase1 >= this.MaxDepth) return; // Error: No solution exists for the given maxDepth
                     else
                     {
                       depthPhase1++;
@@ -133,11 +183,19 @@ namespace TwoPhaseAlgorithmSolver
           if (minDistPhase1[n + 1] == 0 && n >= depthPhase1 - 5)
           {
             minDistPhase1[n + 1] = 10;// instead of 10 any value >5 is possible
-            if (n == depthPhase1 - 1 && (s = TotalDepth(depthPhase1, maxDepth)) >= 0)
+            if (n == depthPhase1 - 1 && (s = TotalDepth(depthPhase1, this.MaxDepth)) >= 0)
             {
               if (s == depthPhase1
                   || (ax[depthPhase1 - 1] != ax[depthPhase1] && ax[depthPhase1 - 1] != ax[depthPhase1] + 3))
-                return string.Join(",", ax);
+              {
+                // solution found
+                for (int i = 0; i < 32; i++)
+                {
+                  if (po[i] == 0) break;
+                  this.SolverMove(IntsToLayerMove(ax[i], po[i]));
+                }
+                return;
+              }
             }
           }
         } while (true);
