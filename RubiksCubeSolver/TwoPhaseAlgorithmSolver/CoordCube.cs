@@ -116,12 +116,15 @@ namespace TwoPhaseAlgorithmSolver
     }
     private void SetTwist(short twist)
     {
+      int sum = 0;
       for (int i = 0; i < N_CORNER - 1; i++)
       {
         int divisor = (int)Math.Pow(3, N_CORNER - (i + 2));
         co[i] = (byte)(twist / divisor);
+        sum += twist / divisor;
         twist = (short)(twist % divisor);
       }
+      co[N_CORNER - 1] = (byte)((3 - sum % 3) % 3);
     }
     private short GetFlip()
     {
@@ -132,12 +135,15 @@ namespace TwoPhaseAlgorithmSolver
     }
     private void SetFlip(short flip)
     {
+      int sum = 0;
       for (int i = 0; i < N_EDGE - 1; i++)
       {
         int divisor = (int)Math.Pow(2, N_EDGE - (i + 2));
         eo[i] = (byte)(flip / divisor);
+        sum += flip / divisor;
         flip = (short)(flip % divisor);
       }
+      eo[N_EDGE - 1] = (byte)((2 - sum % 2) % 2);
     }
     private short GetCornerParity()
     {
@@ -416,7 +422,7 @@ namespace TwoPhaseAlgorithmSolver
       for (int i = 2; i > 0; i--)
       {
         int k = 0;
-        while (edge3[i] != i + 4)
+        while (edge3[i] - 1 != i + 3)
         {
           RotateLeft(edge3, 0, i);
           k++;
@@ -434,7 +440,7 @@ namespace TwoPhaseAlgorithmSolver
 
       for (int i = 1, k; i < 3; i++)
       {
-        k = b & (i + 1);
+        k = b % (i + 1);
         b /= i + 1;
         while (k-- > 0)
           RotateRight(edge3, 0, i);

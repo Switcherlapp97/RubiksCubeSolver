@@ -121,7 +121,7 @@ namespace TwoPhaseAlgorithmSolver
         minDistPhase1[1] = 1;
         int mv = 0, n = 0;
         bool busy = false;
-        int depthPhase1 = 1;
+        int depthPhase1 = 0;
 
         long tStart = DateTime.Now.Millisecond;
 
@@ -131,8 +131,10 @@ namespace TwoPhaseAlgorithmSolver
           {
             if ((depthPhase1 - n > minDistPhase1[n + 1]) && !busy)
             {
-              if (ax[n] == 0 || ax[n] == 3) ax[++n] = 1;
-              else ax[++n] = 0;
+              if (ax[n] == 0 || ax[n] == 3) 
+                ax[++n] = 1;
+              else 
+                ax[++n] = 0;
               po[n] = 1;
             }
             else if (++po[n] > 3)
@@ -150,7 +152,7 @@ namespace TwoPhaseAlgorithmSolver
                     {
                       depthPhase1++;
                       ax[n] = 0;
-                      po[n] = 1;
+                      po[n] = 1 ;
                       busy = false;
                       break;
                     }
@@ -185,17 +187,13 @@ namespace TwoPhaseAlgorithmSolver
             minDistPhase1[n + 1] = 10;// instead of 10 any value >5 is possible
             if (n == depthPhase1 - 1 && (s = TotalDepth(depthPhase1, this.MaxDepth)) >= 0)
             {
-              if (s == depthPhase1
-                  || (ax[depthPhase1 - 1] != ax[depthPhase1] && ax[depthPhase1 - 1] != ax[depthPhase1] + 3))
-              {
                 // solution found
-                for (int i = 0; i < 32; i++)
+                for (int i = 0; i < s; i++)
                 {
                   if (po[i] == 0) break;
                   this.SolverMove(IntsToLayerMove(ax[i], po[i]));
                 }
                 return;
-              }
             }
           }
         } while (true);

@@ -66,6 +66,7 @@ namespace TestApplication
       DialogSolutionFinder dlg = new DialogSolutionFinder(new TwoPhaseAlgorithm(), this.cubeModel.Rubik);
       if (dlg.ShowDialog() == DialogResult.OK)
       {
+        rotations.Clear();
         dlg.Algorithm.Moves.ForEach(m => rotations.Add(m));
       }
     }
