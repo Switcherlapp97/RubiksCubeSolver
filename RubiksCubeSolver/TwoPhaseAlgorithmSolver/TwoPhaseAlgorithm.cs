@@ -3,6 +3,7 @@ using RubiksCubeLib.RubiksCube;
 using RubiksCubeLib.Solver;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Text;
 
@@ -51,6 +52,7 @@ namespace TwoPhaseAlgorithmSolver
         this.SolutionSteps.Add("IDA* search for solution", Solution);
       }
 
+      public string TablePath { get; set; }
       public int MaxDepth { get; set; }
       public long TimeOut { get; set; }
       private CoordCube _coordCube;
@@ -58,18 +60,9 @@ namespace TwoPhaseAlgorithmSolver
       public TwoPhaseAlgorithm()
       {
         AddSolutionSteps();
-      }
-
-      public TwoPhaseAlgorithm(Rubik cube) : this(cube, 30, 10000) { }
-
-      public TwoPhaseAlgorithm(Rubik cube, int maxDepth, long timeOut)
-      {
-        Rubik = cube.DeepClone();
-        _coordCube = ToCoordCube(cube);
-        this.MaxDepth = maxDepth;
-        this.TimeOut = timeOut;
-        this.Algorithm = new Algorithm();
-        InitStandardCube();
+        this.TablePath = @"tables\";
+        if (!Directory.Exists(this.TablePath))
+          Directory.CreateDirectory(this.TablePath);
       }
 
       protected override void Solve(Rubik cube)

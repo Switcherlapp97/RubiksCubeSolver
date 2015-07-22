@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Text;
 
@@ -65,7 +66,7 @@ namespace TwoPhaseAlgorithmSolver
         new byte[N_CORNER] { 0, 0, 1, 2, 0, 0, 2, 1 },
         new byte[N_EDGE] { 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 1, 1 });
 
-      for (int i = 0; i < N_MOVE ; i+=3)
+      for (int i = 0; i < N_MOVE; i += 3)
       {
         CoordCube move = moves[i].DeepClone();
         for (int j = 1; j < 3; j++)
@@ -78,29 +79,37 @@ namespace TwoPhaseAlgorithmSolver
 
     private void InitTwistMoveTable()
     {
-      CoordCube a = new CoordCube();
-      for (short i = 0; i < N_TWIST; i++)
+      if (!this.LoadMoveTableSuccessful(Path.Combine(this.TablePath,"twist_move.file"), N_MOVE, N_TWIST, out twistMove))
       {
-        for (int j = 0; j < N_MOVE; j++)
+        CoordCube a = new CoordCube();
+        for (short i = 0; i < N_TWIST; i++)
         {
-          a.Twist = i;
-          a.Multiply(moves[j]);
-          twistMove[i, j] = a.Twist;
+          for (int j = 0; j < N_MOVE; j++)
+          {
+            a.Twist = i;
+            a.Multiply(moves[j]);
+            twistMove[i, j] = a.Twist;
+          }
         }
+        SaveMoveTable(Path.Combine(this.TablePath,"twist_move.file"), twistMove);
       }
     }
 
     private void InitFlipMoveTable()
     {
-      CoordCube a = new CoordCube();
-      for (short i = 0; i < N_FLIP; i++)
+      if (!this.LoadMoveTableSuccessful(Path.Combine(this.TablePath,"flip_move.file"), N_MOVE, N_FLIP, out flipMove))
       {
-        for (int j = 0; j < N_MOVE; j++)
+        CoordCube a = new CoordCube();
+        for (short i = 0; i < N_FLIP; i++)
         {
-          a.Flip = i;
-          a.Multiply(moves[j]);
-          flipMove[i, j] = a.Flip;
+          for (int j = 0; j < N_MOVE; j++)
+          {
+            a.Flip = i;
+            a.Multiply(moves[j]);
+            flipMove[i, j] = a.Flip;
+          }
         }
+        SaveMoveTable(Path.Combine(this.TablePath,"flip_move.file"), twistMove);
       }
     }
 
@@ -111,80 +120,163 @@ namespace TwoPhaseAlgorithmSolver
 
     private void InitFRtoBR_MoveTable()
     {
-      CoordCube a = new CoordCube();
-      for (short i = 0; i < N_FRtoBR; i++)
+      if (!this.LoadMoveTableSuccessful(Path.Combine(this.TablePath,"fr_to_br_move.file"), N_MOVE, N_FRtoBR, out FRtoBR_Move))
       {
-        for (int j = 0; j < N_MOVE; j++)
+        CoordCube a = new CoordCube();
+        for (short i = 0; i < N_FRtoBR; i++)
         {
-          a.FRtoBR = i;
-          a.Multiply(moves[j]);
-          FRtoBR_Move[i, j] = a.FRtoBR;
+          for (int j = 0; j < N_MOVE; j++)
+          {
+            a.FRtoBR = i;
+            a.Multiply(moves[j]);
+            FRtoBR_Move[i, j] = a.FRtoBR;
+          }
         }
+        SaveMoveTable(Path.Combine(this.TablePath,"fr_to_br_move.file"), FRtoBR_Move);
       }
     }
 
     private void InitURFtoDLF_MoveTable()
     {
-      CoordCube a = new CoordCube();
-      for (short i = 0; i < N_URFtoDLF; i++)
+      if (!this.LoadMoveTableSuccessful(Path.Combine(this.TablePath,"urf_to_dlf_move.file"), N_MOVE, N_URFtoDLF, out URFtoDLF_Move))
       {
-        for (int j = 0; j < N_MOVE; j++)
+        CoordCube a = new CoordCube();
+        for (short i = 0; i < N_URFtoDLF; i++)
         {
-          a.URFtoDLF = i;
-          a.Multiply(moves[j]);
-          URFtoDLF_Move[i, j] = a.URFtoDLF;
+          for (int j = 0; j < N_MOVE; j++)
+          {
+            a.URFtoDLF = i;
+            a.Multiply(moves[j]);
+            URFtoDLF_Move[i, j] = a.URFtoDLF;
+          }
         }
+        SaveMoveTable(Path.Combine(this.TablePath,"urf_to_dlf_move.file"), URFtoDLF_Move);
       }
     }
 
     private void InitURtoUL_MoveTable()
     {
-      CoordCube a = new CoordCube();
-      for (short i = 0; i < N_URtoUL; i++)
+      if (!this.LoadMoveTableSuccessful(Path.Combine(this.TablePath,"ur_to_ul_move.file"), N_MOVE, N_URtoUL, out URtoUL_Move))
       {
-        for (int j = 0; j < N_MOVE; j++)
+        CoordCube a = new CoordCube();
+        for (short i = 0; i < N_URtoUL; i++)
         {
-          a.URtoUL = i;
-          a.Multiply(moves[j]);
-          URtoUL_Move[i, j] = a.URtoUL;
+          for (int j = 0; j < N_MOVE; j++)
+          {
+            a.URtoUL = i;
+            a.Multiply(moves[j]);
+            URtoUL_Move[i, j] = a.URtoUL;
+          }
         }
+        SaveMoveTable(Path.Combine(this.TablePath,"ur_to_ul_move.file"), URtoUL_Move);
       }
     }
 
     private void InitUBtoDF_MoveTable()
     {
-      CoordCube a = new CoordCube();
-      for (short i = 0; i < N_UBtoDF; i++)
+      if (!this.LoadMoveTableSuccessful(Path.Combine(this.TablePath,"ub_to_df_move.file"), N_MOVE, N_UBtoDF, out UBtoDF_Move))
       {
-        for (int j = 0; j < N_MOVE; j++)
+        CoordCube a = new CoordCube();
+        for (short i = 0; i < N_UBtoDF; i++)
         {
-          a.UBtoDF = i;
-          a.Multiply(moves[j]);
-          UBtoDF_Move[i, j] = a.UBtoDF;
+          for (int j = 0; j < N_MOVE; j++)
+          {
+            a.UBtoDF = i;
+            a.Multiply(moves[j]);
+            UBtoDF_Move[i, j] = a.UBtoDF;
+          }
         }
+        SaveMoveTable(Path.Combine(this.TablePath,"ub_to_df_move.file"), UBtoDF_Move);
       }
     }
 
     private void InitURtoDF_MoveTable()
     {
-      CoordCube a = new CoordCube();
-      for (short i = 0; i < N_URtoDF; i++)
+      if (!this.LoadMoveTableSuccessful(Path.Combine(this.TablePath,"ur_to_df_move.file"), N_MOVE, N_URtoDF, out URtoDF_Move))
       {
-        for (int j = 0; j < N_MOVE; j++)
+        CoordCube a = new CoordCube();
+        for (short i = 0; i < N_URtoDF; i++)
         {
-          a.URtoDF = i;
-          a.Multiply(moves[j]);
-          URtoDF_Move[i, j] = (short)a.URtoDF;
+          for (int j = 0; j < N_MOVE; j++)
+          {
+            a.URtoDF = i;
+            a.Multiply(moves[j]);
+            URtoDF_Move[i, j] = (short)a.URtoDF;
+          }
         }
+        SaveMoveTable(Path.Combine(this.TablePath,"ur_to_df_move.file"), URtoDF_Move);
       }
-      int max = URtoDF_Move.Cast<short>().Max();
     }
 
     private void InitMergeURtoULandUBtoDF()
     {
-      for (short uRtoUL = 0; uRtoUL < 336; uRtoUL++)
-        for (short uBtoDF = 0; uBtoDF < 336; uBtoDF++)
-          mergeURtoULandUBtoDF[uRtoUL, uBtoDF] = (short)CoordCube.GetURtoDF(uRtoUL, uBtoDF);
+      if (!this.LoadMoveTableSuccessful(Path.Combine(this.TablePath,"merge_move.file"), 336, 336, out mergeURtoULandUBtoDF))
+      {
+        for (short uRtoUL = 0; uRtoUL < 336; uRtoUL++)
+          for (short uBtoDF = 0; uBtoDF < 336; uBtoDF++)
+            mergeURtoULandUBtoDF[uRtoUL, uBtoDF] = (short)CoordCube.GetURtoDF(uRtoUL, uBtoDF);
+        SaveMoveTable(Path.Combine(this.TablePath,"merge_move.file"), mergeURtoULandUBtoDF);
+      }
     }
+
+    #region Save and load move tables from files
+    private short[,] LoadMoveTable(string filename, int lengthX, int lengthY)
+    {
+      if (!File.Exists(filename)) throw new Exception("File does not exist!");
+      short[,] newTable = new short[lengthY, lengthX];
+      using (StreamReader sr = new StreamReader(filename))
+      {
+        int rowIndex = 0;
+        while (!sr.EndOfStream)
+        {
+          string line = sr.ReadLine();
+          string[] entries = line.Split(';');
+          if (entries.Length != lengthX)
+            throw new Exception("Invalid input file!");
+          for (int columnIndex = 0; columnIndex < lengthX; columnIndex++)
+          {
+            short entry = 0;
+            if (short.TryParse(entries[columnIndex], out entry))
+              newTable[rowIndex, columnIndex] = short.Parse(entries[columnIndex]);
+            else
+              throw new Exception("Invalid input file!");
+          }
+          rowIndex++;
+        }
+        if (rowIndex != lengthY)
+          throw new Exception("Invalid input file!");
+      }
+
+      return newTable;
+    }
+
+    private bool LoadMoveTableSuccessful(string filename, int lengthX, int lengthY, out short[,] newTable)
+    {
+      newTable = new short[lengthY, lengthX];
+      try
+      {
+        newTable = LoadMoveTable(filename, lengthX, lengthY);
+        return true;
+      }
+      catch
+      {
+        return false;
+      }
+    }
+
+    private void SaveMoveTable(string filename, short[,] table)
+    {
+      using (StreamWriter sw = new StreamWriter(filename))
+      {
+        for (int rowIndex = 0; rowIndex < table.GetLength(0); rowIndex++)
+        {
+          string line = table[rowIndex, 0].ToString();
+          for (int columnIndex = 1; columnIndex < table.GetLength(1); columnIndex++)
+            line += string.Format(";{0}", table[rowIndex, columnIndex]);
+          sw.WriteLine(line);
+        }
+      }
+    }
+    #endregion
   }
 }

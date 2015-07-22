@@ -104,6 +104,14 @@
     </Compile>
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\BeginnerSolver\BeginnerSolver.csproj">
+      <Project>{241c63d7-f7d0-4c6b-af5b-8e37fae17f03}</Project>
+      <Name>BeginnerSolver</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\FridrichSolver\FridrichSolver.csproj">
+      <Project>{4c13bb99-b0ca-4078-9c4f-c0d4faa8aa17}</Project>
+      <Name>FridrichSolver</Name>
+    </ProjectReference>
     <ProjectReference Include="..\RubiksCubeLib\RubiksCubeLib.csproj">
       <Project>{294fecaf-d3d2-4920-91b0-35aacdbe9f16}</Project>
       <Name>RubiksCubeLib</Name>

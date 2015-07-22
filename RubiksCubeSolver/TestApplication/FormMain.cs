@@ -12,6 +12,8 @@ using System.Linq;
 using System.Text;
 using System.Windows.Forms;
 using TwoPhaseAlgorithmSolver;
+using BeginnerSolver;
+using FridrichSolver;
 
 namespace TestApplication
 {
