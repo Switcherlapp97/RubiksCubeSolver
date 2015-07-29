@@ -28,12 +28,12 @@ namespace BeginnerSolver
 
     protected override void AddSolutionSteps()
     {
-      this.SolutionSteps = new Dictionary<string, Action>();
-      this.SolutionSteps.Add("Cross on bottom layer", SolveFirstCross);
-      this.SolutionSteps.Add("Complete bottom layer", CompleteFirstLayer);
-      this.SolutionSteps.Add("Complete middle layer", CompleteMiddleLayer);
-      this.SolutionSteps.Add("Cross on top layer", SolveCrossTopLayer);
-      this.SolutionSteps.Add("Complete top layer", CompleteLastLayer);
+      this.SolutionSteps = new Dictionary<string, Tuple<Action,SolutionStepType>>();
+      this.AddSolutionStep("Cross on bottom layer", SolveFirstCross);
+      this.AddSolutionStep("Complete bottom layer", CompleteFirstLayer);
+      this.AddSolutionStep("Complete middle layer", CompleteMiddleLayer);
+      this.AddSolutionStep("Cross on top layer", SolveCrossTopLayer);
+      this.AddSolutionStep("Complete top layer", CompleteLastLayer);
     }
 
     private void SolveFirstCross()

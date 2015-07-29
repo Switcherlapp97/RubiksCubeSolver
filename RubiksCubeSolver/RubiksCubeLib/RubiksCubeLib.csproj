@@ -94,6 +94,7 @@
     <Compile Include="Solving\Pattern\Pattern.cs" />
     <Compile Include="Solving\SolutionErrorEventArgs.cs" />
     <Compile Include="Solving\SolutionStepCompleted.cs" />
+    <Compile Include="Solving\SolutionStepType.cs" />
     <Compile Include="Solving\Solvability.cs" />
     <Compile Include="Solving\TestScenario.cs" />
   </ItemGroup>

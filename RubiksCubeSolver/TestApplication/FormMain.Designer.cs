@@ -219,7 +219,7 @@
       // aboutToolStripMenuItem
       // 
       this.aboutToolStripMenuItem.Name = "aboutToolStripMenuItem";
-      this.aboutToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+      this.aboutToolStripMenuItem.Size = new System.Drawing.Size(116, 22);
       this.aboutToolStripMenuItem.Text = "&About...";
       this.aboutToolStripMenuItem.Click += new System.EventHandler(this.aboutToolStripMenuItem_Click);
       // 
@@ -391,6 +391,8 @@
       this.MainMenuStrip = this.menuStrip1;
       this.Name = "FormMain";
       this.Text = "Rubik\'s Cube Solver";
+      this.Activated += new System.EventHandler(this.FormMain_Activated);
+      this.Deactivate += new System.EventHandler(this.FormMain_Deactivate);
       this.menuStrip1.ResumeLayout(false);
       this.menuStrip1.PerformLayout();
       this.splitContainer1.Panel1.ResumeLayout(false);

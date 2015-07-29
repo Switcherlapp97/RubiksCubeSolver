@@ -23,10 +23,17 @@ namespace TestApplication
     public Algorithm Algorithm { get; private set; }
 
 
-    public DialogSolutionFinder(CubeSolver solver, Rubik rubik)
+    public DialogSolutionFinder(CubeSolver solver, Rubik rubik, Form parent = null)
     {
       this.solver = solver;
       InitializeComponent();
+      if (parent != null)
+      {
+        this.Owner = parent;
+        this.StartPosition = FormStartPosition.CenterParent;
+      }
+      this.ShowInTaskbar = false;
+
       AddStepLabels(solver);
 
       solver.TrySolveAsync(rubik);
@@ -54,7 +61,7 @@ namespace TestApplication
         PictureBox currentStepImg = stepImgs[currentIndex];
         Label currentStep = stepLabels[currentIndex];
         if (currentStepImg.InvokeRequired) currentStepImg.Invoke((MethodInvoker)delegate() { currentStepImg.Image = Properties.Resources.ok; });
-        if (currentStep.InvokeRequired) currentStep.Invoke((MethodInvoker)delegate() { currentStep.Text = string.Format("{0} moves", e.Algorithm.Moves.Count); });
+        if (currentStep.InvokeRequired) currentStep.Invoke((MethodInvoker)delegate() { currentStep.Text = e.Type == SolutionStepType.Standard ? string.Format("{0} moves", e.Algorithm.Moves.Count) : string.Empty; });
         currentIndex++;
 
         if (currentIndex < stepImgs.Count)
@@ -82,7 +89,7 @@ namespace TestApplication
       // Start pos 15,62
       int y = 62, x = 15;
 
-      foreach (KeyValuePair<string, Action> step in solver.SolutionSteps)
+      foreach (KeyValuePair<string, Tuple<Action, SolutionStepType>> step in solver.SolutionSteps)
       {
         Label l = new Label();
         l.AutoSize = true;

@@ -43,7 +43,7 @@ namespace RubiksCubeLib.Solver
     /// </summary>
     public abstract string Description { get; }
 
-    public Dictionary<string, Action> SolutionSteps { get; protected set; }
+    public Dictionary<string, Tuple<Action, SolutionStepType>> SolutionSteps { get; protected set; }
 
     private List<IMove> _movesOfStep = new List<IMove>();
     private Thread solvingThread;
@@ -60,6 +60,10 @@ namespace RubiksCubeLib.Solver
       solvingThread.Abort();
     }
 
+    protected void AddSolutionStep(string key, Action action, SolutionStepType type = SolutionStepType.Standard)
+    {
+      this.SolutionSteps.Add(key, new Tuple<Action, SolutionStepType>(action, type));
+    }
 
     // *** METHODS ***
 
@@ -80,12 +84,12 @@ namespace RubiksCubeLib.Solver
     protected void GetSolution()
     {
       Stopwatch sw = new Stopwatch();
-      foreach (KeyValuePair<string,Action> step in this.SolutionSteps)
+      foreach (KeyValuePair<string,Tuple<Action,SolutionStepType>> step in this.SolutionSteps)
       {
         sw.Restart();
-        step.Value();
+        step.Value.Item1();
         sw.Stop();
-        if (OnSolutionStepCompleted != null) OnSolutionStepCompleted(this, new SolutionStepCompletedEventArgs(step.Key, false, new Algorithm() { Moves = _movesOfStep }, (int)sw.ElapsedMilliseconds));
+        if (OnSolutionStepCompleted != null) OnSolutionStepCompleted(this, new SolutionStepCompletedEventArgs(step.Key, false, new Algorithm() { Moves = _movesOfStep }, (int)sw.ElapsedMilliseconds,step.Value.Item2));
         _movesOfStep.Clear();
       }
     }

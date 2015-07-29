@@ -13,9 +13,15 @@ namespace TestApplication
 {
   public partial class DialogParityCheckResult : Form
   {
-    public DialogParityCheckResult(Rubik rubik)
+    public DialogParityCheckResult(Rubik rubik, Form parent = null)
     {
       InitializeComponent();
+      this.ShowInTaskbar = false;
+      if (parent != null)
+      {
+        this.Owner = parent;
+        this.StartPosition = FormStartPosition.CenterParent;
+      }
 
       // Color test
       bool colors = Solvability.CorrectColors(rubik);

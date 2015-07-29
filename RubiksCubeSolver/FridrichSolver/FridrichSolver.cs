@@ -23,11 +23,11 @@ namespace FridrichSolver
 
     protected override void AddSolutionSteps()
     {
-      this.SolutionSteps = new Dictionary<string, Action>();
-      this.SolutionSteps.Add("Cross on bottom layer", SolveFirstCross);
-      this.SolutionSteps.Add("Complete first two layers", CompleteF2L);
-      this.SolutionSteps.Add("Orientation top layer", Oll);
-      this.SolutionSteps.Add("Permutation last layer", Pll);
+      this.SolutionSteps = new Dictionary<string, Tuple<Action,SolutionStepType>>();
+      this.AddSolutionStep("Cross on bottom layer", SolveFirstCross);
+      this.AddSolutionStep("Complete first two layers", CompleteF2L);
+      this.AddSolutionStep("Orientation top layer", Oll);
+      this.AddSolutionStep("Permutation last layer", Pll);
     }
 
     private void SolveFirstCross()

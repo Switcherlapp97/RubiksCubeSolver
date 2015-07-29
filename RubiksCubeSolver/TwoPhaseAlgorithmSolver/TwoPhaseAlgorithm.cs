@@ -46,10 +46,10 @@ namespace TwoPhaseAlgorithmSolver
 
       protected override void AddSolutionSteps()
       {
-        this.SolutionSteps = new Dictionary<string, Action>();
-        this.SolutionSteps.Add("Init move tables", InitMoveTables);
-        this.SolutionSteps.Add("Init pruning tables", InitPruningTables);
-        this.SolutionSteps.Add("IDA* search for solution", Solution);
+        this.SolutionSteps = new Dictionary<string, Tuple<Action,SolutionStepType>>();
+        this.AddSolutionStep("Init move tables", InitMoveTables, SolutionStepType.Initialization);
+        this.AddSolutionStep("Init pruning tables", InitPruningTables, SolutionStepType.Initialization);
+        this.AddSolutionStep("IDA* search for solution", Solution);
       }
 
       public string TablePath { get; set; }

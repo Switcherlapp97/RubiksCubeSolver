@@ -65,7 +65,7 @@ namespace TestApplication
 
     private void solveToolStripMenuItem1_Click(object sender, EventArgs e)
     {
-      DialogSolutionFinder dlg = new DialogSolutionFinder(new TwoPhaseAlgorithm(), this.cubeModel.Rubik);
+      DialogSolutionFinder dlg = new DialogSolutionFinder(new TwoPhaseAlgorithm(), this.cubeModel.Rubik, this);
       if (dlg.ShowDialog() == DialogResult.OK)
       {
         rotations.Clear();
@@ -75,7 +75,7 @@ namespace TestApplication
 
     private void parityTestToolStripMenuItem_Click(object sender, EventArgs e)
     {
-      DialogParityCheckResult parityCheck = new DialogParityCheckResult(cubeModel.Rubik);
+      DialogParityCheckResult parityCheck = new DialogParityCheckResult(cubeModel.Rubik, this);
       parityCheck.ShowDialog();
     }
 
@@ -145,6 +145,16 @@ namespace TestApplication
     {
       FormAbout frmAbout = new FormAbout();
       frmAbout.ShowDialog();
+    }
+
+    private void FormMain_Activated(object sender, EventArgs e)
+    {
+      //cubeModel.StartRender();
+    }
+
+    private void FormMain_Deactivate(object sender, EventArgs e)
+    {
+      //cubeModel.StopRender();
     }
   }
 }
